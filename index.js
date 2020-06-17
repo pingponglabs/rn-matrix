@@ -1,0 +1,28 @@
+/**
+ * @format
+ */
+
+// Uncomment lines 7-14 to run Example App
+
+import { AppRegistry } from 'react-native';
+import { name as appName } from './app.json';
+import App from './ExampleApp/App';
+
+const debug = require('debug');
+debug.enable('rnMatrix:*');
+
+AppRegistry.registerComponent(appName, () => App);
+
+//********************************************************************************
+// NPM Module
+//********************************************************************************
+
+import matrix from './src/services/matrix';
+import RoomList from './src/views/RoomList';
+import MessageList from './src/views/MessageList';
+
+//********************************************************************************
+// Exports
+//********************************************************************************
+
+export { matrix, RoomList, MessageList };
