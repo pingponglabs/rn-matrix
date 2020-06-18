@@ -4,14 +4,14 @@
 
 // Uncomment lines 7-14 to run Example App
 
-import { AppRegistry } from 'react-native';
-import { name as appName } from './app.json';
-import App from './ExampleApp/App';
+// import { AppRegistry } from 'react-native';
+// import { name as appName } from './app.json';
+// import App from './ExampleApp/App';
 
-const debug = require('debug');
-debug.enable('rnMatrix:*');
+// const debug = require('debug');
+// debug.enable('rnMatrix:*');
 
-AppRegistry.registerComponent(appName, () => App);
+// AppRegistry.registerComponent(appName, () => App);
 
 //********************************************************************************
 // NPM Module

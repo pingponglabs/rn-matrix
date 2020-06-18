@@ -1,6 +1,6 @@
 {
   "name": "rn-matrix",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A JS-only React Native library for Matrix Chat",
   "author": "Annie Elequin <annie@elequin.io>",
   "main": "index.js",
@@ -42,6 +42,12 @@
     "react-test-renderer": "16.11.0",
     "rn-nodeify": "^10.2.0"
   },
+  "homepage": "https://rnmatrix.com",
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.com/annie-elequin/rn-matrix"
+  },
+  "license": "Apache-2.0",
   "jest": {
     "preset": "react-native"
   },
