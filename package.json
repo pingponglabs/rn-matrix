@@ -22,10 +22,13 @@
     "observable-hooks": "^3.0.0-alpha.0",
     "react": "16.11.0",
     "react-native": "0.62.2",
+    "react-native-render-html": "^4.2.0",
+    "react-native-webview": "^10.3.1",
     "rxjs": "^6.5.5",
     "showdown": "^1.9.1",
     "striptags": "^3.1.1",
     "url": "~0.10.1",
+    "webview": "^0.0.1",
     "whatwg-url": "^8.1.0"
   },
   "devDependencies": {

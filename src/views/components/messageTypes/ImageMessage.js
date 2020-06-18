@@ -33,6 +33,7 @@ export default function ImageMessage({ message, prevSame, nextSame }) {
   const imageStyles = {
     width: content.thumb.width,
     height: content.thumb.height,
+    borderRadius: 20,
     ...(isMe
       ? {
           ...(prevSame ? { borderTopRightRadius: sharpBorderRadius } : {}),

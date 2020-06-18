@@ -1,14 +1,16 @@
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, SafeAreaView } from 'react-native';
 import { screens } from './App';
 import { MessageList } from '..';
 
 export default function ChatScreen({ goToScreen, currentRoom }) {
   return (
-    <View>
+    <SafeAreaView style={{ flex: 1 }}>
       <Header goToScreen={goToScreen} />
-      <MessageList room={currentRoom} />
-    </View>
+      <View style={{ flex: 1 }}>
+        <MessageList room={currentRoom} />
+      </View>
+    </SafeAreaView>
   );
 }
 

@@ -87,7 +87,15 @@ export default function MessageItem({
 // `;
 
 export function BubbleWrapper({ children, isMe, status }) {
-  return <View style={{ marginHorizontal: 13 }}>{children}</View>;
+  return (
+    <View
+      style={{
+        marginHorizontal: 13,
+        flexDirection: isMe ? 'row-reverse' : 'row',
+      }}>
+      {children}
+    </View>
+  );
 }
 
 export function SenderText({ isMe, children }) {
@@ -98,7 +106,7 @@ export function SenderText({ isMe, children }) {
         fontWeight: '400',
         marginHorizontal: 22,
         marginTop: 8,
-        opacity: 0.8,
+        opacity: 0.6,
         ...(isMe ? { textAlign: 'right' } : {}),
       }}>
       {children}

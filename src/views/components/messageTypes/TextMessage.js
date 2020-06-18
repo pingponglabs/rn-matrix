@@ -16,6 +16,7 @@ import { Text, TouchableHighlight } from 'react-native';
 import { SenderText, BubbleWrapper } from '../MessageItem';
 import { isIos } from '../../../utilities/misc';
 import { isEmoji } from '../../../utilities/emojis';
+import Html from '../Html';
 
 // const debug = require('debug')('ditto:scene:chat:message:components:TextMessage')
 
@@ -38,9 +39,6 @@ export default function TextMessage({ message, prevSame, nextSame, onLongPress }
 
   const _onLongPress = () => onLongPress(message);
 
-  //* *******************************************************************************
-  // Lifecycle
-  //* *******************************************************************************
   return (
     <>
       <BubbleWrapper isMe={isMe} status={status}>
@@ -51,19 +49,16 @@ export default function TextMessage({ message, prevSame, nextSame, onLongPress }
         ) : (
           <TouchableHighlight
             {...props}
-            underlayColor={isMe ? 'red' : 'blue'}
+            underlayColor={isMe ? '#2d5bc4' : '#bbb'}
             onLongPress={_onLongPress}
             delayLongPress={200}
             style={[
               bubbleStyles(isMe, prevSame, nextSame),
-              {
-                backgroundColor: isMe ? 'dodgerblue' : '#666',
-              },
-              reactions ? { marginBottom: 18 } : {},
+              { backgroundColor: isMe ? '#4375e9' : '#ddd' },
+              reactions && reactions.length > 0 ? { marginBottom: 18 } : {},
             ]}>
             <>
-              <Text>{content?.html}</Text>
-              {/* <Html html={content.html} /> */}
+              <Html html={content?.html} isMe={isMe} />
               {/* {reactions && (
                 <Reactions
                   reactions={reactions}
