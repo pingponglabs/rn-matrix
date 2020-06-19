@@ -191,7 +191,6 @@ class ChatService {
   }
 
   _handleRoomTimelineEvent(event, matrixRoom) {
-    ('event: room timeline');
     const roomId = matrixRoom.roomId;
     // todo: we can use these to update snippets for the chat list
     if (!this._isChatDisplayed(roomId)) return;

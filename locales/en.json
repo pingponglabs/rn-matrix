@@ -1,0 +1,105 @@
+{
+  "auth": {
+    "landing": {
+      "loginButtonLabel": "Login"
+    },
+    "login": {
+      "missingUsernameError": "Missing username",
+      "missingPasswordError": "Missing password",
+      "title": "Welcome back!",
+      "usernameOrMatrixIdInputLabel": "Username or Matrix ID",
+      "usernameOrMatrixIdInputPlaceholder": "Who are you?",
+      "passwordInputLabel": "Password",
+      "passwordInputPlaceholder": "Shh don't tell",
+      "homeserverInputLabel": "Homeserver",
+      "homeserverInputPlaceholder": "Homeserver",
+      "basicLabel": "Basic",
+      "advancedLabel": "Advanced",
+      "loginButtonLabel": "Login",
+      "somethingWrongError": "Looks like something went wrong: \n\n{{errorText}}\n\n Try again!",
+      "forbiddenError": "Wrong username/password or homeserver",
+      "userDeactivatedError": "This user has been deactivated. Please contact your homeserver",
+      "limitExceededError": "Too many requests. Try again in a few minutes.",
+      "unknownError": "An unknown error occured with the homeserver",
+      "noResponseError": "The homeserver provided is not a Matrix homeserver or it is unreachable",
+      "invalidUsernameError": "There can only be one colon (:) in a matrix user id",
+      "noStoredCredentialsError": "An unexpected error has occurred. Please try again",
+      "unknownTokenError": "The token is no longer valid. We must have been disconnected.",
+      "invalidHomeserverError": "This does not appear to be a matrix homeserver"
+    }
+  },
+  "messages": {
+    "composer": {
+      "placeholder": "Type a Message..."
+    },
+    "content": {
+      "groupTyping": "{{user1}} and {{others}} others are typing…",
+      "typing": "{{name}} is typing...",
+      "contentNotUploaded": "The file could not be uploaded",
+      "imageSent": "{{sender}} sent an image",
+      "memberInvited": "{{sender}} invited user {{user}} to join the chat",
+      "memberJoined": "{{sender}} joined the chat",
+      "memberLeft": "{{sender}} left the chat",
+      "membershipNotSupport": "Ditto does not support the membership \"{{membership}}\" yet",
+      "memberAvatarRemoved": "{{sender}} removed their avatar",
+      "memberAvatarChanged": "{{sender}} changed their avatar",
+      "memberDisplayNameChanged": "{{prevSender}} changed their name to {{newSender}}",
+      "chatCreated": "{{sender}} created the chat\nHooray!",
+      "chatNameChanged": "{{sender}} changed the chat name to \"{{name}}\"",
+      "chatAvatarChanged": "{{sender}} changed the chat avatar",
+      "chatDescriptionChanged": "{{sender}} changed the chat description",
+      "chatSettingsChanged": "{{sender}} changed the chat settings",
+      "encryptNotSupport": "Ditto does not support encrypted messages yet",
+      "locationSharingNotSupport": "Ditto does not support location sharing yet",
+      "fileSharingNotSupport": "Ditto does not support file sharing yet",
+      "audioNotSupport": "Ditto does not support audio files yet",
+      "videoFilesNotSupport": "Ditto does not support video files yet",
+      "typeNotSupport": "Ditto does not support the type \"{{type}}\" yet",
+      "eventRedacted": "This event has been redacted",
+      "stickersNotSupport": "Ditto does not support stickers yet",
+      "thirdPartyInvite": "{{sender}} sent a third party invite"
+    }
+  },
+  "settings":{
+    "chooseAvatarLabel": "Choose avatar",
+    "title": "Settings",
+    "displayNameInputPlaceholder": "Set display name",
+    "displayNameInputLabel": "Display Name",
+    "notificationsEnabledLabel": "Enable Notiifications",
+    "androidOnlyDescription": "Android only (for now!)",
+    "versionLabel": "{{app}} Version",
+    "links": {
+      "title": "Links",
+      "websiteLinkLabel": "Website",
+      "privacyPolicyLinkLabel": "Privacy Policy",
+      "requestFeatureLinkLabel": "Request a Feature",
+      "reportProblemLinkLabel": "Report a Problem"
+    },
+    "logoutButtonLabel": "Logout"
+  },
+  "newChat": {
+    "title": "New Chat",
+    "userSearch": {
+      "usersInputPlaceholder": "Who do you want to chat with?",
+      "userInvalidNotice": "Please enter a valid user",
+      "usersExcessiveNotice": "Sorry, you can enter a maximum of 10 users"
+    },
+    "details": {
+      "title": "Chat Details",
+      "chatNameInputLabel": "Chat Name (Optional)",
+      "chatNameInputPlaceholder": "Ex. My Awesome Room",
+      "privateTitle": "Private",
+      "privateDescription": "A private chat is only open to those you invite.",
+      "createChatButtonLabel": "Create Chat"
+    }
+  },
+  "home": {
+    "tab": {
+      "messages": "Messages",
+      "groups": "Groups"
+    },
+    "banner": {
+      "syncing": "Syncing..."
+    }
+  }
+}

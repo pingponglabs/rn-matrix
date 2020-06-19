@@ -1,6 +1,6 @@
 // import { useTheme } from '@ui-kitten/components'
 import React, { useEffect, useState } from 'react';
-import { Linking, Text } from 'react-native';
+import { Linking, Text, View } from 'react-native';
 import HtmlRenderer from 'react-native-render-html';
 import { htmlEmojis } from '../../utilities/emojis';
 import { htmlLinks } from '../../utilities/misc';
@@ -8,10 +8,10 @@ import { htmlLinks } from '../../utilities/misc';
 // const debug = require('debug')('ditto:scene:chat:message:components:Html')
 
 const parseHtml = html => {
-  return htmlEmojis(htmlLinks(html));
+  return htmlEmojis(html?.includes('href') ? html : htmlLinks(html));
 };
 
-export default function Html({ html, isMe }) {
+export default function Html({ html, isMe = false }) {
   // const styles = getHtmlStyles(theme)
   const styles = getHtmlStyles({ isMe });
   const [parsedHtml, setParsedHtml] = useState(parseHtml(html));
@@ -29,6 +29,7 @@ export default function Html({ html, isMe }) {
 
   const renderers = {
     emoji: { renderer: emojiRenderer, wrapper: 'Text' },
+    ul: { renderer: unorderedListRenderer, wrapper: 'Text' },
   };
 
   //* *******************************************************************************
@@ -40,10 +41,14 @@ export default function Html({ html, isMe }) {
     setParsedHtml(parseHtml(html));
   }, [html, parsedHtml]);
 
-  console.log(parsedHtml);
-
   return parsedHtml ? (
-    <HtmlRenderer html={parsedHtml} renderers={renderers} onLinkPress={onLinkPress} {...styles} />
+    <HtmlRenderer
+      html={parsedHtml}
+      renderers={renderers}
+      onLinkPress={onLinkPress}
+      renderersProps={{ isMe }}
+      {...styles}
+    />
   ) : null;
 }
 
@@ -52,6 +57,16 @@ const emojiRenderer = (htmlAttribs, children, convertedCSSStyles, passProps) => 
     {children}
   </Text>
 );
+
+const unorderedListRenderer = (htmlAttribs, children, convertedCSSStyles, { renderersProps }) => {
+  const color = renderersProps.isMe ? '#fff' : '#222';
+  return children.map((c, i) => (
+    <View style={{ flexDirection: 'row' }} key={i}>
+      <Text style={{ color, fontSize: 6, marginTop: 6, marginRight: 6 }}>⬤</Text>
+      {c}
+    </View>
+  ));
+};
 
 const getHtmlStyles = ({ isMe }) => ({
   baseFontStyle: {
@@ -62,7 +77,7 @@ const getHtmlStyles = ({ isMe }) => ({
   },
   tagsStyles: {
     blockquote: {
-      borderLeftColor: 'red',
+      borderLeftColor: 'crimson',
       borderLeftWidth: 3,
       paddingLeft: 10,
       marginVertical: 10,
@@ -71,6 +86,9 @@ const getHtmlStyles = ({ isMe }) => ({
     a: {
       color: isMe ? '#fff' : '#222',
       textDecorationLine: 'underline',
+    },
+    code: {
+      backgroundColor: '#00000025',
     },
   },
 });

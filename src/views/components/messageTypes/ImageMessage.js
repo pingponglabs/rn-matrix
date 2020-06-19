@@ -1,14 +1,8 @@
 import { useObservableState } from 'observable-hooks';
 import React from 'react';
-// import styled from 'styled-components/native';
-
-// import { getNameColor } from '../../../../utilities';
-// import users from '../../../user/userService';
-// import BubbleWrapper from './BubbleWrapper';
-// import SenderText from './SenderText';
 
 import users from '../../../services/user';
-import { StyleSheet, View, Image } from 'react-native';
+import { View, Image } from 'react-native';
 import { BubbleWrapper, SenderText } from '../MessageItem';
 
 // const debug = require('debug')('ditto:scene:chat:message:components:ImageMessage')
@@ -61,26 +55,3 @@ export default function ImageMessage({ message, prevSame, nextSame }) {
     </>
   );
 }
-
-const sharpBorderRadius = 5;
-// const ImageWrapper = styled.View`
-//   margin-top: 2;
-//   margin-bottom: ${({ nextSame }) => (nextSame ? 1 : 4)};
-// `;
-
-// const StyledImage = styled.Image`
-//   height: ${({ height }) => height};
-//   width: ${({ width }) => width};
-//   border-radius: 20;
-
-//   ${({ isMe, prevSame, nextSame }) =>
-//     isMe
-//       ? `
-//     ${prevSame ? `border-top-right-radius: ${sharpBorderRadius};` : ''}
-//     ${nextSame ? `border-bottom-right-radius: ${sharpBorderRadius};` : ''}
-//   `
-//       : `
-//     ${prevSame ? `border-top-left-radius: ${sharpBorderRadius};` : ''}
-//     ${nextSame ? `border-bottom-left-radius: ${sharpBorderRadius};` : ''}
-//   `}
-// `;

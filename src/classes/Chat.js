@@ -3,16 +3,11 @@ import { EventTimeline } from 'matrix-js-sdk';
 import { InteractionManager } from 'react-native';
 import { BehaviorSubject } from 'rxjs';
 
-// import i18n from '../../i18n';
-// import matrix from '../../services/matrix/matrixService';
-// import users from '../user/userService';
-// import Message, { MessageStatus } from './message/Message';
-// import messages from './message/messageService';
-
 import matrix from '../services/matrix';
 import messages from '../services/message';
 import users from '../services/user';
 import Message, { MessageStatus } from './Message';
+import i18n from '../utilities/i18n';
 
 const debug = require('debug')('ditto:scenes:chat:Chat');
 
@@ -198,14 +193,12 @@ export default class Chat {
     if (typing.length > 0) {
       const user = users.getUserById(typing[0]);
       if (typing.length > 1) {
-        // snippet.content = i18n.t('messages:content.groupTyping', {
-        //   user1: user.name$.getValue(),
-        //   others: typing.length - 1,
-        // });
-        snippet.content = 'Group typing...';
+        snippet.content = i18n.t('messages:content.groupTyping', {
+          user1: user.name$.getValue(),
+          others: typing.length - 1,
+        });
       } else {
-        // snippet.content = i18n.t('messages:content.typing', { name: user.name$.getValue() });
-        snippet.content = 'Typing...';
+        snippet.content = i18n.t('messages:content.typing', { name: user.name$.getValue() });
       }
     } else {
       if (lastMessage) {
@@ -297,8 +290,7 @@ export default class Chat {
         if (!response) {
           // TODO: handle upload error
           pendingMessage.update({ status: MessageStatus.NOT_UPLOADED });
-          // const txt = i18n.t('messages:content.contentNotUploadedNotice');
-          const txt = 'Content not uploaded.';
+          const txt = i18n.t('messages:content.contentNotUploadedNotice');
           return {
             error: 'CONTENT_NOT_UPLOADED',
             message: txt,

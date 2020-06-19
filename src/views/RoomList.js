@@ -5,7 +5,12 @@ import chatService from '../services/chat';
 import { useObservableState } from 'observable-hooks';
 import RoomListItem from './components/RoomListItem';
 
-export default function RoomList({ renderListItem = null, onRowPress = () => {} }) {
+type Props = {
+  renderListItem: Function | null,
+  onRowPress: Function,
+};
+
+export default function RoomList({ renderListItem = null, onRowPress = () => {} }: Props) {
   const chatList = useObservableState(chatService.getChats());
   const isReady = useObservableState(matrix.isReady$());
   const isSynced = useObservableState(matrix.isSynced$());

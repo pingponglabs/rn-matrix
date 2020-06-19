@@ -30,5 +30,5 @@ export function getEmojis(emojiIndex) {
 
 export function htmlEmojis(html) {
   if (isIos()) return html;
-  return html.replace(emojiRegex(), '<emoji>$&</emoji>');
+  return html ? html.replace(emojiRegex(), '<emoji>$&</emoji>') : html;
 }

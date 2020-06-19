@@ -3,8 +3,15 @@ import { useObservableState } from 'observable-hooks';
 import messageService from '../services/message';
 import { FlatList, SafeAreaView } from 'react-native';
 import MessageItem from './components/MessageItem';
+import Chat from '../classes/Chat';
 
-export default function MessageList({ room }) {
+type Props = {
+  room: Chat,
+  onPress: Function | null,
+  onLongPress: Function | null,
+};
+
+export default function MessageList({ room, onPress = null, onLongPress = null }: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const messageList = useObservableState(room.messages$);
   const typing = useObservableState(room.typing$);
@@ -42,6 +49,8 @@ export default function MessageList({ room }) {
           messageId={messageId}
           prevMessageId={messageList[index + 1] ? messageList[index + 1] : null}
           nextMessageId={messageList[index - 1] ? messageList[index - 1] : null}
+          onPress={onPress}
+          onLongPress={onLongPress}
         />
       )}
       onEndReached={handleEndReached}

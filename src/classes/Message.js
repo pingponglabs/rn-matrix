@@ -2,15 +2,11 @@ import { isEqual } from 'lodash';
 import { EventStatus } from 'matrix-js-sdk';
 import { BehaviorSubject } from 'rxjs';
 
-// import { THUMBNAIL_MAX_SIZE } from '../../../constants';
-// import i18n from '../../../i18n';
-// import matrix from '../../../services/matrix/matrixService';
-// import users from '../../user/userService';
-
 const THUMBNAIL_MAX_SIZE = 250;
 
 import matrix from '../services/matrix';
 import users from '../services/user';
+import i18n from '../utilities/i18n';
 
 const debug = require('debug')('ditto:scenes:chat:message:Message');
 
@@ -38,7 +34,7 @@ export default class Message {
             this._matrixEvent = roomEvent;
           } else if (matrixRoom.hasPendingEvent(eventId)) {
             const pendingEvents = matrixRoom.getPendingEvents();
-            console.log(pendingEvents);
+            // console.log(pendingEvents);
             this._matrixEvent = pendingEvents.find(event => event.getId() === eventId);
           }
         }
@@ -149,8 +145,7 @@ export default class Message {
       content.raw = this._matrixEvent.getContent();
     }
     if (this.redacted$.getValue()) {
-      // content.text = i18n.t('messages:content.eventRedacted');
-      content.text = 'Event Redacted';
+      content.text = i18n.t('messages:content.eventRedacted');
       return content;
     }
     const sender = this.sender.name$.getValue();
@@ -168,8 +163,7 @@ export default class Message {
         break;
       // ImageMessage
       case 'm.image': {
-        // content.text = i18n.t('messages:content.imageSent', { sender: sender });
-        content.text = 'Image sent';
+        content.text = i18n.t('messages:content.imageSent', { sender: sender });
 
         if (this.pending) {
           // TODO: create thumb to free memory?
@@ -205,28 +199,22 @@ export default class Message {
       // EventMessages
       // Unsupported for now
       case 'm.audio':
-        // content.text = i18n.t('messages:content.audioNotSupport');
-        content.text = 'Audio not supported.';
+        content.text = i18n.t('messages:content.audioNotSupport');
         break;
       case 'm.video':
-        // content.text = i18n.t('messages:content.videoFilesNotSupport');
-        content.text = 'Video files not supported.';
+        content.text = i18n.t('messages:content.videoFilesNotSupport');
         break;
       case 'm.file':
-        // content.text = i18n.t('messages:content.fileSharingNotSupport');
-        content.text = 'File sharing not supported.';
+        content.text = i18n.t('messages:content.fileSharingNotSupport');
         break;
       case 'm.location':
-        // content.text = i18n.t('messages:content.locationSharingNotSupport');
-        content.text = 'Location sharing not supported.';
+        content.text = i18n.t('messages:content.locationSharingNotSupport');
         break;
       case 'm.sticker':
-        // content.text = i18n.t('messages:content.stickersNotSupport');
-        content.text = 'Stickers not supported.';
+        content.text = i18n.t('messages:content.stickersNotSupport');
         break;
       case 'm.room.encrypted':
-        // content.text = i18n.t('messages:content.encryptNotSupport');
-        content.text = 'Encryption not supported.';
+        content.text = i18n.t('messages:content.encryptNotSupport');
         break;
       // Supported
       case 'm.emote':
@@ -237,87 +225,73 @@ export default class Message {
         if (prevContent.membership !== content.raw.membership) {
           switch (content.raw.membership) {
             case 'invite':
-              // content.text = i18n.t('messages:content.memberInvited', {
-              //   sender: sender,
-              //   user: content.raw.displayname,
-              // });
-              content.text = 'Member invited.';
+              content.text = i18n.t('messages:content.memberInvited', {
+                sender: sender,
+                user: content.raw.displayname,
+              });
               break;
             case 'join':
-              // content.text = i18n.t('messages:content.memberJoined', { sender: sender });
-              content.text = 'Member joined.';
+              content.text = i18n.t('messages:content.memberJoined', { sender: sender });
               break;
             case 'leave':
-              // content.text = i18n.t('messages:content.memberLeft', { sender: sender });
-              content.text = 'Member left.';
+              content.text = i18n.t('messages:content.memberLeft', { sender: sender });
               break;
             default:
-              // content.text = i18n.t('messages:content.membershipNotSupport', {
-              //   membership: content.raw.membership,
-              // });
-              content.text = 'Membership not supported.';
+              content.text = i18n.t('messages:content.membershipNotSupport', {
+                membership: content.raw.membership,
+              });
               break;
           }
         } else if (prevContent.avatar_url !== content.raw.avatar_url) {
-          if (!content.raw.avatar_url)
-            // {content.text = i18n.t('messages:content.memberAvatarRemoved', { sender: sender });
-            content.text = 'Member avatar removed.';
-          else {
-            // content.text = i18n.t('messages:content.memberAvatarChanged', { sender: sender });
-            content.text = 'Member avatar changed.';
+          if (!content.raw.avatar_url) {
+            content.text = i18n.t('messages:content.memberAvatarRemoved', { sender: sender });
+          } else {
+            content.text = i18n.t('messages:content.memberAvatarChanged', { sender: sender });
           }
         } else if (prevContent.displayname !== content.raw.displayname) {
           const prevSender = prevContent.displayname || this.sender.id;
           const newSender = content.raw.displayname || this.sender.id;
-          // content.text = i18n.t('messages:content.memberDisplayNameChanged', {
-          //   prevSender: prevSender,
-          //   newSender: newSender,
-          // });
-          content.text = 'Member display name changed.';
+          content.text = i18n.t('messages:content.memberDisplayNameChanged', {
+            prevSender: prevSender,
+            newSender: newSender,
+          });
         }
         break;
       }
       case 'm.room.third_party_invite':
-        // content.text = i18n.t('messages:content.thirdPartyInvite', { sender: sender });
-        content.text = 'Third party invite sent.';
+        content.text = i18n.t('messages:content.thirdPartyInvite', { sender: sender });
         break;
       case 'm.room.create':
-        // content.text = i18n.t('messages:content.chatCreated', { sender: sender });
-        content.text = 'Chat created.';
+        content.text = i18n.t('messages:content.chatCreated', { sender: sender });
         break;
       case 'm.room.name':
-        // content.text = i18n.t('messages:content.chatNameChanged', {
-        //   sender: sender,
-        //   name: content.raw.name,
-        // });
-        content.text = 'Chat name changed.';
+        content.text = i18n.t('messages:content.chatNameChanged', {
+          sender: sender,
+          name: content.raw.name,
+        });
         break;
       case 'm.room.avatar':
-        // content.text = i18n.t('messages:content.chatAvatarChanged', { sender: sender });
-        content.text = 'Chat avatar changed.';
+        content.text = i18n.t('messages:content.chatAvatarChanged', { sender: sender });
         break;
       case 'm.room.topic':
-        // content.text = i18n.t('messages:content.chatDescriptionChanged', { sender: sender });
-        content.text = 'Chat description changed.';
+        content.text = i18n.t('messages:content.chatDescriptionChanged', { sender: sender });
         break;
       case 'm.room.encryption':
       case 'm.room.guest_access':
       case 'm.room.history_visibility':
       case 'm.room.join_rules':
       case 'm.room.power_levels':
-        // content.text = i18n.t('messages:content.chatSettingsChanged', { sender: sender });
-        content.text = 'Chat settings changed.';
+        content.text = i18n.t('messages:content.chatSettingsChanged', { sender: sender });
         break;
       default:
-        // content.text = i18n.t('messages:content.typeNotSupport', { type: this.type });
-        content.text = 'Type not supported.';
+        content.text = i18n.t('messages:content.typeNotSupport', { type: this.type });
         break;
     }
     return content;
   }
 
   _getReactions() {
-    // todo: put reactions back in
+    // todo: put reactions back in; removed for simplicity
     return [];
     const matrixRoom = matrix.getClient().getRoom(this.roomId);
     const eventReactions = matrixRoom

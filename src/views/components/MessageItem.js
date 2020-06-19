@@ -1,22 +1,13 @@
 import React from 'react';
-// import styled from 'styled-components/native';
-
-// import EventMessage from './components/EventMessage'
-// import ImageMessage from './components/ImageMessage'
-// import NoticeMessage from './components/NoticeMessage'
-// import TextMessage from './components/TextMessage'
-// import TypingIndicator from './components/TypingIndicator'
-// import Message from './Message'
-// import messages from './messageService'
 
 import Message from '../../classes/Message';
-import { MessageStatus } from '../../classes/Message';
 import messages from '../../services/message';
 import EventMessage from './messageTypes/EventMessage';
 import NoticeMessage from './messageTypes/NoticeMessage';
 import { View, Text, ActivityIndicator } from 'react-native';
 import ImageMessage from './messageTypes/ImageMessage';
 import TextMessage from './messageTypes/TextMessage';
+import { TypingAnimation } from 'react-native-typing-animation';
 
 // const debug = require('debug')('ditto:scenes:chat:message:MessageItem')
 
@@ -41,12 +32,14 @@ export default function MessageItem({
   ...otherProps
 }) {
   if (messageId === 'loading') {
-    // return <Loading />;
     return <ActivityIndicator />;
   }
   if (messageId === 'typing') {
-    // return <TypingIndicator />;
-    return <Text>...</Text>;
+    return (
+      <View style={{ marginLeft: 24, marginTop: 10, marginBottom: 30 }}>
+        <TypingAnimation dotColor="#ccc" dotAmplitude={2} dotRadius={4} dotMargin={8} />
+      </View>
+    );
   }
 
   const message = messages.getMessageById(messageId, roomId);
@@ -63,7 +56,7 @@ export default function MessageItem({
   const props = { ...otherProps, message, prevSame, nextSame };
 
   if (Message.isTextMessage(message.type)) {
-    return <TextMessage onLongPress={() => {}} {...props} />;
+    return <TextMessage {...props} />;
   }
   if (Message.isImageMessage(message.type)) {
     return <ImageMessage {...props} />;
@@ -73,18 +66,6 @@ export default function MessageItem({
   }
   return <EventMessage {...props} />;
 }
-
-// const Loading = () => (
-//   <Row>
-//     <Spinner />
-//   </Row>
-// );
-
-// const Row = styled.View`
-//   flex-direction: row;
-//   justify-content: center;
-//   padding-top: 10;
-// `;
 
 export function BubbleWrapper({ children, isMe, status }) {
   return (
@@ -113,9 +94,3 @@ export function SenderText({ isMe, children }) {
     </Text>
   );
 }
-
-// const Wrapper = styled.View`
-//   flex-direction: ${({ isMe }) => (isMe ? 'row-reverse' : 'row')};
-//   margin-left: 13;
-//   margin-right: 10%;
-// `;

@@ -20,8 +20,7 @@ import Html from '../Html';
 
 // const debug = require('debug')('ditto:scene:chat:message:components:TextMessage')
 
-export default function TextMessage({ message, prevSame, nextSame, onLongPress }) {
-  // const theme = useTheme();
+export default function TextMessage({ message, prevSame, nextSame, onPress, onLongPress }) {
   const myUser = users.getMyUser();
   const content = useObservableState(message.content$);
   const senderName = useObservableState(message.sender.name$);
@@ -38,19 +37,23 @@ export default function TextMessage({ message, prevSame, nextSame, onLongPress }
   };
 
   const _onLongPress = () => onLongPress(message);
+  const _onPress = () => onPress(message);
 
+  if (!content?.html) return null;
   return (
     <>
       <BubbleWrapper isMe={isMe} status={status}>
         {isEmoji(content?.text) ? (
-          <Emoji style={!isIos() ? { fontFamily: 'NotoColorEmoji' } : {}} {...props}>
+          <Emoji style={!isIos() ? { fontFamily: 'NotoColorEmoji' } : {}} isMe={isMe} {...props}>
             {content.text}
           </Emoji>
         ) : (
           <TouchableHighlight
             {...props}
             underlayColor={isMe ? '#2d5bc4' : '#bbb'}
-            onLongPress={_onLongPress}
+            onPress={onPress ? _onPress : null}
+            onLongPress={onLongPress ? _onLongPress : null}
+            delayPressIn={0}
             delayLongPress={200}
             style={[
               bubbleStyles(isMe, prevSame, nextSame),
@@ -77,27 +80,18 @@ export default function TextMessage({ message, prevSame, nextSame, onLongPress }
   );
 }
 
-const Emoji = ({ style, children }) => (
+const Emoji = ({ style, isMe, children }) => (
   <Text
     style={{
       ...style,
       fontSize: 45,
-      marginLeft: 18,
-      marginRight: 8,
+      marginHorizontal: 8,
       marginTop: isIos() ? 4 : -7,
       marginBottom: 4,
     }}>
     {children}
   </Text>
 );
-
-// const Emoji = styled.Text`
-//   font-size: 45;
-//   margin-left: 18;
-//   margin-right: 8;
-//   margin-top: ${isIos() ? '4' : '-7'};
-//   margin-bottom: 4;
-// `;
 
 const sharpBorderRadius = 5;
 const bubbleStyles = (isMe, prevSame, nextSame) => ({
@@ -106,6 +100,7 @@ const bubbleStyles = (isMe, prevSame, nextSame) => ({
   marginTop: 2,
   marginBottom: nextSame ? 1 : 4,
   borderRadius: 18,
+  maxWidth: '85%',
   ...(isMe
     ? {
         ...(prevSame ? { borderTopRightRadius: sharpBorderRadius } : {}),
@@ -116,26 +111,3 @@ const bubbleStyles = (isMe, prevSame, nextSame) => ({
         ...(nextSame ? { borderBottomLeftRadius: sharpBorderRadius } : {}),
       }),
 });
-
-// const Bubble = styled.TouchableHighlight`
-//   padding-left: 14;
-//   padding-right: 14;
-//   padding-top: 8;
-//   padding-bottom: 8;
-
-//   margin-top: 2;
-//   margin-bottom: ${({ nextSame }) => (nextSame ? 1 : 4)};
-
-//   border-radius: 18;
-
-//   ${({ isMe, prevSame, nextSame }) =>
-//     isMe
-//       ? `
-//     ${prevSame ? `border-top-right-radius: ${sharpBorderRadius};` : ''}
-//     ${nextSame ? `border-bottom-right-radius: ${sharpBorderRadius};` : ''}
-//   `
-//       : `
-//     ${prevSame ? `border-top-left-radius: ${sharpBorderRadius};` : ''}
-//     ${nextSame ? `border-bottom-left-radius: ${sharpBorderRadius};` : ''}
-//   `}
-// `;

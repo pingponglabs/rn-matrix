@@ -1,11 +1,9 @@
-// import { Text, useTheme } from '@ui-kitten/components';
 import { useObservableState } from 'observable-hooks';
 import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
-// import Html from 'react-native-render-html';
+import Html from '../Html';
 
 export default function NoticeMessage({ message }) {
-  // const theme = useTheme();
   const content = useObservableState(message.content$);
   const senderName = useObservableState(message.sender.name$);
 
@@ -13,15 +11,14 @@ export default function NoticeMessage({ message }) {
     <View style={styles.wrapper}>
       <Text>{senderName}</Text>
       <View style={styles.bubble}>
-        <Text>{content.html}</Text>
-        {/* <Html html={content.html} {...htmlProps} /> */}
+        <Html html={content?.html} {...htmlProps} />
       </View>
     </View>
   );
 }
 
 const baseFontStyle = {
-  color: '#fff',
+  color: '#222',
   fontSize: 13,
   letterSpacing: 0.3,
   fontWeight: '400',
@@ -55,5 +52,6 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     marginTop: 4,
     maxWidth: 300,
+    backgroundColor: '#ddd',
   },
 });
