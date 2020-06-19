@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - localization with i18next
 - animated typing indicator
+- added "press" props to message list
 
 ### Changed
 
