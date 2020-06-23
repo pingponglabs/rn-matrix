@@ -35,6 +35,9 @@ export default function MessageItem({
     return <ActivityIndicator />;
   }
   if (messageId === 'typing') {
+    if (otherProps.renderTypingIndicator) {
+      return otherProps.renderTypingIndicator();
+    }
     return (
       <View style={{ marginLeft: 24, marginTop: 10, marginBottom: 30 }}>
         <TypingAnimation dotColor="#ccc" dotAmplitude={2} dotRadius={4} dotMargin={8} />

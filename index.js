@@ -23,9 +23,10 @@ import matrixSdk from 'matrix-js-sdk';
 import matrix from './src/services/matrix';
 import RoomList from './src/views/RoomList';
 import MessageList from './src/views/MessageList';
+import Composer from './src/views/Composer';
 
 //********************************************************************************
 // Exports
 //********************************************************************************
 
-export { matrix, matrixSdk, RoomList, MessageList };
+export { matrix, matrixSdk, RoomList, MessageList, Composer };

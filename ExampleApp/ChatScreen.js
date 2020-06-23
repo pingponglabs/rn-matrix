@@ -1,16 +1,19 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, SafeAreaView } from 'react-native';
 import { screens } from './App';
-import { MessageList } from '..';
+import { MessageList, Composer } from '..';
 
 export default function ChatScreen({ goToScreen, currentRoom }) {
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <>
       <Header goToScreen={goToScreen} />
-      <View style={{ flex: 1 }}>
-        <MessageList room={currentRoom} />
-      </View>
-    </SafeAreaView>
+      <SafeAreaView style={{ flex: 1 }}>
+        <View style={{ flex: 1 }}>
+          <MessageList room={currentRoom} />
+          <Composer room={currentRoom} />
+        </View>
+      </SafeAreaView>
+    </>
   );
 }
 
@@ -23,6 +26,7 @@ const Header = ({ goToScreen }) => (
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
+      zIndex: 1,
     }}>
     <TouchableOpacity onPress={() => goToScreen(screens.ROOM_LIST)} style={{ padding: 12 }}>
       <Text>{'<'} Go Back</Text>
