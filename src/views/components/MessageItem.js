@@ -74,7 +74,7 @@ export function BubbleWrapper({ children, isMe, status }) {
   return (
     <View
       style={{
-        marginHorizontal: 13,
+        marginHorizontal: 12,
         flexDirection: isMe ? 'row-reverse' : 'row',
       }}>
       {children}

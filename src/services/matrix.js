@@ -14,7 +14,7 @@ import { BehaviorSubject } from 'rxjs';
 // import { toImageBuffer } from '../../utilities';
 // import SqlStore from './SqlStore';
 
-const debug = require('debug')('rnMatrix:matrix.js');
+const debug = require('debug')('rnm:matrix.js');
 // We need to put matrix logs to silent otherwise it throws exceptions we can't
 // catch
 const logger = loglevel.getLogger('matrix');
@@ -30,6 +30,8 @@ const MATRIX_CLIENT_START_OPTIONS = {
   initialSyncLimit: 8,
   lazyLoadMembers: true,
   pendingEventOrdering: 'detached',
+  timelineSupport: true,
+  unstableClientRelationAggregation: true,
 };
 
 class MatrixService {
@@ -83,7 +85,12 @@ class MatrixService {
       }
       this.stop();
     } else {
-      this._client = matrixSdk.createClient({ baseUrl, accessToken, userId });
+      this._client = matrixSdk.createClient({
+        baseUrl,
+        accessToken,
+        userId,
+        ...MATRIX_CLIENT_START_OPTIONS,
+      });
     }
   }
 

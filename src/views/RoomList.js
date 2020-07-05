@@ -6,8 +6,8 @@ import { useObservableState } from 'observable-hooks';
 import RoomListItem from './components/RoomListItem';
 
 type Props = {
-  renderListItem: Function | null,
-  onRowPress: Function,
+  renderListItem?: (props: any) => JSX.Element | null,
+  onRowPress?: Function,
 };
 
 export default function RoomList({ renderListItem = null, onRowPress = () => {} }: Props) {

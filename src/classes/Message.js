@@ -8,7 +8,7 @@ import matrix from '../services/matrix';
 import users from '../services/user';
 import i18n from '../utilities/i18n';
 
-const debug = require('debug')('ditto:scenes:chat:message:Message');
+const debug = require('debug')('rnm:classes:Message');
 
 // This is to add our own statuses on top of matrix's
 export const MessageStatus = {
@@ -291,8 +291,6 @@ export default class Message {
   }
 
   _getReactions() {
-    // todo: put reactions back in; removed for simplicity
-    return [];
     const matrixRoom = matrix.getClient().getRoom(this.roomId);
     const eventReactions = matrixRoom
       .getUnfilteredTimelineSet()

@@ -5,13 +5,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.0.4 - Unreleased]
+## [0.0.8 - Unreleased]
 
 ### Added
-
-- localization with i18next
-- animated typing indicator
-- added "press" props to message list
 
 ### Changed
 
@@ -21,9 +17,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- rendering unordered lists
-
 ### Security
+
+## [0.0.7 - 7/4/2020]
+
+### Added
+
+- Reaction support 😊
+- Color constants
+
+### Fixed
+
+- Keyboard shenanigans on Android
+- Some prop declarations
+
+## [0.0.6 - 7/3/2020]
+
+### Fixed
+
+- Commented out Example App (whoops)
+- Corrected "required" status of RoomList and MessageList props
+
+## [0.0.4 - 6/26/2020]
+
+### Added
+
+- localization with i18next
+- animated typing indicator
+- added "press" and "long press" props to message list
+- custom typing indicator
+- ability to send message with a provided composer
+
+### Fixed
+
+- rendering unordered lists
 
 ## [0.0.3 - 6/18/2020]
 

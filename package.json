@@ -1,6 +1,6 @@
 {
   "name": "rn-matrix",
-  "version": "0.0.3",
+  "version": "0.0.7",
   "description": "A React Native library for Matrix Chat",
   "author": "Annie Elequin <annie@elequin.io>",
   "main": "index.js",
@@ -10,7 +10,7 @@
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint .",
-    "pub": "npm publish --registry http://registry.npmjs.org/"
+    "pub": "./scripts/pub.sh"
   },
   "dependencies": {
     "buffer": "^5.6.0",

@@ -12,15 +12,24 @@ import React from 'react';
 // import SenderText from './SenderText';
 
 import users from '../../../services/user';
-import { Text, TouchableHighlight } from 'react-native';
+import { Text, TouchableHighlight, View } from 'react-native';
 import { SenderText, BubbleWrapper } from '../MessageItem';
 import { isIos } from '../../../utilities/misc';
 import { isEmoji } from '../../../utilities/emojis';
 import Html from '../Html';
+import { colors } from '../../../constants';
+import Reactions from '../Reactions';
 
-// const debug = require('debug')('ditto:scene:chat:message:components:TextMessage')
+const debug = require('debug')('rnm:views:components:messageTypes:TextMessage');
 
-export default function TextMessage({ message, prevSame, nextSame, onPress, onLongPress }) {
+export default function TextMessage({
+  message,
+  prevSame,
+  nextSame,
+  onPress,
+  onLongPress,
+  showReactions,
+}) {
   const myUser = users.getMyUser();
   const content = useObservableState(message.content$);
   const senderName = useObservableState(message.sender.name$);
@@ -48,30 +57,32 @@ export default function TextMessage({ message, prevSame, nextSame, onPress, onLo
             {content.text}
           </Emoji>
         ) : (
-          <TouchableHighlight
-            {...props}
-            underlayColor={isMe ? '#2d5bc4' : '#bbb'}
-            onPress={onPress ? _onPress : null}
-            onLongPress={onLongPress ? _onLongPress : null}
-            delayPressIn={0}
-            delayLongPress={200}
-            style={[
-              bubbleStyles(isMe, prevSame, nextSame),
-              { backgroundColor: isMe ? '#4375e9' : '#ddd' },
-              reactions && reactions.length > 0 ? { marginBottom: 18 } : {},
-            ]}>
-            <>
-              <Html html={content?.html} isMe={isMe} />
-              {/* {reactions && (
-                <Reactions
-                  reactions={reactions}
-                  toggleReaction={toggleReaction}
-                  myUserId={myUser.id}
-                  isMyBubble={isMe}
-                />
-              )} */}
-            </>
-          </TouchableHighlight>
+          <View style={viewStyle(nextSame)}>
+            <TouchableHighlight
+              {...props}
+              underlayColor={isMe ? colors.blue600 : colors.gray400}
+              onPress={onPress ? _onPress : null}
+              onLongPress={onLongPress ? _onLongPress : null}
+              delayPressIn={0}
+              delayLongPress={200}
+              style={[
+                bubbleStyles(isMe, prevSame, nextSame),
+                { backgroundColor: isMe ? colors.blue400 : colors.gray300 },
+                reactions ? { alignSelf: isMe ? 'flex-end' : 'flex-start' } : {},
+              ]}>
+              <View>
+                <Html html={content?.html} isMe={isMe} />
+              </View>
+            </TouchableHighlight>
+            {showReactions && reactions && (
+              <Reactions
+                reactions={reactions}
+                toggleReaction={toggleReaction}
+                myUserId={myUser.id}
+                isMyBubble={isMe}
+              />
+            )}
+          </View>
         )}
       </BubbleWrapper>
 
@@ -97,10 +108,7 @@ const sharpBorderRadius = 5;
 const bubbleStyles = (isMe, prevSame, nextSame) => ({
   paddingHorizontal: 14,
   paddingVertical: 8,
-  marginTop: 2,
-  marginBottom: nextSame ? 1 : 4,
   borderRadius: 18,
-  maxWidth: '85%',
   ...(isMe
     ? {
         ...(prevSame ? { borderTopRightRadius: sharpBorderRadius } : {}),
@@ -110,4 +118,10 @@ const bubbleStyles = (isMe, prevSame, nextSame) => ({
         ...(prevSame ? { borderTopLeftRadius: sharpBorderRadius } : {}),
         ...(nextSame ? { borderBottomLeftRadius: sharpBorderRadius } : {}),
       }),
+});
+
+const viewStyle = nextSame => ({
+  marginTop: 2,
+  marginBottom: nextSame ? 1 : 4,
+  maxWidth: '85%',
 });

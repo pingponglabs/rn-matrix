@@ -1,24 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { useObservableState } from 'observable-hooks';
-import messageService from '../services/message';
-import { FlatList, SafeAreaView, KeyboardAvoidingView, View } from 'react-native';
+import { FlatList, FlatListProps, KeyboardAvoidingView, View, Platform } from 'react-native';
 import MessageItem from './components/MessageItem';
 import Chat from '../classes/Chat';
 
 type Props = {
   room: Chat,
-  onPress: Function | null,
-  onLongPress: Function | null,
-  renderTypingIndicator: Function | null,
+  showReactions?: boolean,
+  onPress?: Function | null,
+  onLongPress?: Function | null,
+  renderTypingIndicator?: Function | null,
   flatListProps?: FlatListProps,
 };
 
 export default function MessageList({
   room,
+  showReactions = false,
   onPress = null,
   onLongPress = null,
   renderTypingIndicator = null,
-  flatListProps = {},
+  flatListProps = null,
 }: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const messageList = useObservableState(room.messages$);
@@ -49,7 +50,7 @@ export default function MessageList({
   }, [isLoading, messageList, room, typing]);
 
   return (
-    <KeyboardAvoidingView enabled behavior="position" keyboardVerticalOffset={45}>
+    <KeyboardAvoidingView enabled={Platform.OS === 'ios'} behavior="position">
       <FlatList
         keyboardDismissMode="on-drag"
         keyboardShouldPersistTaps="handled"
@@ -64,13 +65,16 @@ export default function MessageList({
             onPress={onPress}
             onLongPress={onLongPress}
             renderTypingIndicator={renderTypingIndicator}
+            showReactions={showReactions}
           />
         )}
         onEndReached={handleEndReached}
         onEndReachedThreshold={0.5}
         keyExtractor={item => item}
-        style={{ marginBottom: 50 }}
-        ListHeaderComponent={<View style={{ height: 6 }} />}
+        // This margin is only needed on ios because ios uses "InputAccessoryView"
+        // which is not supported on Android
+        style={[Platform.OS === 'ios' ? { marginBottom: 50 } : {}]}
+        ListHeaderComponent={() => <View style={{ height: 8 }} />} // just a lil padding
         {...flatListProps}
       />
     </KeyboardAvoidingView>

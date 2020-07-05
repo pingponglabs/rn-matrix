@@ -5,15 +5,11 @@ import { MessageList, Composer } from '..';
 
 export default function ChatScreen({ goToScreen, currentRoom }) {
   return (
-    <>
+    <SafeAreaView style={{ justifyContent: 'flex-end' }}>
       <Header goToScreen={goToScreen} />
-      <SafeAreaView style={{ flex: 1 }}>
-        <View style={{ flex: 1 }}>
-          <MessageList room={currentRoom} />
-          <Composer room={currentRoom} />
-        </View>
-      </SafeAreaView>
-    </>
+      <MessageList room={currentRoom} showReactions onPress={() => {}} />
+      <Composer room={currentRoom} />
+    </SafeAreaView>
   );
 }
 
@@ -27,6 +23,10 @@ const Header = ({ goToScreen }) => (
       justifyContent: 'space-between',
       alignItems: 'center',
       zIndex: 1,
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
     }}>
     <TouchableOpacity onPress={() => goToScreen(screens.ROOM_LIST)} style={{ padding: 12 }}>
       <Text>{'<'} Go Back</Text>

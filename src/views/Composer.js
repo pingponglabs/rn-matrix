@@ -6,8 +6,11 @@ import {
   StyleSheet,
   TouchableHighlight,
   InputAccessoryView,
+  Platform,
+  KeyboardAvoidingView,
 } from 'react-native';
 import { useObservableState } from 'observable-hooks';
+import { colors } from '../constants';
 
 export default function Composer({ room }) {
   const [value, setValue] = useState('');
@@ -27,7 +30,7 @@ export default function Composer({ room }) {
     setValue('');
   };
 
-  return (
+  return Platform.OS === 'ios' ? (
     <InputAccessoryView>
       <View style={styles.wrapper}>
         <TextInput
@@ -46,6 +49,23 @@ export default function Composer({ room }) {
         </TouchableHighlight>
       </View>
     </InputAccessoryView>
+  ) : (
+    <View style={styles.wrapper}>
+      <TextInput
+        style={styles.input}
+        multiline
+        placeholder={`Message ${roomName}...`}
+        value={value}
+        onChangeText={setValue}
+      />
+      <TouchableHighlight
+        disabled={value.length === 0}
+        onPress={handleSend}
+        underlayColor="#ddd"
+        style={styles.sendButton}>
+        <Text style={[styles.sendText, value.length === 0 ? { color: '#888' } : {}]}>Send</Text>
+      </TouchableHighlight>
+    </View>
   );
 }
 
@@ -53,10 +73,10 @@ const styles = StyleSheet.create({
   wrapper: {
     minHeight: 45,
     borderTopWidth: 1,
-    borderTopColor: '#ddd',
+    borderTopColor: colors.gray300,
     flexDirection: 'row',
     alignItems: 'flex-end',
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     padding: 6,
   },
   input: {
