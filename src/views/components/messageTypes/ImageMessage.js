@@ -5,7 +5,7 @@ import users from '../../../services/user';
 import { View, Image } from 'react-native';
 import { BubbleWrapper, SenderText } from '../MessageItem';
 
-// const debug = require('debug')('ditto:scene:chat:message:components:ImageMessage')
+// const debug = require('debug')('rnm:scene:chat:message:components:ImageMessage')
 
 // const PlaceholderImage = require('../../../../assets/images/placeholder.png');
 

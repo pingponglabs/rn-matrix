@@ -3,7 +3,7 @@ import showdown from 'showdown';
 import matrix from './matrix';
 import Message from '../classes/Message';
 
-const debug = require('debug')('ditto:scenes:chat:message:messageService');
+const debug = require('debug')('rnm:scenes:chat:message:messageService');
 const mdConverter = new showdown.Converter();
 
 class MessageService {

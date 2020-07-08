@@ -3,7 +3,7 @@ import { InteractionManager } from 'react-native';
 import matrix from './matrix';
 import User from '../classes/User';
 
-const debug = require('debug')('ditto:scenes:user:userService');
+const debug = require('debug')('rnm:scenes:user:userService');
 
 class UserService {
   constructor() {
@@ -11,7 +11,7 @@ class UserService {
     this._users = {};
     this._syncList = {};
 
-    matrix.isReady$().subscribe(isReady => {
+    matrix?.isReady$().subscribe(isReady => {
       if (isReady) this._listen();
     });
   }

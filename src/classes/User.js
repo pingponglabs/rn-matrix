@@ -2,7 +2,7 @@ import { BehaviorSubject } from 'rxjs';
 
 import matrix from '../services/matrix';
 
-// const debug = require('debug')('ditto:scenes:user:User')
+// const debug = require('debug')('rnm:scenes:user:User')
 
 export default class User {
   constructor(userId, matrixUser) {

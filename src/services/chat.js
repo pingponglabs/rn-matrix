@@ -11,7 +11,7 @@ import matrix from './matrix';
 import messages from './message';
 import Message from '../classes/Message';
 
-const debug = require('debug')('ditto:scenes:chat:chatService');
+const debug = require('debug')('rnm:scenes:chat:chatService');
 
 class ChatService {
   constructor() {
@@ -68,7 +68,6 @@ class ChatService {
   // Data
   //* *******************************************************************************
   async updateLists(updateChats = false) {
-    console.log('Update Chat List');
     return InteractionManager.runAfterInteractions(() => {
       let matrixRooms = [];
       let chats = [];

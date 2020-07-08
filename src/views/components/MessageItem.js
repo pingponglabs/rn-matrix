@@ -9,7 +9,7 @@ import ImageMessage from './messageTypes/ImageMessage';
 import TextMessage from './messageTypes/TextMessage';
 import { TypingAnimation } from 'react-native-typing-animation';
 
-// const debug = require('debug')('ditto:scenes:chat:message:MessageItem')
+// const debug = require('debug')('rnm:scenes:chat:message:MessageItem')
 
 function isSameSender(messageA, messageB) {
   if (

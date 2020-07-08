@@ -2,7 +2,7 @@ import { useObservableState } from 'observable-hooks';
 import React from 'react';
 import { Text, StyleSheet } from 'react-native';
 
-// const debug = require('debug')('ditto:scenes:chat:message:components:EventMessage')
+// const debug = require('debug')('rnm:scenes:chat:message:components:EventMessage')
 
 export default function EventMessage({ message }) {
   const content = useObservableState(message.content$);

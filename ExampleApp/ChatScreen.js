@@ -1,13 +1,17 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, SafeAreaView } from 'react-native';
 import { screens } from './App';
-import { MessageList, Composer } from '..';
+import { MessageList, Composer, matrix } from '..';
 
 export default function ChatScreen({ goToScreen, currentRoom }) {
+  const handleLongPress = message => {
+    matrix.deleteMessage(message);
+  };
+
   return (
     <SafeAreaView style={{ justifyContent: 'flex-end' }}>
       <Header goToScreen={goToScreen} />
-      <MessageList room={currentRoom} showReactions onPress={() => {}} />
+      <MessageList room={currentRoom} showReactions onLongPress={handleLongPress} />
       <Composer room={currentRoom} />
     </SafeAreaView>
   );

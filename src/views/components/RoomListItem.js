@@ -19,7 +19,10 @@ export default function RoomListItem({ room, onPress }) {
     <TouchableHighlight underlayColor="#ddd" onPress={handleOnPress}>
       <View style={styles.rowWrapper}>
         {avatar ? (
-          <Image source={{ uri: room.getAvatarUrl(avatarSize) }} style={styles.avatar} />
+          <Image
+            source={room.getAvatarUrl(avatarSize) ? { uri: room.getAvatarUrl(avatarSize) } : {}}
+            style={styles.avatar}
+          />
         ) : (
           <DefaultImage letter={name?.charAt(0)} />
         )}

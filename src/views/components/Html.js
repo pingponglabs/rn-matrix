@@ -5,7 +5,7 @@ import HtmlRenderer from 'react-native-render-html';
 import { htmlEmojis } from '../../utilities/emojis';
 import { htmlLinks } from '../../utilities/misc';
 
-// const debug = require('debug')('ditto:scene:chat:message:components:Html')
+// const debug = require('debug')('rnm:scene:chat:message:components:Html')
 
 const parseHtml = html => {
   return htmlEmojis(html?.includes('href') ? html : htmlLinks(html));

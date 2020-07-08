@@ -35,6 +35,21 @@ export default function MessageList({
     }
   };
 
+  const renderMessageItem = ({ item: messageId, index }) => {
+    return (
+      <MessageItem
+        roomId={room.id}
+        messageId={messageId}
+        prevMessageId={messageList[index + 1] ? messageList[index + 1] : null}
+        nextMessageId={messageList[index - 1] ? messageList[index - 1] : null}
+        onPress={onPress}
+        onLongPress={onLongPress}
+        renderTypingIndicator={renderTypingIndicator}
+        showReactions={showReactions}
+      />
+    );
+  };
+
   useEffect(() => {
     // mark as read
     room.sendReadReceipt();
@@ -56,18 +71,7 @@ export default function MessageList({
         keyboardShouldPersistTaps="handled"
         inverted
         data={timeline}
-        renderItem={({ item: messageId, index }) => (
-          <MessageItem
-            roomId={room.id}
-            messageId={messageId}
-            prevMessageId={messageList[index + 1] ? messageList[index + 1] : null}
-            nextMessageId={messageList[index - 1] ? messageList[index - 1] : null}
-            onPress={onPress}
-            onLongPress={onLongPress}
-            renderTypingIndicator={renderTypingIndicator}
-            showReactions={showReactions}
-          />
-        )}
+        renderItem={renderMessageItem}
         onEndReached={handleEndReached}
         onEndReachedThreshold={0.5}
         keyExtractor={item => item}

@@ -9,7 +9,7 @@ import users from '../services/user';
 import Message, { MessageStatus } from './Message';
 import i18n from '../utilities/i18n';
 
-const debug = require('debug')('ditto:scenes:chat:Chat');
+const debug = require('debug')('rnm:scenes:chat:Chat');
 
 const TYPING_TIMEOUT = 1000 * 15; // 15s
 

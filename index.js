@@ -20,7 +20,7 @@
 //********************************************************************************
 
 import matrixSdk from 'matrix-js-sdk';
-import matrix from './src/services/matrix';
+import external from './src/services/external';
 import RoomList from './src/views/RoomList';
 import MessageList from './src/views/MessageList';
 import Composer from './src/views/Composer';
@@ -29,4 +29,5 @@ import Composer from './src/views/Composer';
 // Exports
 //********************************************************************************
 
+const matrix = external;
 export { matrix, matrixSdk, RoomList, MessageList, Composer };

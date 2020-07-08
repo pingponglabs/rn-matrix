@@ -9,7 +9,6 @@ import { matrix } from '../index';
 
 import React, { useState, useEffect } from 'react';
 import { SafeAreaView, View, Text } from 'react-native';
-import EnterTokenScreen from './EnterTokenScreen';
 import RoomListScreen from './RoomListScreen';
 import ChatScreen from './ChatScreen';
 import { useObservableState } from 'observable-hooks';
@@ -28,8 +27,6 @@ export default function App() {
 
   const renderScreen = () => {
     switch (currentScreen) {
-      // case screens.TOKEN:
-      //   return <EnterTokenScreen />;
       case screens.ROOM_LIST:
         return <RoomListScreen goToScreen={setCurrentScreen} setCurrentRoom={setCurrentRoom} />;
       case screens.CHAT:
