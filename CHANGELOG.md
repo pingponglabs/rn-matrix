@@ -9,7 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- AsyncStorage for use with Matrix Memory Store
+- Snippeton chat list shows name for group chats
+
 ### Changed
+
+- Wrapped MessageList in a SafeAreaView
 
 ### Deprecated
 

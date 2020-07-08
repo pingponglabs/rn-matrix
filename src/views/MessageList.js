@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useObservableState } from 'observable-hooks';
-import { FlatList, FlatListProps, KeyboardAvoidingView, View, Platform } from 'react-native';
+import {
+  FlatList,
+  FlatListProps,
+  KeyboardAvoidingView,
+  View,
+  Platform,
+  SafeAreaView,
+} from 'react-native';
 import MessageItem from './components/MessageItem';
 import Chat from '../classes/Chat';
 
@@ -65,22 +72,24 @@ export default function MessageList({
   }, [isLoading, messageList, room, typing]);
 
   return (
-    <KeyboardAvoidingView enabled={Platform.OS === 'ios'} behavior="position">
-      <FlatList
-        keyboardDismissMode="on-drag"
-        keyboardShouldPersistTaps="handled"
-        inverted
-        data={timeline}
-        renderItem={renderMessageItem}
-        onEndReached={handleEndReached}
-        onEndReachedThreshold={0.5}
-        keyExtractor={item => item}
-        // This margin is only needed on ios because ios uses "InputAccessoryView"
-        // which is not supported on Android
-        style={[Platform.OS === 'ios' ? { marginBottom: 50 } : {}]}
-        ListHeaderComponent={() => <View style={{ height: 8 }} />} // just a lil padding
-        {...flatListProps}
-      />
-    </KeyboardAvoidingView>
+    <SafeAreaView>
+      <KeyboardAvoidingView enabled={Platform.OS === 'ios'} behavior="position">
+        <FlatList
+          keyboardDismissMode="on-drag"
+          keyboardShouldPersistTaps="handled"
+          inverted
+          data={timeline}
+          renderItem={renderMessageItem}
+          onEndReached={handleEndReached}
+          onEndReachedThreshold={0.5}
+          keyExtractor={item => item}
+          // This margin is only needed on ios because ios uses "InputAccessoryView"
+          // which is not supported on Android
+          style={[Platform.OS === 'ios' ? { marginBottom: 50 } : {}, { height: '100%' }]}
+          ListHeaderComponent={() => <View style={{ height: 8 }} />} // just a lil padding
+          {...flatListProps}
+        />
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }

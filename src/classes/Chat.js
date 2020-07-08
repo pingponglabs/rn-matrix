@@ -202,7 +202,13 @@ export default class Chat {
       }
     } else {
       if (lastMessage) {
-        snippet.content = lastMessage.content$.getValue().text;
+        if (this.isDirect$?.getValue()) {
+          snippet.content = lastMessage.content$.getValue().text;
+        } else {
+          snippet.content = `${lastMessage.sender.name$.getValue()}: ${
+            lastMessage.content$.getValue().text
+          }`;
+        }
       }
     }
 

@@ -27,7 +27,6 @@ class ExternalService {
     const defaults = {
       visibility: 'private',
       invite: [], // list of user IDs
-      name: 'New Room', // string for room name
       room_topic: '',
     };
     return chats.createChat({ ...defaults, ...options });

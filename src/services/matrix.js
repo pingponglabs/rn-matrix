@@ -6,9 +6,10 @@ import '../utilities/poly';
 // polyfillGlobal('Buffer', () => require('buffer').Buffer);
 
 import loglevel from 'loglevel';
-import matrixSdk, { EventTimeline } from 'matrix-js-sdk';
+import matrixSdk, { EventTimeline, MemoryStore } from 'matrix-js-sdk';
 import { BehaviorSubject } from 'rxjs';
-// import request from 'xmlhttp-request';
+import request from 'xmlhttp-request';
+import AsyncStorage from '@react-native-community/async-storage';
 
 // import i18n from '../../i18n';
 // import { toImageBuffer } from '../../utilities';
@@ -28,11 +29,30 @@ logger.setLevel('silent');
 
 const MATRIX_CLIENT_START_OPTIONS = {
   initialSyncLimit: 8,
+  request: request,
   lazyLoadMembers: true,
   pendingEventOrdering: 'detached',
   timelineSupport: true,
   unstableClientRelationAggregation: true,
+  store: new MemoryStore({
+    localStorage: AsyncStorage,
+  }),
 };
+
+const getAllKeys = async () => {
+  let keys = [];
+  try {
+    keys = await AsyncStorage.getAllKeys();
+  } catch (e) {
+    // read key error
+  }
+
+  console.log('async storage keys', keys);
+  // example console.log result:
+  // ['@MyApp_user', '@MyApp_key']
+};
+
+getAllKeys();
 
 class MatrixService {
   _client;
