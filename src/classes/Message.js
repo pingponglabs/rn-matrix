@@ -34,7 +34,6 @@ export default class Message {
             this._matrixEvent = roomEvent;
           } else if (matrixRoom.hasPendingEvent(eventId)) {
             const pendingEvents = matrixRoom.getPendingEvents();
-            // console.log(pendingEvents);
             this._matrixEvent = pendingEvents.find(event => event.getId() === eventId);
           }
         }

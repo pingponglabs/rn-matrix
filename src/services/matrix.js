@@ -39,21 +39,6 @@ const MATRIX_CLIENT_START_OPTIONS = {
   }),
 };
 
-const getAllKeys = async () => {
-  let keys = [];
-  try {
-    keys = await AsyncStorage.getAllKeys();
-  } catch (e) {
-    // read key error
-  }
-
-  console.log('async storage keys', keys);
-  // example console.log result:
-  // ['@MyApp_user', '@MyApp_key']
-};
-
-getAllKeys();
-
 class MatrixService {
   _client;
   _started;

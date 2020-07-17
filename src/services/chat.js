@@ -300,6 +300,7 @@ class ChatService {
   //* *******************************************************************************
   async createChat(options) {
     try {
+      debug('Creating chat...');
       const response = await matrix.getClient().createRoom(options);
       const matrixRoom = matrix.getClient().getRoom(response.room_id);
 
@@ -308,7 +309,7 @@ class ChatService {
         name: matrixRoom.name,
       };
     } catch (e) {
-      debug('Error creating chat:', e);
+      console.warn('Error creating chat: ', e);
       return { error: true };
     }
   }

@@ -5,16 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.0.9 - Unreleased]
+## [0.0.11 - Unreleased]
 
 ### Added
 
-- AsyncStorage for use with Matrix Memory Store
-- Snippeton chat list shows name for group chats
-
 ### Changed
-
-- Wrapped MessageList in a SafeAreaView
 
 ### Deprecated
 
@@ -23,6 +18,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 ### Security
+
+## [0.0.9 - 7/16/2020]
+
+### Added
+
+- AsyncStorage for use with Matrix Memory Store
+- Snippet on chat list shows name for group chats
+- Better logging for failed chat creation
+- Added method for getting list of rooms
+- Added method for getting room by ID
+
+### Changed
+
+- Wrapped MessageList in a SafeAreaView
 
 ## [0.0.8 - 7/8/2020]
 

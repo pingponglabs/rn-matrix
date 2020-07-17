@@ -1,6 +1,3 @@
-import loglevel from 'loglevel';
-import matrixSdk, { EventTimeline } from 'matrix-js-sdk';
-import { BehaviorSubject } from 'rxjs';
 import chats from './chat';
 import matrix from './matrix';
 
@@ -30,6 +27,14 @@ class ExternalService {
       room_topic: '',
     };
     return chats.createChat({ ...defaults, ...options });
+  }
+
+  getRooms() {
+    return chats.getChats();
+  }
+
+  getRoomById(roomId: string) {
+    return chats.getChatById(roomId);
   }
 }
 

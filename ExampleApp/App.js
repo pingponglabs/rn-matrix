@@ -5,15 +5,14 @@
  * @format
  * @flow strict-local
  */
+import React, { useEffect, useState } from 'react';
+import { SafeAreaView } from 'react-native';
 import { matrix } from '../index';
-
-import React, { useState, useEffect } from 'react';
-import { SafeAreaView, View, Text } from 'react-native';
-import RoomListScreen from './RoomListScreen';
 import ChatScreen from './ChatScreen';
-import { useObservableState } from 'observable-hooks';
+import RoomListScreen from './RoomListScreen';
 
-// console.log(matrix);
+const debug = require('debug');
+debug.enable('rnm:*');
 
 export const screens = {
   TOKEN: 0,
@@ -37,7 +36,7 @@ export default function App() {
   };
 
   useEffect(() => {
-    matrix.createClient('https://matrix.ditto.chat', accessToken, '@annie:ditto.chat');
+    matrix.createClient('https://matrix.ditto.chat', accessToken, '@test:ditto.chat');
     matrix.start();
   }, []);
 
@@ -45,4 +44,4 @@ export default function App() {
 }
 
 const accessToken =
-  'MDAxOGxvY2F0aW9uIGRpdHRvLmNoYXQKMDAxM2lkZW50aWZpZXIga2V5CjAwMTBjaWQgZ2VuID0gMQowMDI0Y2lkIHVzZXJfaWQgPSBAYW5uaWU6ZGl0dG8uY2hhdAowMDE2Y2lkIHR5cGUgPSBhY2Nlc3MKMDAyMWNpZCBub25jZSA9IEYzRlMyVS5KXzRJdW5DO0sKMDAyZnNpZ25hdHVyZSDIV6D5eRHxXYqwHFaBmak3Z782c7ccKZpmgZl38CJpKgo';
+  'MDAxOGxvY2F0aW9uIGRpdHRvLmNoYXQKMDAxM2lkZW50aWZpZXIga2V5CjAwMTBjaWQgZ2VuID0gMQowMDIzY2lkIHVzZXJfaWQgPSBAdGVzdDpkaXR0by5jaGF0CjAwMTZjaWQgdHlwZSA9IGFjY2VzcwowMDIxY2lkIG5vbmNlID0gSEl0aSpubj1NbkJaX0BSVQowMDJmc2lnbmF0dXJlIBLMQ-pOXq0WPOtTk8wTyFPqOvwK0Sub2iue4ZLS1jiRCg';

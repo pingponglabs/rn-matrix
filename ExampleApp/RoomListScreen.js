@@ -11,7 +11,6 @@ export default function RoomListScreen({ goToScreen, setCurrentRoom }) {
 
   const createChat = async () => {
     const room = await matrix.createRoom();
-    console.log(room);
   };
 
   return (
