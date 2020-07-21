@@ -10,6 +10,9 @@ import matrixSdk, { EventTimeline, MemoryStore } from 'matrix-js-sdk';
 import { BehaviorSubject } from 'rxjs';
 import request from 'xmlhttp-request';
 import AsyncStorage from '@react-native-community/async-storage';
+import AsyncCryptoStore from '../storage/AsyncCryptoStore';
+import Olm from 'olm/olm_legacy';
+//import { generateSecureRandom } from 'react-native-securerandom';
 
 // import i18n from '../../i18n';
 // import { toImageBuffer } from '../../utilities';
@@ -37,6 +40,8 @@ const MATRIX_CLIENT_START_OPTIONS = {
   store: new MemoryStore({
     localStorage: AsyncStorage,
   }),
+  cryptoStore: new AsyncCryptoStore(AsyncStorage),
+  sessionStore: {}, // js-sdk complains if this isn't supplied but it's only used for remembering a local trusted backup key
 };
 
 class MatrixService {
@@ -110,7 +115,10 @@ class MatrixService {
     }
 
     this._client.on('sync', this._onSyncEvent.bind(this));
-    this._client.startClient(MATRIX_CLIENT_START_OPTIONS);
+    //await Olm.init({get_random_values: generateSecureRandom});
+    await Olm.init();
+    await this._client.initCrypto();
+    await this._client.startClient(MATRIX_CLIENT_START_OPTIONS);
     this._started = true;
     debug('Matrix client started');
   }

@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.11.0",
+    "asyncstorage-down": "^4.2.0",
     "buffer": "^5.6.0",
     "emoji-regex": "^9.0.0",
     "events": "^1.0.0",
@@ -23,6 +24,7 @@
     "matrix-js-sdk": "^6.2.1",
     "moment": "^2.26.0",
     "observable-hooks": "^3.0.0-alpha.0",
+    "olm": "https://packages.matrix.org/npm/olm/olm-3.1.4.tgz",
     "path-browserify": "0.0.0",
     "process": "^0.11.0",
     "react": "16.11.0",
@@ -41,6 +43,7 @@
     "stream-browserify": "^1.0.0",
     "striptags": "^3.1.1",
     "url": "~0.10.1",
+    "util": "~0.10.3",
     "vm-browserify": "0.0.4",
     "webview": "^0.0.1",
     "whatwg-url": "^8.1.0",
