@@ -2,6 +2,7 @@ import { isEqual } from 'lodash';
 import { EventTimeline } from 'matrix-js-sdk';
 import { InteractionManager } from 'react-native';
 import { BehaviorSubject } from 'rxjs';
+import User from './User';
 
 import matrix from '../services/matrix';
 import messages from '../services/message';
@@ -53,6 +54,7 @@ export default class Chat {
     this.snippet$ = new BehaviorSubject(this._getSnippet());
     this.readState$ = new BehaviorSubject(this._getReadState());
     this.atStart$ = new BehaviorSubject(this._isAtStart());
+    this.members$ = new BehaviorSubject(this._getMembers());
   }
 
   //* *******************************************************************************
@@ -237,6 +239,18 @@ export default class Chat {
     }
   }
 
+  getMembers() {
+    return this.members$.getValue();
+  }
+
+  _getMembers() {
+    const members = [];
+    for (const member of this._matrixRoom.getJoinedMembers()) {
+      members.push(new User(member.userId));
+    }
+    return members;
+  }
+
   //* *******************************************************************************
   // Actions
   //* *******************************************************************************
@@ -353,6 +367,17 @@ export default class Chat {
       state.active = false;
       matrix.getClient().sendTyping(this.id, false);
     }
+  }
+
+  setName(newName) {
+    this.name$.next(newName);
+    matrix.getClient().setRoomName(this.id, newName);
+  }
+
+  async setAvatar(image) {
+    const url = await matrix.uploadImage(image);
+    this.avatar$.next(url);
+    return matrix.getClient().sendEvent(this.id, 'm.room.avatar', url);
   }
 
   //* *******************************************************************************

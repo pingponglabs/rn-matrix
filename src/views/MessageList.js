@@ -10,10 +10,12 @@ import {
 } from 'react-native';
 import MessageItem from './components/MessageItem';
 import Chat from '../classes/Chat';
+import Composer from './Composer';
 
 type Props = {
   room: Chat,
   showReactions?: boolean,
+  enableComposer?: boolean,
   onPress?: Function | null,
   onLongPress?: Function | null,
   renderTypingIndicator?: Function | null,
@@ -23,6 +25,7 @@ type Props = {
 export default function MessageList({
   room,
   showReactions = false,
+  enableComposer = false,
   onPress = null,
   onLongPress = null,
   renderTypingIndicator = null,
@@ -85,11 +88,11 @@ export default function MessageList({
           keyExtractor={item => item}
           // This margin is only needed on ios because ios uses "InputAccessoryView"
           // which is not supported on Android
-          style={[Platform.OS === 'ios' ? { marginBottom: 50 } : {}, { height: '100%' }]}
-          ListHeaderComponent={() => <View style={{ height: 8 }} />} // just a lil padding
+          style={[Platform.OS === 'ios' ? { marginBottom: 45 } : {}, { height: '100%' }]}
           {...flatListProps}
         />
       </KeyboardAvoidingView>
+      {enableComposer && <Composer room={room} />}
     </SafeAreaView>
   );
 }

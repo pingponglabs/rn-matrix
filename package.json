@@ -22,6 +22,7 @@
     "fbemitter": "^2.1.1",
     "i18next": "^19.4.5",
     "matrix-js-sdk": "^6.2.1",
+    "metro-config": "^0.61.0",
     "moment": "^2.26.0",
     "observable-hooks": "^3.0.0-alpha.0",
     "olm": "https://packages.matrix.org/npm/olm/olm-3.1.4.tgz",
@@ -35,6 +36,7 @@
     "react-native-localize": "^1.4.0",
     "react-native-randombytes": "^3.5.3",
     "react-native-render-html": "^4.2.0",
+    "react-native-svg": "^12.1.0",
     "react-native-typing-animation": "^0.1.7",
     "react-native-webview": "^10.3.1",
     "readable-stream": "1.0.33",
@@ -57,6 +59,7 @@
     "eslint": "^6.5.1",
     "jest": "^24.9.0",
     "metro-react-native-babel-preset": "^0.58.0",
+    "react-native-svg-transformer": "^0.14.3",
     "react-test-renderer": "16.11.0",
     "rn-nodeify": "^10.2.0"
   },

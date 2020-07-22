@@ -8,6 +8,7 @@ import { BehaviorSubject } from 'rxjs';
 
 import Chat, { ChatDetails } from '../classes/Chat';
 import matrix from './matrix';
+import users from './user';
 import messages from './message';
 import Message from '../classes/Message';
 
@@ -20,6 +21,7 @@ class ChatService {
       all$: new BehaviorSubject([]),
       direct$: new BehaviorSubject([]),
       group$: new BehaviorSubject([]),
+      invites$: new BehaviorSubject([]),
     };
     this._syncList = {};
     this._opened = null;
@@ -51,10 +53,11 @@ class ChatService {
     return this._chats.all$;
   }
 
-  // getListByType$(type) {
-  //   if (type === 'direct') return this._chats.direct$;
-  //   return this._chats.group$;
-  // }
+  getListByType$(type) {
+    if (type === 'invites') return this._chats.invites$;
+    if (type === 'direct') return this._chats.direct$;
+    return this._chats.group$;
+  }
 
   getChatById(roomId) {
     if (!this._chats.all[roomId]) {
@@ -71,9 +74,12 @@ class ChatService {
     return InteractionManager.runAfterInteractions(() => {
       let matrixRooms = [];
       let chats = [];
-      // const directChats = [];
-      // const groupChats = [];
+      const directChats = [];
+      const groupChats = [];
+      const invites = [];
       const prevChats = Object.keys(this._chats.all);
+
+      const me = users.getMyUser();
 
       try {
         matrixRooms = matrix.getClient().getVisibleRooms();
@@ -89,9 +95,13 @@ class ChatService {
         } else if (updateChats) {
           chat.update(ChatDetails.SUMMARY);
         }
-        chats.push(chat);
-        // if (chat.isDirect$.getValue()) directChats.push(chat);
-        // else groupChats.push(chat);
+        if (matrixRoom.hasMembershipState(me.id, 'invite')) {
+          invites.push(chat);
+        } else {
+          chats.push(chat);
+          if (chat.isDirect$.getValue()) directChats.push(chat);
+          else groupChats.push(chat);
+        }
 
         // Will be used to remove chats that have been removed
         const prevChatIndex = prevChats.find(roomId => roomId === chat.id);
@@ -103,15 +113,17 @@ class ChatService {
       });
       this._chats.all$.next(chats);
 
-      // directChats.sort(this.sortChatsByLastMessage);
-      // groupChats.sort(this.sortChatsByLastMessage);
+      this._chats.invites$.next(invites);
 
-      // if (!this.isEqualById(directChats, this._chats.direct$.getValue())) {
-      //   this._chats.direct$.next(directChats);
-      // }
-      // if (!this.isEqualById(groupChats, this._chats.group$.getValue())) {
-      //   this._chats.group$.next(groupChats);
-      // }
+      directChats.sort(this.sortChatsByLastMessage);
+      groupChats.sort(this.sortChatsByLastMessage);
+
+      if (!this.isEqualById(directChats, this._chats.direct$.getValue())) {
+        this._chats.direct$.next(directChats);
+      }
+      if (!this.isEqualById(groupChats, this._chats.group$.getValue())) {
+        this._chats.group$.next(groupChats);
+      }
       if (prevChats.length > 0) {
         for (const roomId of prevChats) {
           delete this._chats.all[roomId];

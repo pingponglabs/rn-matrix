@@ -33,8 +33,31 @@ class ExternalService {
     return chats.getChats();
   }
 
+  getRoomsByType$(type: 'direct' | 'invites' | 'groups') {
+    return chats.getListByType$(type);
+  }
+
   getRoomById(roomId: string) {
     return chats.getChatById(roomId);
+  }
+
+  getDirectMessage(userId: string) {
+    let directMessage = null;
+    const joinedChats = chats.getChats().getValue();
+    for (let i = 0; i < joinedChats.length && !directMessage; i++) {
+      const chat = joinedChats[i];
+      const members = chat.getMembers();
+      const hasUser = members.find(member => member.id === userId);
+      if (members.length === 2 && hasUser) {
+        directMessage = chat;
+      }
+    }
+    return directMessage;
+  }
+
+  setRoomName(roomId: string, name: string) {
+    const chat = chats.getChatById(roomId);
+    chat.setName(name);
   }
 }
 
