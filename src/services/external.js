@@ -33,6 +33,10 @@ class ExternalService {
     return chats.getChats();
   }
 
+  getRoomsByType$(type: 'direct' | 'invites' | 'groups') {
+    return chats.getListByType$(type);
+  }
+
   getRoomById(roomId: string) {
     return chats.getChatById(roomId);
   }

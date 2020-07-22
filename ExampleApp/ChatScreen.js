@@ -2,11 +2,11 @@ import React from 'react';
 import { View, Text, TouchableOpacity, SafeAreaView } from 'react-native';
 import { screens } from './App';
 import { MessageList, matrix } from '..';
-import { Room } from 'matrix-js-sdk';
 
 export default function ChatScreen({ goToScreen, currentRoom }) {
   const handleLongPress = message => {
-    matrix.deleteMessage(message);
+    console.log('message', message);
+    // matrix.deleteMessage(message);
   };
 
   return (
