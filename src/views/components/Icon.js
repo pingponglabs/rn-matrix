@@ -16,6 +16,10 @@ export default function Icon({ name, size = 24, color = '#000' }: Props) {
   switch (name) {
     case 'check':
       return <Icons.Check {...props} />;
+    case 'check-circle':
+      return <Icons.CheckCircle {...props} />;
+    case 'circle':
+      return <Icons.Circle {...props} />;
     case 'close':
       return <Icons.Close {...props} />;
     default:

@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, SafeAreaView } from 'react-native';
 import { screens } from './App';
-import { MessageList, matrix } from '..';
+import { MessageList, matrix, Composer } from '..';
 
 export default function ChatScreen({ goToScreen, currentRoom }) {
   const handleLongPress = message => {
@@ -12,7 +12,13 @@ export default function ChatScreen({ goToScreen, currentRoom }) {
   return (
     <SafeAreaView style={{ justifyContent: 'flex-end' }}>
       <Header goToScreen={goToScreen} />
-      <MessageList room={currentRoom} showReactions enableComposer onLongPress={handleLongPress} />
+      <MessageList
+        room={currentRoom}
+        showReactions
+        enableComposer={false}
+        onLongPress={handleLongPress}
+      />
+      <Composer room={currentRoom} />
     </SafeAreaView>
   );
 }

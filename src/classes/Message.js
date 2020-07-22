@@ -32,6 +32,7 @@ export default class Message {
           const roomEvent = roomEvents.find(event => event.getId() === eventId);
           if (roomEvent) {
             this._matrixEvent = roomEvent;
+            console.log('ROOM EVENT', roomEvent);
           } else if (matrixRoom.hasPendingEvent(eventId)) {
             const pendingEvents = matrixRoom.getPendingEvents();
             this._matrixEvent = pendingEvents.find(event => event.getId() === eventId);

@@ -89,10 +89,10 @@ export default function MessageList({
           // This margin is only needed on ios because ios uses "InputAccessoryView"
           // which is not supported on Android
           style={[Platform.OS === 'ios' ? { marginBottom: 45 } : {}, { height: '100%' }]}
-          ListHeaderComponent={() => (enableComposer ? <Composer room={room} /> : null)}
           {...flatListProps}
         />
       </KeyboardAvoidingView>
+      {enableComposer && <Composer room={room} />}
     </SafeAreaView>
   );
 }

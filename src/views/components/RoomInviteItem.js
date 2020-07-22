@@ -1,7 +1,6 @@
 import React from 'react';
 import { useObservableState } from 'observable-hooks';
 import { StyleSheet, TouchableHighlight, Image, View, Text } from 'react-native';
-import moment from 'moment';
 import Icon from './Icon';
 
 const avatarSize = 50;

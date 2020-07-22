@@ -1,16 +1,6 @@
-// import { useTheme } from '@ui-kitten/components';
-// import Color from 'color';
 import { useObservableState } from 'observable-hooks';
 import React from 'react';
-// import styled from 'styled-components/native';
-
-// import { getNameColor, isEmoji, isIos } from '../../../../utilities';
-// import users from '../../../user/userService';
-// import BubbleWrapper from './BubbleWrapper';
-// import Html from './Html';
-// import Reactions from './Reactions';
-// import SenderText from './SenderText';
-
+import { EventStatus } from 'matrix-js-sdk';
 import users from '../../../services/user';
 import { Text, TouchableHighlight, View } from 'react-native';
 import { SenderText, BubbleWrapper } from '../MessageItem';
@@ -19,6 +9,7 @@ import { isEmoji } from '../../../utilities/emojis';
 import Html from '../Html';
 import { colors } from '../../../constants';
 import Reactions from '../Reactions';
+import Icon from '../Icon';
 
 const debug = require('debug')('rnm:views:components:messageTypes:TextMessage');
 
@@ -70,8 +61,23 @@ export default function TextMessage({
                 { backgroundColor: isMe ? colors.blue400 : colors.gray300 },
                 reactions ? { alignSelf: isMe ? 'flex-end' : 'flex-start' } : {},
               ]}>
-              <View>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'flex-end',
+                  alignItems: 'flex-end',
+                  flexWrap: 'wrap',
+                }}>
                 <Html html={content?.html} isMe={isMe} />
+                {isMe && (
+                  <View style={{ marginLeft: 12, marginRight: -6 }}>
+                    <Icon
+                      name={status === EventStatus.SENDING ? 'circle' : 'check-circle'}
+                      size={16}
+                      color="#0f5499"
+                    />
+                  </View>
+                )}
               </View>
             </TouchableHighlight>
             {showReactions && reactions && (
