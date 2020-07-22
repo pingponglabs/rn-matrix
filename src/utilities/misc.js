@@ -12,3 +12,7 @@ export function htmlLinks(html) {
 export function htmlUserTags(html) {
   return html ? html.replace(urlRegex, '<a href="$&"></a>') : html;
 }
+
+export function toImageBuffer(data) {
+  return Buffer.from(data, 'base64');
+}

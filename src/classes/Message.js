@@ -38,7 +38,9 @@ export default class Message {
           }
         }
         if (!this._matrixEvent) {
-          throw Error(`No event in room ${roomId} with id ${eventId}`);
+          console.warn(`No event in room ${roomId} with id ${eventId}`);
+          return;
+          // throw Error(`No event in room ${roomId} with id ${eventId}`);
         }
       } else this._matrixEvent = event;
 

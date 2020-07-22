@@ -10,9 +10,9 @@ import matrixSdk, { EventTimeline, MemoryStore } from 'matrix-js-sdk';
 import { BehaviorSubject } from 'rxjs';
 import request from 'xmlhttp-request';
 import AsyncStorage from '@react-native-community/async-storage';
+import { toImageBuffer } from '../utilities/misc';
 
 // import i18n from '../../i18n';
-// import { toImageBuffer } from '../../utilities';
 // import SqlStore from './SqlStore';
 
 const debug = require('debug')('rnm:matrix.js');
@@ -151,6 +151,7 @@ class MatrixService {
         break;
       case 'ERROR':
         debug('A syncing error ocurred:', { state, prevState, data });
+        console.warn('A syncing error ocurred:', { state, prevState, data });
         this._isSynced$.next(false);
         this._error$.next(data);
         break;
@@ -215,17 +216,17 @@ class MatrixService {
   }
 
   async uploadImage(image) {
-    // try {
-    //   const url = await this._client.uploadContent(toImageBuffer(image.data), {
-    //     onlyContentUri: true,
-    //     name: image.fileName,
-    //     type: image.type,
-    //   });
-    //   return url;
-    // } catch (e) {
-    //   debug('Error uploading image:', e);
-    //   return null;
-    // }
+    try {
+      const url = await this._client.uploadContent(toImageBuffer(image.data), {
+        onlyContentUri: true,
+        name: image.fileName,
+        type: image.type,
+      });
+      return url;
+    } catch (e) {
+      debug('Error uploading image:', e);
+      return null;
+    }
   }
 }
 
