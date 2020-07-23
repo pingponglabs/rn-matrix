@@ -27,7 +27,7 @@ export default function RoomList({
   };
 
   const renderInviteRow = ({ item }) => {
-    return <RoomInviteItem room={item} onPress={onRowPress} />;
+    return <RoomInviteItem room={item} />;
   };
 
   if (!isReady || !isSynced) {
@@ -48,6 +48,7 @@ export default function RoomList({
     <FlatList
       data={chatList}
       renderItem={renderListItem ? renderListItem : renderRow}
+      keyExtractor={item => item.id}
       ListHeaderComponent={InviteList}
     />
   );
