@@ -75,7 +75,7 @@ export default function MessageList({
   }, [isLoading, messageList, room, typing]);
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{ justifyContent: 'flex-end' }}>
       <KeyboardAvoidingView enabled={Platform.OS === 'ios'} behavior="position">
         <FlatList
           keyboardDismissMode="on-drag"
