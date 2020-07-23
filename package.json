@@ -8,7 +8,7 @@
     "and": "react-native run-android",
     "ios": "react-native run-ios",
     "start": "react-native start",
-    "test": "echo \"No test specified\"",
+    "test": "jest",
     "lint": "eslint .",
     "pub": "./scripts/pub.sh",
     "postinstall": "./node_modules/.bin/rn-nodeify --install 'url,process,fs,events,buffer,crypto,stream,path,vm,util' --hack --yarn"

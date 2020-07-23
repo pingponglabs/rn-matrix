@@ -57,66 +57,87 @@ beforeEach(async () => {
 });
 
 test('counts number of end to end sessions', async () => {
-    await asyncCryptoStore.storeEndToEndSession('adevicekey', 'sess1', 'somedata', null);
-    await asyncCryptoStore.storeEndToEndSession('adevicekey', 'sess2', 'moredata', null);
+    await asyncCryptoStore.doTxn('', [], txn => {
+        asyncCryptoStore.storeEndToEndSession('adevicekey', 'sess1', 'somedata', txn);
+    });
 
-    return new Promise(resolve => {
-        asyncCryptoStore.countEndToEndSessions(null, count => {
+    await asyncCryptoStore.doTxn('', [], txn => {
+        asyncCryptoStore.storeEndToEndSession('adevicekey', 'sess2', 'moredata', txn);
+    });
+
+    await asyncCryptoStore.doTxn('', [], txn => {
+        asyncCryptoStore.countEndToEndSessions(txn, count => {
             expect(count).toEqual(2);
-            resolve();
         });
     });
 });
 
 test('stores & retrieves end to end sessions', async () => {
-    await asyncCryptoStore.storeEndToEndSession('adevicekey', 'sess1', 'somedata', null);
+    await asyncCryptoStore.doTxn('', [], txn => {
+        asyncCryptoStore.storeEndToEndSession('adevicekey', 'sess1', 'somedata', txn);
+    });
 
-    return new Promise(resolve => {
-        asyncCryptoStore.getEndToEndSession('adevicekey', 'sess1', null, sessionData => {
+    await asyncCryptoStore.doTxn('', [], txn => {
+        asyncCryptoStore.getEndToEndSession('adevicekey', 'sess1', txn, sessionData => {
             expect(sessionData).toEqual('somedata');
-            resolve();
         });
     });
 });
 
 test('stores & retrieves multiple end to end sessions', async () => {
-    await asyncCryptoStore.storeEndToEndSession('dev1', 'sess1', 'thisissess1', null);
-    await asyncCryptoStore.storeEndToEndSession('dev1', 'sess2', 'thisissess2', null);
-    await asyncCryptoStore.storeEndToEndSession('dev2', 'sess1', 'thisissess1dev2', null);
+    await asyncCryptoStore.doTxn('', [], txn => {
+        asyncCryptoStore.storeEndToEndSession('dev1', 'sess1', 'thisissess1', txn);
+        asyncCryptoStore.storeEndToEndSession('dev1', 'sess2', 'thisissess2', txn);
+        asyncCryptoStore.storeEndToEndSession('dev2', 'sess1', 'thisissess1dev2', txn);
+    });
 
-    await asyncCryptoStore.getEndToEndSessions('dev1', null, sessions => {
-        expect(sessions['sess1']).toEqual('thisissess1');
-        expect(sessions['sess2']).toEqual('thisissess2');
-        expect(Object.keys(sessions).length).toEqual(2);
+    await asyncCryptoStore.doTxn('', [], txn => {
+        asyncCryptoStore.getEndToEndSessions('dev1', txn, sessions => {
+            expect(sessions['sess1']).toEqual('thisissess1');
+            expect(sessions['sess2']).toEqual('thisissess2');
+            expect(Object.keys(sessions).length).toEqual(2);
+        });
     });
 });
 
 test('addEndToEndInboundGroupSession adds only the first', async () => {
-    await asyncCryptoStore.addEndToEndInboundGroupSession('senderkey1', 'sessid1', 'manydata', null);
-    await asyncCryptoStore.addEndToEndInboundGroupSession('senderkey1', 'sessid1', 'differentdata', null);
+    await asyncCryptoStore.doTxn('', [], txn => {
+        asyncCryptoStore.addEndToEndInboundGroupSession('senderkey1', 'sessid1', 'manydata', txn);
+        asyncCryptoStore.addEndToEndInboundGroupSession('senderkey1', 'sessid1', 'differentdata', txn);
+    });
 
-    await asyncCryptoStore.getEndToEndInboundGroupSession('senderkey1', 'sessid1', null, (sessiondata, withheld) => {
-        expect(sessiondata).toEqual('manydata');
+    await asyncCryptoStore.doTxn('', [], txn => {
+        asyncCryptoStore.getEndToEndInboundGroupSession('senderkey1', 'sessid1', txn, (sessiondata, withheld) => {
+            expect(sessiondata).toEqual('manydata');
+        });
     });
 });
 
 test('storeEndToEndInboundGroupSession overwrites', async () => {
-    await asyncCryptoStore.storeEndToEndInboundGroupSession('senderkey1', 'sessid1', 'manydata', null);
-    await asyncCryptoStore.storeEndToEndInboundGroupSession('senderkey1', 'sessid1', 'differentdata', null);
+    await asyncCryptoStore.doTxn('', [], txn => {
+        asyncCryptoStore.storeEndToEndInboundGroupSession('senderkey1', 'sessid1', 'manydata', txn);
+        asyncCryptoStore.storeEndToEndInboundGroupSession('senderkey1', 'sessid1', 'differentdata', txn);
+    });
 
-    await asyncCryptoStore.getEndToEndInboundGroupSession('senderkey1', 'sessid1', null, (sessiondata, withheld) => {
-        expect(sessiondata).toEqual('differentdata');
+    await asyncCryptoStore.doTxn('', [], txn => {
+        asyncCryptoStore.getEndToEndInboundGroupSession('senderkey1', 'sessid1', txn, (sessiondata, withheld) => {
+            expect(sessiondata).toEqual('differentdata');
+        });
     });
 });
 
 test('getAllEndToEndInboundGroupSessions gets all end to end sessions', async () => {
-    await asyncCryptoStore.storeEndToEndInboundGroupSession('senderkey1', 'sessid1', 'beep', null);
-    await asyncCryptoStore.storeEndToEndInboundGroupSession('senderkey1', 'sessid2', 'boop', null);
-    await asyncCryptoStore.storeEndToEndInboundGroupSession('senderkey2', 'sessid1', 'burp', null);
+    await asyncCryptoStore.doTxn('', [], txn => {
+        asyncCryptoStore.storeEndToEndInboundGroupSession('senderkey1', 'sessid1', 'beep', txn);
+        asyncCryptoStore.storeEndToEndInboundGroupSession('senderkey1', 'sessid2', 'boop', txn);
+        asyncCryptoStore.storeEndToEndInboundGroupSession('senderkey2', 'sessid1', 'burp', txn);
+    });
 
     const cb = jest.fn();
 
-    await asyncCryptoStore.getAllEndToEndInboundGroupSessions(null, cb);
+    await asyncCryptoStore.doTxn('', [], txn => {
+        asyncCryptoStore.getAllEndToEndInboundGroupSessions(txn, cb);
+    });
 
     expect(cb.mock.calls.length).toEqual(4);
     // technically these don't need to be in order
@@ -127,44 +148,64 @@ test('getAllEndToEndInboundGroupSessions gets all end to end sessions', async ()
 });
 
 test('end to end group session keys and values can contain slashes', async () => {
-    await asyncCryptoStore.storeEndToEndInboundGroupSession('this/that', 'here/there', 'now/then', null);
+    await asyncCryptoStore.doTxn('', [], txn => {
+        asyncCryptoStore.storeEndToEndInboundGroupSession('this/that', 'here/there', 'now/then', txn);
+    });
 
     const cb = jest.fn();
-    await asyncCryptoStore.getAllEndToEndInboundGroupSessions(null, cb);
+    await asyncCryptoStore.doTxn('', [], txn => {
+        asyncCryptoStore.getAllEndToEndInboundGroupSessions(txn, cb);
+    });
+
     expect(cb.mock.calls[0][0]).toEqual({senderKey: 'this/that', sessionId: 'here/there', sessionData: 'now/then'});
 
-    await asyncCryptoStore.getEndToEndInboundGroupSession('this/that', 'here/there', null, (sessiondata, withheld) => {
-        expect(sessiondata).toEqual('now/then');
+    await asyncCryptoStore.doTxn('', [], txn => {
+        asyncCryptoStore.getEndToEndInboundGroupSession('this/that', 'here/there', txn, (sessiondata, withheld) => {
+            expect(sessiondata).toEqual('now/then');
+        });
     });
 });
 
 test('stores witheld session data', async () => {
-    await asyncCryptoStore.storeEndToEndInboundGroupSession('senderkey1', 'sessid1', 'manydata', null);
-    await asyncCryptoStore.storeEndToEndInboundGroupSessionWithheld(
-        'senderkey1', 'sessid1', 'withheld_because_i_just_cant_even', null,
-    );
+    await asyncCryptoStore.doTxn('', [], txn => {
+        asyncCryptoStore.storeEndToEndInboundGroupSession('senderkey1', 'sessid1', 'manydata', txn);
+        asyncCryptoStore.storeEndToEndInboundGroupSessionWithheld(
+            'senderkey1', 'sessid1', 'withheld_because_i_just_cant_even', txn,
+        );
+    });
 
-    await asyncCryptoStore.getEndToEndInboundGroupSession('senderkey1', 'sessid1', null, (sessiondata, withheld) => {
-        expect(sessiondata).toEqual('manydata');
-        expect(withheld).toEqual('withheld_because_i_just_cant_even');
+    await asyncCryptoStore.doTxn('', [], txn => {
+        asyncCryptoStore.getEndToEndInboundGroupSession('senderkey1', 'sessid1', txn, (sessiondata, withheld) => {
+            expect(sessiondata).toEqual('manydata');
+            expect(withheld).toEqual('withheld_because_i_just_cant_even');
+        });
     });
 });
 
 test('stores device data', async () => {
     const theData = {data1: 'suchdata', data2: 'manydata'};
 
-    await asyncCryptoStore.storeEndToEndDeviceData(theData, null);
-    await asyncCryptoStore.getEndToEndDeviceData(null, devData => {
-        expect(devData).toEqual(theData);
+    await asyncCryptoStore.doTxn('', [], txn => {
+        asyncCryptoStore.storeEndToEndDeviceData(theData, txn);
+    });
+
+    await asyncCryptoStore.doTxn('', [], txn => {
+        asyncCryptoStore.getEndToEndDeviceData(txn, devData => {
+            expect(devData).toEqual(theData);
+        });
     });
 });
 
 test('stores end to end rooms', async () => {
-    await asyncCryptoStore.storeEndToEndRoom('5', {info: 'bleep'}, null);
-    await asyncCryptoStore.storeEndToEndRoom('101', {info: 'bloop'}, null);
+    await asyncCryptoStore.doTxn('', [], txn => {
+        asyncCryptoStore.storeEndToEndRoom('5', {info: 'bleep'}, txn);
+        asyncCryptoStore.storeEndToEndRoom('101', {info: 'bloop'}, txn);
+    });
 
     const cb = jest.fn();
-    await asyncCryptoStore.getEndToEndRooms(null, cb);
+    await asyncCryptoStore.doTxn('', [], txn => {
+        asyncCryptoStore.getEndToEndRooms(txn, cb);
+    });
 
     expect(cb.mock.calls[0][0]).toEqual({
         '5': {info: 'bleep'},
@@ -173,8 +214,10 @@ test('stores end to end rooms', async () => {
 });
 
 test('marks and unmarks sessions needing backup', async () => {
-    await asyncCryptoStore.storeEndToEndInboundGroupSession('bob', 'one', 'data', null);
-    await asyncCryptoStore.storeEndToEndInboundGroupSession('bob', 'two', 'data', null);
+    await asyncCryptoStore.doTxn('', [], txn => {
+        asyncCryptoStore.storeEndToEndInboundGroupSession('bob', 'one', 'data', txn);
+        asyncCryptoStore.storeEndToEndInboundGroupSession('bob', 'two', 'data', txn);
+    });
 
     {
         const numSessionsNeedingBackup = await asyncCryptoStore.countSessionsNeedingBackup();
@@ -213,37 +256,53 @@ test('marks and unmarks sessions needing backup', async () => {
 });
 
 test('stores & retrieves account', async () => {
-    await asyncCryptoStore.storeAccount(null, {thingy: 'thingamabob'});
+    await asyncCryptoStore.doTxn('', [], txn => {
+        asyncCryptoStore.storeAccount(txn, {thingy: 'thingamabob'});
+    });
 
     const cb = jest.fn();
-    await asyncCryptoStore.getAccount(null, cb);
+    await asyncCryptoStore.doTxn('', [], txn => {
+        asyncCryptoStore.getAccount(txn, cb);
+    });
     expect(cb.mock.calls[0][0]).toEqual({thingy: 'thingamabob'});
 });
 
 test('stores & retrieves cross signing keys', async () => {
-    await asyncCryptoStore.storeCrossSigningKeys(null, {thingy: 'thingamabob'});
+    await asyncCryptoStore.doTxn('', [], txn => {
+        asyncCryptoStore.storeCrossSigningKeys(txn, {thingy: 'thingamabob'});
+    });
 
     const cb = jest.fn();
-    await asyncCryptoStore.getCrossSigningKeys(null, cb);
+    await asyncCryptoStore.doTxn('', [], txn => {
+        asyncCryptoStore.getCrossSigningKeys(txn, cb);
+    });
     expect(cb.mock.calls[0][0]).toEqual({thingy: 'thingamabob'});
 });
 
 test('stores & retrieves secret store keys', async () => {
-    await asyncCryptoStore.storeSecretStorePrivateKey(null, 'thekey', 'thesecret');
+    await asyncCryptoStore.doTxn('', [], txn => {
+        asyncCryptoStore.storeSecretStorePrivateKey(txn, 'thekey', 'thesecret');
+    });
 
     const cb = jest.fn();
-    await asyncCryptoStore.getSecretStorePrivateKey(null, cb, 'thekey');
+    await asyncCryptoStore.doTxn('', [], txn => {
+        asyncCryptoStore.getSecretStorePrivateKey(txn, cb, 'thekey');
+    });
     expect(cb.mock.calls[0][0]).toEqual('thesecret');
 });
 
 test('deleteAllData deletes only E2E data', async () => {
-    await asyncCryptoStore.storeEndToEndSession('adevicekey', 'sess1', 'somedata', null);
+    await asyncCryptoStore.doTxn('', [], txn => {
+        asyncCryptoStore.storeEndToEndSession('adevicekey', 'sess1', 'somedata', txn);
+    });
     await MockAsyncStore.setItem('someOtherData', 'preciousData');
 
     await asyncCryptoStore.deleteAllData();
 
     const cb = jest.fn();
-    await asyncCryptoStore.getEndToEndSession('adevicekey', 'sess1', null, cb);
+    await asyncCryptoStore.doTxn('', [], txn => {
+        asyncCryptoStore.getEndToEndSession('adevicekey', 'sess1', txn, cb);
+    });
     expect(cb.mock.calls[0][0]).toEqual(null);
 
     const otherData = await MockAsyncStore.getItem('someOtherData');

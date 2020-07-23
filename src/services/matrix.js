@@ -40,7 +40,9 @@ const MATRIX_CLIENT_START_OPTIONS = {
     localStorage: AsyncStorage,
   }),
   cryptoStore: new AsyncCryptoStore(AsyncStorage),
-  sessionStore: {}, // js-sdk complains if this isn't supplied but it's only used for remembering a local trusted backup key
+  sessionStore: {
+    getLocalTrustedBackupPubKey: () => null,
+  }, // js-sdk complains if this isn't supplied but it's only used for remembering a local trusted backup key
 };
 
 class MatrixService {
@@ -103,7 +105,7 @@ class MatrixService {
     }
   }
 
-  async start() {
+  async start(useCrypto = false) {
     if (!this._client) {
       debug('start: no client created.');
       return null;
@@ -114,9 +116,10 @@ class MatrixService {
     }
 
     this._client.on('sync', this._onSyncEvent.bind(this));
-    //await Olm.init({get_random_values: generateSecureRandom});
-    await Olm.init();
-    await this._client.initCrypto();
+    if (useCrypto) {
+        await Olm.init();
+        await this._client.initCrypto();
+    }
     await this._client.startClient(MATRIX_CLIENT_START_OPTIONS);
     this._started = true;
     debug('Matrix client started');
