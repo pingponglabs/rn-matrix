@@ -36,12 +36,12 @@ export default function App() {
   };
 
   useEffect(() => {
-    matrix.createClient('http://localhost:8008', accessToken, '@phako4in6m:localhost', 'NLNCQYTFUD');
-    matrix.start(true);
+    matrix.createClient('https://matrix.ditto.chat', accessToken, '@test:ditto.chat');
+    matrix.start();
   }, []);
 
   return <SafeAreaView style={{ flex: 1 }}>{renderScreen()}</SafeAreaView>;
 }
 
 const accessToken =
-  'MDAxN2xvY2F0aW9uIGxvY2FsaG9zdAowMDEzaWRlbnRpZmllciBrZXkKMDAxMGNpZCBnZW4gPSAxCjAwMjhjaWQgdXNlcl9pZCA9IEBwaGFrbzRpbjZtOmxvY2FsaG9zdAowMDE2Y2lkIHR5cGUgPSBhY2Nlc3MKMDAyMWNpZCBub25jZSA9IFptV01JWiYmRU9JeVdpRmEKMDAyZnNpZ25hdHVyZSAlxhHpXhTi8wHyPuoGbZmaUnQYBVP1vgszR5gB9-GGvAo';
+  'MDAxOGxvY2F0aW9uIGRpdHRvLmNoYXQKMDAxM2lkZW50aWZpZXIga2V5CjAwMTBjaWQgZ2VuID0gMQowMDIzY2lkIHVzZXJfaWQgPSBAdGVzdDpkaXR0by5jaGF0CjAwMTZjaWQgdHlwZSA9IGFjY2VzcwowMDIxY2lkIG5vbmNlID0gI15AcS5ma1hSPXU9cCNvcAowMDJmc2lnbmF0dXJlIH-GEUwjVSH2j6UVg4s_96NTilmP4PD8TOL9zEj74kheCg';

@@ -21,7 +21,7 @@
     "events": "^1.0.0",
     "fbemitter": "^2.1.1",
     "i18next": "^19.4.5",
-    "matrix-js-sdk": "../matrix-js-sdk/",
+    "matrix-js-sdk": "^6.2.1",
     "metro-config": "^0.61.0",
     "moment": "^2.26.0",
     "observable-hooks": "^3.0.0-alpha.0",

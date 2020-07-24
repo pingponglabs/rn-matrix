@@ -228,17 +228,6 @@ class ChatService {
     }
   }
 
-  _handleEventDecryptedEvent(event) {
-    const roomId = event.getRoomId();
-    if (!roomId) return;
-
-    if (!this._syncList[roomId]) this._syncList[roomId] = {};
-    if (!this._syncList[roomId].messages) this._syncList[roomId].messages = {};
-    this._syncList[roomId].messages[event.getId()] = true;
-
-    InteractionManager.runAfterInteractions(this._syncChats.bind(this));
-  }
-
   _handleRoomMemberTypingEvent(event, matrixMember) {
     const roomId = matrixMember.roomId;
     if (!this._isChatDisplayed(roomId)) return;
@@ -275,9 +264,6 @@ class ChatService {
     matrix
       .getClient()
       .on('Room.timeline', (event, room) => this._handleRoomTimelineEvent(event, room));
-    matrix
-      .getClient()
-      .on('Event.decrypted', (event) => this._handleEventDecryptedEvent(event));
     matrix
       .getClient()
       .on('RoomMember.typing', (event, member) => this._handleRoomMemberTypingEvent(event, member));
