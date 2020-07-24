@@ -173,7 +173,7 @@ class AsyncCryptoStore {
   getAllEndToEndSessions(txn, func) {
     txn.wrap(async () => {
       const allKeys = this.asyncStorage.getAllKeys();
-      for (const k of allKeys.filter(k => k.startsWith(E2E_PREFIX + 'sessions/'))) {
+      for (const k of allKeys.filter(x => x.startsWith(E2E_PREFIX + 'sessions/'))) {
         const deviceKey = k.split('/')[1];
         const sessionId = k.split('/')[2];
         const sessionInfo = await this._getJsonItem(keyEndToEndSession(deviceKey, sessionId));
