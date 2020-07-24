@@ -74,27 +74,39 @@ test('counts number of end to end sessions', async () => {
 
 test('stores & retrieves end to end sessions', async () => {
     await asyncCryptoStore.doTxn('', [], txn => {
-        asyncCryptoStore.storeEndToEndSession('adevicekey', 'sess1', 'somedata', txn);
+        asyncCryptoStore.storeEndToEndSession('adevicekey', 'sess1', {session: 'somedata'}, txn);
     });
 
     await asyncCryptoStore.doTxn('', [], txn => {
         asyncCryptoStore.getEndToEndSession('adevicekey', 'sess1', txn, sessionData => {
-            expect(sessionData).toEqual('somedata');
+            expect(sessionData).toEqual({
+                deviceKey: 'adevicekey',
+                sessionId: 'sess1',
+                session: 'somedata',
+            });
         });
     });
 });
 
 test('stores & retrieves multiple end to end sessions', async () => {
     await asyncCryptoStore.doTxn('', [], txn => {
-        asyncCryptoStore.storeEndToEndSession('dev1', 'sess1', 'thisissess1', txn);
-        asyncCryptoStore.storeEndToEndSession('dev1', 'sess2', 'thisissess2', txn);
-        asyncCryptoStore.storeEndToEndSession('dev2', 'sess1', 'thisissess1dev2', txn);
+        asyncCryptoStore.storeEndToEndSession('dev1', 'sess1', {session: 'thisissess1'}, txn);
+        asyncCryptoStore.storeEndToEndSession('dev1', 'sess2', {session: 'thisissess2'}, txn);
+        asyncCryptoStore.storeEndToEndSession('dev2', 'sess1', {session: 'thisissess1dev2'}, txn);
     });
 
     await asyncCryptoStore.doTxn('', [], txn => {
         asyncCryptoStore.getEndToEndSessions('dev1', txn, sessions => {
-            expect(sessions['sess1']).toEqual('thisissess1');
-            expect(sessions['sess2']).toEqual('thisissess2');
+            expect(sessions['sess1']).toEqual({
+                deviceKey: 'dev1',
+                sessionId: 'sess1',
+                session: 'thisissess1',
+            });
+            expect(sessions['sess2']).toEqual({
+                deviceKey: 'dev1',
+                sessionId: 'sess2',
+                session: 'thisissess2',
+            });
             expect(Object.keys(sessions).length).toEqual(2);
         });
     });
@@ -103,6 +115,8 @@ test('stores & retrieves multiple end to end sessions', async () => {
 test('addEndToEndInboundGroupSession adds only the first', async () => {
     await asyncCryptoStore.doTxn('', [], txn => {
         asyncCryptoStore.addEndToEndInboundGroupSession('senderkey1', 'sessid1', 'manydata', txn);
+    });
+    await asyncCryptoStore.doTxn('', [], txn => {
         asyncCryptoStore.addEndToEndInboundGroupSession('senderkey1', 'sessid1', 'differentdata', txn);
     });
 
