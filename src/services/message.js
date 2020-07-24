@@ -69,7 +69,7 @@ class MessageService {
   // Helpers
   //* *******************************************************************************
 
-  async send(content, type, roomId) {
+  async send(content, type, roomId, eventId = null) {
     try {
       switch (type) {
         case 'm.text': {
@@ -93,6 +93,17 @@ class MessageService {
             },
             content.fileName
           );
+        }
+        case 'm.edit': {
+          return matrix.getClient().sendEvent(roomId, 'm.room.message', {
+            'm.new_content': { msgtype: 'm.text', body: content },
+            'm.relates_to': {
+              rel_type: 'm.replace',
+              event_id: eventId,
+            },
+            msgtype: 'm.text',
+            body: ` * ${content}`,
+          });
         }
         default:
           debug('Unhandled message type to send %s:', type, content);

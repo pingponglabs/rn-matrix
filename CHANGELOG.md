@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `setRoomName` on exported `matrix` module & `setName` on Chat class
 - `setAvatar` on the Chat class
 - Indicator for sending / sent on a message
+- `editMessage` method
 
 ### Changed
 
