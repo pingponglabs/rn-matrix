@@ -1,6 +1,6 @@
 {
   "name": "rn-matrix",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "A React Native library for Matrix Chat",
   "author": "Annie Elequin <annie@elequin.io>",
   "main": "index.js",
