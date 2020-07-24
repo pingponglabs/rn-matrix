@@ -88,7 +88,7 @@ class MatrixService {
   // ********************************************************************************
   // Actions
   // ********************************************************************************
-  async createClient(baseUrl, accessToken, userId) {
+  async createClient(baseUrl, accessToken, userId, deviceId) {
     if (this._client) {
       if (this._client.baseUrl === baseUrl && this._client.getAccessToken() === accessToken) {
         debug('Client exists already, ignoring…');
@@ -100,6 +100,7 @@ class MatrixService {
         baseUrl,
         accessToken,
         userId,
+        deviceId,
         ...MATRIX_CLIENT_START_OPTIONS,
       });
     }
@@ -121,6 +122,7 @@ class MatrixService {
         await this._client.initCrypto();
     }
     await this._client.startClient(MATRIX_CLIENT_START_OPTIONS);
+    this._client.setGlobalErrorOnUnknownDevices(false);
     this._started = true;
     debug('Matrix client started');
   }
