@@ -23,11 +23,11 @@ export default function RoomList({
   const isSynced = useObservableState(matrix.isSynced$());
 
   const renderRow = ({ item }) => {
-    return <RoomListItem room={item} onPress={onRowPress} />;
+    return <RoomListItem key={item.id} room={item} onPress={onRowPress} />;
   };
 
   const renderInviteRow = ({ item }) => {
-    return <RoomInviteItem room={item} />;
+    return <RoomInviteItem key={item.id} room={item} />;
   };
 
   if (!isReady || !isSynced) {
