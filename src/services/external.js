@@ -4,12 +4,12 @@ import matrix from './matrix';
 const debug = require('debug')('rnm:services:external.js');
 
 class ExternalService {
-  async createClient(baseUrl, accessToken, userId) {
-    return matrix.createClient(baseUrl, accessToken, userId);
+  async createClient(baseUrl, accessToken, userId, deviceId) {
+    return matrix.createClient(baseUrl, accessToken, userId, deviceId);
   }
 
-  async start() {
-    return matrix.start();
+  async start(useCrypto) {
+    return matrix.start(useCrypto);
   }
 
   deleteMessage(message) {
