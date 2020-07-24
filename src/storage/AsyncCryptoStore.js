@@ -33,6 +33,13 @@ function keyEndToEndSession(deviceKey, sessionKey) {
     );
 }
 
+function keyPrefixEndToEndSession(deviceKey) {
+    return (
+        E2E_PREFIX + 'sessions/' +
+        encodeURIComponent(deviceKey) + '/'
+    );
+}
+
 function keyEndToEndSessionProblems(deviceKey, sessionKey) {
     return (
         E2E_PREFIX + 'session.problems/' +
@@ -79,8 +86,11 @@ class AsyncTxn {
     constructor() {
         this._opsInProgress = 0;
         this._resolveFunc = null;
-        this._prom = new Promise(resolve => {
+        this._rejectFunc = null;
+        this._error = null;
+        this._prom = new Promise((resolve , reject)=> {
             this._resolveFunc = resolve;
+            this._rejectFunc = reject;
         });
     }
 
@@ -92,6 +102,8 @@ class AsyncTxn {
         this._startOperation();
         try {
             await f();
+        } catch (e) {
+            this._error = e;
         } finally {
             this._finishOperation();
         }
@@ -106,8 +118,9 @@ class AsyncTxn {
 
     _finishOperation() {
         if(--this._opsInProgress === 0) {
-            this._resolveFunc();
+            this._error ? this._rejectFunc(this._error) : this._resolveFunc();
             this._resolveFunc = null;
+            this._rejectFunc = null;
         }
     }
 }
@@ -153,8 +166,8 @@ class AsyncCryptoStore {
         txn.wrap(async () => {
             const allKeys = await this.asyncStorage.getAllKeys();
             const sessions = {};
-            for (const k of allKeys.filter(k => k.startsWith(E2E_PREFIX + 'sessions/' + deviceKey + '/'))) {
-                const sessionId = k.split('/')[2];
+            for (const k of allKeys.filter(k => k.startsWith(keyPrefixEndToEndSession(deviceKey)))) {
+                const sessionId = decodeURIComponent(k.split('/')[2]);
                 sessions[sessionId] = await this._getJsonItem(keyEndToEndSession(deviceKey, sessionId));
             }
 
@@ -178,7 +191,12 @@ class AsyncCryptoStore {
     storeEndToEndSession(deviceKey, sessionId, sessionInfo, txn) {
         txn.wrap(() => {
             return this._setJsonItem(
-                keyEndToEndSession(deviceKey, sessionId), sessionInfo,
+                keyEndToEndSession(deviceKey, sessionId), {
+                    deviceKey,
+                    sessionId,
+                    session: sessionInfo.session,
+                    lastReceivedMessageTs: sessionInfo.lastReceivedMessageTs,
+                }
             );
         });
     }
