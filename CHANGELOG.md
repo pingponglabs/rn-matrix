@@ -5,16 +5,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.0.10 - Unreleased]
+## [0.0.11 - Unreleased]
 
 ### Added
-
-- `getDirectMessage` method (to see if you already have a DM with a person)
-- `enableComposer` prop for MessageList
-- `setRoomName` on exported `matrix` module & `setName` on Chat class
-- `setAvatar` on the Chat class
-- Indicator for sending / sent on a message
-- `editMessage` method
 
 ### Changed
 
@@ -25,6 +18,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 ### Security
+
+## [0.0.10 - 7/23/2020]
+
+### Added
+
+- `getDirectMessage` method (to see if you already have a DM with a person)
+- `enableComposer` prop for MessageList
+- `setRoomName` on exported `matrix` module & `setName` on Chat class
+- `setAvatar` on the Chat class
+- Indicator for sending / sent on a message
+- `editMessage` method
 
 ## [0.0.9 - 7/16/2020]
 
