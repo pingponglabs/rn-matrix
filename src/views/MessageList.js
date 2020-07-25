@@ -14,6 +14,7 @@ import Composer from './Composer';
 
 type Props = {
   room: Chat,
+  keyboardOffset: number,
   showReactions?: boolean,
   enableComposer?: boolean,
   onPress?: Function | null,
@@ -24,6 +25,7 @@ type Props = {
 
 export default function MessageList({
   room,
+  keyboardOffset,
   showReactions = false,
   enableComposer = false,
   onPress = null,
@@ -75,24 +77,35 @@ export default function MessageList({
   }, [isLoading, messageList, room, typing]);
 
   return (
-    <SafeAreaView style={{ justifyContent: 'flex-end' }}>
-      <KeyboardAvoidingView enabled={Platform.OS === 'ios'} behavior="position">
-        <FlatList
-          keyboardDismissMode="on-drag"
-          keyboardShouldPersistTaps="handled"
-          inverted
-          data={timeline}
-          renderItem={renderMessageItem}
-          onEndReached={handleEndReached}
-          onEndReachedThreshold={0.5}
-          keyExtractor={item => item}
-          // This margin is only needed on ios because ios uses "InputAccessoryView"
-          // which is not supported on Android
-          style={[Platform.OS === 'ios' ? { marginBottom: 45 } : {}, { height: '100%' }]}
-          {...flatListProps}
-        />
-      </KeyboardAvoidingView>
-      {enableComposer && <Composer room={room} />}
-    </SafeAreaView>
+    <Wrapper offset={keyboardOffset}>
+      <FlatList
+        keyboardDismissMode="on-drag"
+        keyboardShouldPersistTaps="handled"
+        inverted
+        data={timeline}
+        renderItem={renderMessageItem}
+        onEndReached={handleEndReached}
+        onEndReachedThreshold={0.5}
+        keyExtractor={item => item}
+        style={{ paddingTop: 6 }}
+        {...flatListProps}
+      />
+      <Composer room={room} />
+    </Wrapper>
   );
 }
+
+const Wrapper = ({ offset, children }) => {
+  const style = {
+    flex: 1,
+  };
+  return Platform.OS === 'ios' ? (
+    <SafeAreaView style={style}>
+      <KeyboardAvoidingView style={style} behavior="padding" keyboardVerticalOffset={offset}>
+        {children}
+      </KeyboardAvoidingView>
+    </SafeAreaView>
+  ) : (
+    <View style={style}>{children}</View>
+  );
+};

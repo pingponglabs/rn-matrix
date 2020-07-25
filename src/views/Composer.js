@@ -1,14 +1,5 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  TouchableHighlight,
-  InputAccessoryView,
-  Platform,
-  KeyboardAvoidingView,
-} from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableHighlight } from 'react-native';
 import { useObservableState } from 'observable-hooks';
 import { colors } from '../constants';
 
@@ -30,26 +21,7 @@ export default function Composer({ room }) {
     setValue('');
   };
 
-  return Platform.OS === 'ios' ? (
-    <InputAccessoryView>
-      <View style={styles.wrapper}>
-        <TextInput
-          style={styles.input}
-          multiline
-          placeholder={`Message ${roomName}...`}
-          value={value}
-          onChangeText={setValue}
-        />
-        <TouchableHighlight
-          disabled={value.length === 0}
-          onPress={handleSend}
-          underlayColor="#ddd"
-          style={styles.sendButton}>
-          <Text style={[styles.sendText, value.length === 0 ? { color: '#888' } : {}]}>Send</Text>
-        </TouchableHighlight>
-      </View>
-    </InputAccessoryView>
-  ) : (
+  return (
     <View style={styles.wrapper}>
       <TextInput
         style={styles.input}

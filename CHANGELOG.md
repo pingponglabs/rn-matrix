@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - keys needed for invite list
+- our Composer woes (Composer hiding messages in the list)
 
 ### Security
 
