@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Mostly handled way to edit messages with the built in composer
+
 ### Changed
 
 ### Deprecated

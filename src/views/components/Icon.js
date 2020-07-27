@@ -2,12 +2,12 @@ import React from 'react';
 import * as Icons from '../../assets/icons';
 
 type Props = {
-  name: IconNames,
-  size: number,
-  color: string,
+  name?: IconNames,
+  size?: number,
+  color?: string,
 };
 
-export default function Icon({ name, size = 24, color = '#000' }: Props) {
+export default function Icon({ name = 'check', size = 24, color = '#000' }: Props) {
   const props = {
     width: size,
     height: size,

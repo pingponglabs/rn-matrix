@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import MessageItem from './components/MessageItem';
 import Chat from '../classes/Chat';
+import Message from '../classes/Message';
 import Composer from './Composer';
 
 type Props = {
@@ -17,6 +18,9 @@ type Props = {
   keyboardOffset: number,
   showReactions?: boolean,
   enableComposer?: boolean,
+  isEditing?: Boolean,
+  onEndEdit?: Function,
+  selectedMessage?: Message,
   onPress?: Function | null,
   onLongPress?: Function | null,
   renderTypingIndicator?: Function | null,
@@ -28,6 +32,9 @@ export default function MessageList({
   keyboardOffset,
   showReactions = false,
   enableComposer = false,
+  isEditing = false,
+  onEndEdit = null,
+  selectedMessage = null,
   onPress = null,
   onLongPress = null,
   renderTypingIndicator = null,
@@ -90,7 +97,14 @@ export default function MessageList({
         style={{ paddingTop: 6 }}
         {...flatListProps}
       />
-      <Composer room={room} />
+      {enableComposer && (
+        <Composer
+          room={room}
+          isEditing={isEditing}
+          selectedMessage={selectedMessage}
+          onEndEdit={onEndEdit}
+        />
+      )}
     </Wrapper>
   );
 }
