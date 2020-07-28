@@ -5,7 +5,43 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.0.10 - Unreleased]
+## [0.0.13 - Unreleased]
+
+### Added
+
+- Mostly handled way to edit messages with the built in composer
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+- accidental console.log
+
+### Fixed
+
+- keys needed for invite list
+- our Composer woes (Composer hiding messages in the list)
+
+### Security
+
+## [0.0.12 - 7/26/2020]
+
+### Added
+
+- Mostly handled way to edit messages with the built in composer
+
+### Removed
+
+- accidental console.log
+
+### Fixed
+
+- keys needed for invite list
+- our Composer woes (Composer hiding messages in the list)
+
+## [0.0.11 - 7/23/2020]
 
 ### Added
 
@@ -14,16 +50,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `setRoomName` on exported `matrix` module & `setName` on Chat class
 - `setAvatar` on the Chat class
 - Indicator for sending / sent on a message
-
-### Changed
-
-### Deprecated
-
-### Removed
-
-### Fixed
-
-### Security
+- `editMessage` method
 
 ## [0.0.9 - 7/16/2020]
 

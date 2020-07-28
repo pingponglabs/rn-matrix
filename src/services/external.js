@@ -1,5 +1,6 @@
 import chats from './chat';
 import matrix from './matrix';
+import messages from './message';
 
 const debug = require('debug')('rnm:services:external.js');
 
@@ -58,6 +59,10 @@ class ExternalService {
   setRoomName(roomId: string, name: string) {
     const chat = chats.getChatById(roomId);
     chat.setName(name);
+  }
+
+  editMessage(roomId, messageId, newMessageContent) {
+    messages.send(newMessageContent, 'm.edit', roomId, messageId);
   }
 }
 

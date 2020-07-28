@@ -1,6 +1,6 @@
 {
   "name": "rn-matrix",
-  "version": "0.0.9",
+  "version": "0.0.12",
   "description": "A React Native library for Matrix Chat",
   "author": "Annie Elequin <annie@elequin.io>",
   "main": "index.js",
@@ -50,6 +50,10 @@
     "webview": "^0.0.1",
     "whatwg-url": "^8.1.0",
     "xmlhttp-request": "^0.4.1"
+  },
+  "peerDependencies": {
+    "react": "16.11.0",
+    "react-native": "0.62.2"
   },
   "devDependencies": {
     "@babel/core": "^7.6.2",
