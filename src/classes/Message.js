@@ -382,7 +382,7 @@ export default class Message {
       case 'm.room.name':
       case 'm.room.avatar':
       case 'm.room.topic':
-      // case 'm.room.encryption':
+      case 'm.room.encryption':
       case 'm.room.guest_access':
       case 'm.room.history_visibility':
       case 'm.room.join_rules':
