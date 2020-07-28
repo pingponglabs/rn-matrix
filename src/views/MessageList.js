@@ -10,12 +10,17 @@ import {
 } from 'react-native';
 import MessageItem from './components/MessageItem';
 import Chat from '../classes/Chat';
+import Message from '../classes/Message';
 import Composer from './Composer';
 
 type Props = {
   room: Chat,
+  keyboardOffset: number,
   showReactions?: boolean,
   enableComposer?: boolean,
+  isEditing?: Boolean,
+  onEndEdit?: Function,
+  selectedMessage?: Message,
   onPress?: Function | null,
   onLongPress?: Function | null,
   renderTypingIndicator?: Function | null,
@@ -24,8 +29,12 @@ type Props = {
 
 export default function MessageList({
   room,
+  keyboardOffset,
   showReactions = false,
   enableComposer = false,
+  isEditing = false,
+  onEndEdit = null,
+  selectedMessage = null,
   onPress = null,
   onLongPress = null,
   renderTypingIndicator = null,
@@ -75,24 +84,42 @@ export default function MessageList({
   }, [isLoading, messageList, room, typing]);
 
   return (
-    <SafeAreaView>
-      <KeyboardAvoidingView enabled={Platform.OS === 'ios'} behavior="position">
-        <FlatList
-          keyboardDismissMode="on-drag"
-          keyboardShouldPersistTaps="handled"
-          inverted
-          data={timeline}
-          renderItem={renderMessageItem}
-          onEndReached={handleEndReached}
-          onEndReachedThreshold={0.5}
-          keyExtractor={item => item}
-          // This margin is only needed on ios because ios uses "InputAccessoryView"
-          // which is not supported on Android
-          style={[Platform.OS === 'ios' ? { marginBottom: 45 } : {}, { height: '100%' }]}
-          {...flatListProps}
+    <Wrapper offset={keyboardOffset}>
+      <FlatList
+        keyboardDismissMode="on-drag"
+        keyboardShouldPersistTaps="handled"
+        inverted
+        data={timeline}
+        renderItem={renderMessageItem}
+        onEndReached={handleEndReached}
+        onEndReachedThreshold={0.5}
+        keyExtractor={item => item}
+        style={{ paddingTop: 6 }}
+        {...flatListProps}
+      />
+      {enableComposer && (
+        <Composer
+          room={room}
+          isEditing={isEditing}
+          selectedMessage={selectedMessage}
+          onEndEdit={onEndEdit}
         />
-      </KeyboardAvoidingView>
-      {enableComposer && <Composer room={room} />}
-    </SafeAreaView>
+      )}
+    </Wrapper>
   );
 }
+
+const Wrapper = ({ offset, children }) => {
+  const style = {
+    flex: 1,
+  };
+  return Platform.OS === 'ios' ? (
+    <SafeAreaView style={style}>
+      <KeyboardAvoidingView style={style} behavior="padding" keyboardVerticalOffset={offset}>
+        {children}
+      </KeyboardAvoidingView>
+    </SafeAreaView>
+  ) : (
+    <View style={style}>{children}</View>
+  );
+};

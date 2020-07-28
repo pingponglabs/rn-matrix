@@ -2,6 +2,7 @@ import React from 'react';
 import { useObservableState } from 'observable-hooks';
 import { StyleSheet, TouchableHighlight, Image, View, Text } from 'react-native';
 import moment from 'moment';
+import Icon from './Icon';
 
 const avatarSize = 50;
 
@@ -30,6 +31,12 @@ export default function RoomListItem({ room, onPress }) {
         <View style={{ flex: 1, marginRight: 12 }}>
           <View style={styles.textWrapper}>
             <Text style={styles.title} numberOfLines={1}>
+              {room.isEncrypted() && (
+                <>
+                  <Icon name="lock" color="#888" size={18} />
+                  &nbsp;
+                </>
+              )}
               {name}
             </Text>
             <Text style={{ color: '#444' }}>{moment(snippet?.timestamp).fromNow()}</Text>

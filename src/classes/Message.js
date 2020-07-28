@@ -32,7 +32,6 @@ export default class Message {
           const roomEvent = roomEvents.find(event => event.getId() === eventId);
           if (roomEvent) {
             this._matrixEvent = roomEvent;
-            console.log('ROOM EVENT', roomEvent);
           } else if (matrixRoom.hasPendingEvent(eventId)) {
             const pendingEvents = matrixRoom.getPendingEvents();
             this._matrixEvent = pendingEvents.find(event => event.getId() === eventId);
@@ -45,9 +44,9 @@ export default class Message {
         }
       } else this._matrixEvent = event;
 
-      this.type = Message.getType(this._matrixEvent);
       this.sender = users.getUserById(this._matrixEvent.getSender());
       this.timestamp = this._matrixEvent.getTs();
+      this.type$ = new BehaviorSubject(Message.getType(this._matrixEvent));
       this.status$ = new BehaviorSubject(this._matrixEvent.getAssociatedStatus());
       this.redacted$ = new BehaviorSubject(this._matrixEvent.isRedacted());
       this.content$ = new BehaviorSubject(this._getContent());
@@ -58,9 +57,9 @@ export default class Message {
       this.pending = true;
       this._localEvent = event;
 
-      this.type = event.type;
       this.sender = users.getMyUser();
       this.timestamp = event.timestamp;
+      this.type$ = new BehaviorSubject(event.type);
       this.status$ = new BehaviorSubject(event.status);
       this.redacted$ = new BehaviorSubject(null);
       this.content$ = new BehaviorSubject(this._getContent());
@@ -115,6 +114,10 @@ export default class Message {
 
   update(changes) {
     if (!this.pending) {
+      if (this.type$.getValue() === 'm.room.encrypted') {
+        this.type$.next(Message.getType(this._matrixEvent));
+      }
+
       const newRedacted = this._matrixEvent.isRedacted();
       if (this.redacted$.getValue() !== newRedacted) this.redacted$.next(newRedacted);
 
@@ -152,7 +155,7 @@ export default class Message {
     }
     const sender = this.sender.name$.getValue();
 
-    switch (this.type) {
+    switch (this.type$ ? this.type$.getValue() : null) {
       // TextMessage && NoticeMessage
       case 'm.text':
       case 'm.notice':
@@ -215,10 +218,11 @@ export default class Message {
       case 'm.sticker':
         content.text = i18n.t('messages:content.stickersNotSupport');
         break;
-      case 'm.room.encrypted':
-        content.text = i18n.t('messages:content.encryptNotSupport');
-        break;
       // Supported
+      case 'm.room.encrypted':
+      case 'm.bad.encrypted':
+        content.text = i18n.t('messages:content.badEncryption');
+        break;
       case 'm.emote':
         content.text = `${sender} ${content.raw.body}`;
         break;
@@ -286,7 +290,7 @@ export default class Message {
         content.text = i18n.t('messages:content.chatSettingsChanged', { sender: sender });
         break;
       default:
-        content.text = i18n.t('messages:content.typeNotSupport', { type: this.type });
+        content.text = i18n.t('messages:content.typeNotSupport', { type: this.type$.getValue() });
         break;
     }
     return content;
@@ -324,6 +328,10 @@ export default class Message {
     return this._matrixEvent;
   }
 
+  setMatrixEvent(event) {
+    this._matrixEvent = event;
+  }
+
   static getType(matrixEvent) {
     const type = matrixEvent.getType();
     if (matrixEvent.isRedacted()) {
@@ -337,9 +345,9 @@ export default class Message {
 
   static isBubbleMessage(message) {
     if (
-      Message.isTextMessage(message.type) ||
-      Message.isImageMessage(message.type) ||
-      Message.isNoticeMessage(message.type)
+      Message.isTextMessage(message.type$.getValue()) ||
+      Message.isImageMessage(message.type$.getValue()) ||
+      Message.isNoticeMessage(message.type$.getValue())
     ) {
       return true;
     }
@@ -361,7 +369,7 @@ export default class Message {
     // To debug unhandled types
     switch (type) {
       default:
-        debug('Unhandled matrix event type "%s"', type, matrixEvent);
+        // debug('Unhandled matrix event type "%s"', type, matrixEvent);
         return true;
     }
   }
@@ -374,7 +382,7 @@ export default class Message {
       case 'm.room.name':
       case 'm.room.avatar':
       case 'm.room.topic':
-      case 'm.room.encryption':
+      // case 'm.room.encryption':
       case 'm.room.guest_access':
       case 'm.room.history_visibility':
       case 'm.room.join_rules':

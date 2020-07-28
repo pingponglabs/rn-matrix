@@ -8,6 +8,7 @@ import { View, Text, ActivityIndicator } from 'react-native';
 import ImageMessage from './messageTypes/ImageMessage';
 import TextMessage from './messageTypes/TextMessage';
 import { TypingAnimation } from 'react-native-typing-animation';
+import { useObservableState } from 'observable-hooks';
 
 // const debug = require('debug')('rnm:scenes:chat:message:MessageItem')
 
@@ -58,13 +59,15 @@ export default function MessageItem({
   const nextSame = isSameSender(message, nextMessage);
   const props = { ...otherProps, message, prevSame, nextSame };
 
-  if (Message.isTextMessage(message.type)) {
+  const messageType = useObservableState(message.type$);
+
+  if (Message.isTextMessage(messageType)) {
     return <TextMessage {...props} />;
   }
-  if (Message.isImageMessage(message.type)) {
+  if (Message.isImageMessage(messageType)) {
     return <ImageMessage {...props} />;
   }
-  if (Message.isNoticeMessage(message.type)) {
+  if (Message.isNoticeMessage(messageType)) {
     return <NoticeMessage {...props} />;
   }
   return <EventMessage {...props} />;

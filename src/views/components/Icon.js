@@ -1,17 +1,20 @@
 import React from 'react';
+import { ViewStyle } from 'react-native';
 import * as Icons from '../../assets/icons';
 
 type Props = {
   name: IconNames,
-  size: number,
-  color: string,
+  size?: number,
+  color?: string,
+  style?: ViewStyle,
 };
 
-export default function Icon({ name, size = 24, color = '#000' }: Props) {
+export default function Icon({ name, size = 24, color = '#000', style = {} }: Props) {
   const props = {
     width: size,
     height: size,
     fill: color,
+    style,
   };
   switch (name) {
     case 'check':
@@ -22,9 +25,11 @@ export default function Icon({ name, size = 24, color = '#000' }: Props) {
       return <Icons.Circle {...props} />;
     case 'close':
       return <Icons.Close {...props} />;
+    case 'lock':
+      return <Icons.Lock {...props} />;
     default:
       return <Icons.Check {...props} />;
   }
 }
 
-type IconNames = 'check' | 'check-circle' | 'circle' | 'close';
+type IconNames = 'check' | 'check-circle' | 'circle' | 'close' | 'lock';

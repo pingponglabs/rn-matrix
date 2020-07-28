@@ -10,15 +10,14 @@ export default function ChatScreen({ goToScreen, currentRoom }) {
   };
 
   return (
-    <SafeAreaView style={{ justifyContent: 'flex-end' }}>
+    <SafeAreaView style={{ flex: 1 }}>
       <Header goToScreen={goToScreen} />
       <MessageList
         room={currentRoom}
-        showReactions
-        enableComposer={false}
+        enableComposer
         onLongPress={handleLongPress}
+        keyboardOffset={50}
       />
-      <Composer room={currentRoom} />
     </SafeAreaView>
   );
 }

@@ -50,6 +50,7 @@
       "chatDescriptionChanged": "{{sender}} changed the chat description",
       "chatSettingsChanged": "{{sender}} changed the chat settings",
       "encryptNotSupport": "Ditto does not support encrypted messages yet",
+      "badEncryption": "** Unable to decrypt **",
       "locationSharingNotSupport": "Ditto does not support location sharing yet",
       "fileSharingNotSupport": "Ditto does not support file sharing yet",
       "audioNotSupport": "Ditto does not support audio files yet",
@@ -60,7 +61,7 @@
       "thirdPartyInvite": "{{sender}} sent a third party invite"
     }
   },
-  "settings":{
+  "settings": {
     "chooseAvatarLabel": "Choose avatar",
     "title": "Settings",
     "displayNameInputPlaceholder": "Set display name",

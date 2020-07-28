@@ -27,7 +27,7 @@ export default function RoomList({
   };
 
   const renderInviteRow = ({ item }) => {
-    return <RoomInviteItem room={item} onPress={onRowPress} />;
+    return <RoomInviteItem key={item.id} room={item} onPress={onRowPress} />;
   };
 
   if (!isReady || !isSynced) {

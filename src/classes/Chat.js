@@ -251,6 +251,10 @@ export default class Chat {
     return members;
   }
 
+  isEncrypted() {
+    return matrix.getClient().isRoomEncrypted(this.id);
+  }
+
   //* *******************************************************************************
   // Actions
   //* *******************************************************************************
