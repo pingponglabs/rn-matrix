@@ -10,6 +10,8 @@ import matrixSdk, { EventTimeline, MemoryStore } from 'matrix-js-sdk';
 import { BehaviorSubject } from 'rxjs';
 import request from 'xmlhttp-request';
 import AsyncStorage from '@react-native-community/async-storage';
+import AsyncCryptoStore from '../storage/AsyncCryptoStore';
+import Olm from 'olm/olm_legacy';
 import { toImageBuffer } from '../utilities/misc';
 
 // import i18n from '../../i18n';
@@ -37,6 +39,10 @@ const MATRIX_CLIENT_START_OPTIONS = {
   store: new MemoryStore({
     localStorage: AsyncStorage,
   }),
+  cryptoStore: new AsyncCryptoStore(AsyncStorage),
+  sessionStore: {
+    getLocalTrustedBackupPubKey: () => null,
+  }, // js-sdk complains if this isn't supplied but it's only used for remembering a local trusted backup key
 };
 
 class MatrixService {
@@ -82,7 +88,7 @@ class MatrixService {
   // ********************************************************************************
   // Actions
   // ********************************************************************************
-  async createClient(baseUrl, accessToken, userId) {
+  async createClient(baseUrl, accessToken, userId, deviceId) {
     if (this._client) {
       if (this._client.baseUrl === baseUrl && this._client.getAccessToken() === accessToken) {
         debug('Client exists already, ignoring…');
@@ -94,12 +100,13 @@ class MatrixService {
         baseUrl,
         accessToken,
         userId,
+        deviceId,
         ...MATRIX_CLIENT_START_OPTIONS,
       });
     }
   }
 
-  async start() {
+  async start(useCrypto = false) {
     if (!this._client) {
       debug('start: no client created.');
       return null;
@@ -110,7 +117,12 @@ class MatrixService {
     }
 
     this._client.on('sync', this._onSyncEvent.bind(this));
-    this._client.startClient(MATRIX_CLIENT_START_OPTIONS);
+    if (useCrypto) {
+        await Olm.init();
+        await this._client.initCrypto();
+    }
+    await this._client.startClient(MATRIX_CLIENT_START_OPTIONS);
+    this._client.setGlobalErrorOnUnknownDevices(false);
     this._started = true;
     debug('Matrix client started');
   }

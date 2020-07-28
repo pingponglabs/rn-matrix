@@ -2,6 +2,8 @@
  * @format
  */
 
+import './shim';
+
 // Uncomment lines 7-14 to run Example App
 
 // import { AppRegistry } from 'react-native';

@@ -244,6 +244,15 @@ class ChatService {
     this._syncList[roomId].state = true;
   }
 
+  _handleEventDecryptedEvent(event, error) {
+    if (!error) {
+      const decryptedMessage = messages.getMessageById(event.getId(), event.getRoomId(), event);
+      decryptedMessage.setMatrixEvent(event);
+      decryptedMessage.update();
+      this.updateLists(true);
+    }
+  }
+
   _isChatDisplayed(chat) {
     if (this._opened === 'all') return true;
     if (this._opened === chat) return true;
@@ -270,6 +279,9 @@ class ChatService {
     matrix
       .getClient()
       .on('RoomState.events', (event, roomState) => this._handleRoomStateEvent(event, roomState));
+    matrix
+      .getClient()
+      .on('Event.decrypted', (event, error) => this._handleEventDecryptedEvent(event, error));
 
     matrix.getClient().on('sync', state => {
       if (['PREPARED', 'SYNCING'].includes(state)) {

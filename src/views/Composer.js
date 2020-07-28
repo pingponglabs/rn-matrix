@@ -5,7 +5,12 @@ import { colors } from '../constants';
 import Icon from './components/Icon';
 import externalService from '../services/external';
 
-export default function Composer({ room, isEditing, onEndEdit, selectedMessage }) {
+export default function Composer({
+  room,
+  isEditing = false,
+  onEndEdit = () => {},
+  selectedMessage = null,
+}) {
   const [value, setValue] = useState('');
 
   const textInputRef = useRef(null);
@@ -31,7 +36,6 @@ export default function Composer({ room, isEditing, onEndEdit, selectedMessage }
 
   useEffect(() => {
     if (isEditing && selectedMessage) {
-      console.log(selectedMessage.content$.getValue());
       setValue(selectedMessage.content$.getValue().text);
       textInputRef.current.focus();
     }
@@ -72,6 +76,9 @@ export default function Composer({ room, isEditing, onEndEdit, selectedMessage }
         </View>
       )}
       <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
+        {room.isEncrypted() && (
+          <Icon name="lock" color="#888" style={{ marginVertical: 10, marginHorizontal: 4 }} />
+        )}
         <TextInput
           ref={textInputRef}
           style={styles.input}
