@@ -8,7 +8,8 @@
     "and": "react-native run-android",
     "ios": "react-native run-ios",
     "start": "react-native start",
-    "test": "jest",
+    "test": "echo 'no tests'",
+    "run-test": "jest",
     "lint": "eslint .",
     "pub": "./scripts/pub.sh"
   },
