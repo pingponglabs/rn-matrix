@@ -2,12 +2,21 @@ import React from 'react';
 import { useObservableState } from 'observable-hooks';
 import { StyleSheet, TouchableHighlight, Image, View, Text } from 'react-native';
 import Icon from './Icon';
+import chatService from '../../services/chat';
 
 const avatarSize = 50;
 
 export default function RoomInviteItem({ room }) {
   const name = useObservableState(room.name$);
   const avatar = useObservableState(room.avatar$);
+
+  const joinRoom = () => {
+    chatService.joinRoom(room.id);
+  };
+
+  const rejectInvite = () => {
+    chatService.leaveRoom(room.id);
+  };
 
   return (
     <TouchableHighlight underlayColor="#ddd">
@@ -27,8 +36,8 @@ export default function RoomInviteItem({ room }) {
               {name}
             </Text>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <ResponseButton onPress={() => {}} />
-              <ResponseButton accept onPress={() => {}} />
+              <ResponseButton onPress={rejectInvite} />
+              <ResponseButton accept onPress={joinRoom} />
             </View>
           </View>
         </View>

@@ -103,6 +103,7 @@ class MatrixService {
         deviceId,
         ...MATRIX_CLIENT_START_OPTIONS,
       });
+      return this._client;
     }
   }
 
@@ -118,8 +119,8 @@ class MatrixService {
 
     this._client.on('sync', this._onSyncEvent.bind(this));
     if (useCrypto) {
-        await Olm.init();
-        await this._client.initCrypto();
+      await Olm.init();
+      await this._client.initCrypto();
     }
     await this._client.startClient(MATRIX_CLIENT_START_OPTIONS);
     this._client.setGlobalErrorOnUnknownDevices(false);

@@ -338,7 +338,10 @@ export default class Chat {
     for (const pendingMessageId of this._pending) {
       const pendingMessage = messages.getMessageById(pendingMessageId, this.id);
       if (pendingMessage.status$.getValue() === MessageStatus.NOT_UPLOADED) {
-        await this.sendMessage(pendingMessage.content$.getValue().raw, pendingMessage.type);
+        await this.sendMessage(
+          pendingMessage.content$.getValue().raw,
+          pendingMessage.type$.getValue()
+        );
       }
     }
   }

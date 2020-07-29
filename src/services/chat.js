@@ -67,6 +67,14 @@ class ChatService {
     return this._chats.all[roomId];
   }
 
+  joinRoom(roomId) {
+    matrix.getClient().joinRoom(roomId);
+  }
+
+  leaveRoom(roomId) {
+    matrix.getClient().leave(roomId);
+  }
+
   //* *******************************************************************************
   // Data
   //* *******************************************************************************
@@ -97,7 +105,7 @@ class ChatService {
         }
         if (matrixRoom.hasMembershipState(me.id, 'invite')) {
           invites.push(chat);
-        } else {
+        } else if (matrixRoom.hasMembershipState(me.id, 'join')) {
           chats.push(chat);
           if (chat.isDirect$.getValue()) directChats.push(chat);
           else groupChats.push(chat);

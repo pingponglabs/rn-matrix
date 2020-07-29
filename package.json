@@ -10,8 +10,7 @@
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint .",
-    "pub": "./scripts/pub.sh",
-    "postinstall": "./node_modules/.bin/rn-nodeify --install 'url,process,fs,events,buffer,crypto,stream,path,vm,util' --hack --yarn"
+    "pub": "./scripts/pub.sh"
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.11.0",

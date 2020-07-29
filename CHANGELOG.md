@@ -5,11 +5,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.0.13 - Unreleased]
+## [0.0.14 - Unreleased]
 
 ### Added
-
-- Mostly handled way to edit messages with the built in composer
 
 ### Changed
 
@@ -17,14 +15,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
-- accidental console.log
-
 ### Fixed
 
-- keys needed for invite list
-- our Composer woes (Composer hiding messages in the list)
-
 ### Security
+
+## [0.0.13 - Unreleased]
+
+### Added
+
+- End to end encryption!
+- added "getClient" method
+- added "joinRoom" method
+- added "leaveRoom" method
+- added "rejectInvite" method
+
+### Changed
+
+- the buttons on the invite row work now
 
 ## [0.0.12 - 7/26/2020]
 

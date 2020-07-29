@@ -42,6 +42,18 @@ class ExternalService {
     return chats.getChatById(roomId);
   }
 
+  joinRoom(roomIdOrAlias: string) {
+    chats.joinRoom(roomIdOrAlias);
+  }
+
+  leaveRoom(roomId: string) {
+    chats.leaveRoom(roomId);
+  }
+
+  rejectInvite(roomId: string) {
+    chats.leaveRoom(roomId);
+  }
+
   getDirectMessage(userId: string) {
     let directMessage = null;
     const joinedChats = chats.getChats().getValue();
