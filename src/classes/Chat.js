@@ -327,6 +327,10 @@ export default class Chat {
     return messages.send(content, type, this.id);
   }
 
+  sendReply(relatedMessage, message) {
+    return messages.sendReply(this.id, relatedMessage, message);
+  }
+
   async sendPendingEvents() {
     const matrixPendingEvents = this._matrixRoom.getPendingEvents();
     for (const pendingEvent of matrixPendingEvents) {

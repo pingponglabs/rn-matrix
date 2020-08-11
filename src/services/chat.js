@@ -255,9 +255,11 @@ class ChatService {
   _handleEventDecryptedEvent(event, error) {
     if (!error) {
       const decryptedMessage = messages.getMessageById(event.getId(), event.getRoomId(), event);
-      decryptedMessage.setMatrixEvent(event);
-      decryptedMessage.update();
-      this.updateLists(true);
+      if (decryptedMessage) {
+        decryptedMessage.setMatrixEvent(event);
+        decryptedMessage.update();
+        this.updateLists(true);
+      }
     }
   }
 

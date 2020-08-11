@@ -20,9 +20,12 @@ type Props = {
   enableComposer?: boolean,
   isEditing?: Boolean,
   onEndEdit?: Function,
+  enableReplies?: Boolean,
+  onCancelReply?: Function,
   selectedMessage?: Message,
   onPress?: Function | null,
   onLongPress?: Function | null,
+  onSwipe?: Function | null,
   renderTypingIndicator?: Function | null,
   flatListProps?: FlatListProps,
 };
@@ -34,9 +37,12 @@ export default function MessageList({
   enableComposer = false,
   isEditing = false,
   onEndEdit = null,
+  enableReplies = false,
+  onCancelReply = () => {},
   selectedMessage = null,
   onPress = null,
   onLongPress = null,
+  onSwipe = null,
   renderTypingIndicator = null,
   flatListProps = null,
 }: Props) {
@@ -63,6 +69,7 @@ export default function MessageList({
         nextMessageId={messageList[index - 1] ? messageList[index - 1] : null}
         onPress={onPress}
         onLongPress={onLongPress}
+        onSwipe={onSwipe}
         renderTypingIndicator={renderTypingIndicator}
         showReactions={showReactions}
       />
@@ -103,6 +110,8 @@ export default function MessageList({
           isEditing={isEditing}
           selectedMessage={selectedMessage}
           onEndEdit={onEndEdit}
+          onCancelReply={onCancelReply}
+          enableReplies={enableReplies}
         />
       )}
     </Wrapper>

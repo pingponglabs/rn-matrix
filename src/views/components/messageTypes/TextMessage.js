@@ -19,6 +19,7 @@ export default function TextMessage({
   nextSame,
   onPress,
   onLongPress,
+  onSwipe,
   showReactions,
 }) {
   const myUser = users.getMyUser();
@@ -38,11 +39,12 @@ export default function TextMessage({
 
   const _onLongPress = () => onLongPress(message);
   const _onPress = () => onPress(message);
+  const _onSwipe = () => onSwipe(message);
 
   if (!content?.html) return null;
   return (
     <>
-      <BubbleWrapper isMe={isMe} status={status}>
+      <BubbleWrapper isMe={isMe} status={status} onSwipe={onSwipe ? _onSwipe : null}>
         {isEmoji(content?.text) ? (
           <Emoji style={!isIos() ? { fontFamily: 'NotoColorEmoji' } : {}} isMe={isMe} {...props}>
             {content.text}

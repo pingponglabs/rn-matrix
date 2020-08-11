@@ -1,12 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, SafeAreaView } from 'react-native';
 import { screens } from './App';
-import { MessageList, matrix, Composer } from '..';
+import { MessageList, matrix } from '..';
 
 export default function ChatScreen({ goToScreen, currentRoom }) {
+  const [selectedMessage, setSelectedMessage] = useState(null);
+
   const handleLongPress = message => {
-    console.log('message', message);
+    // console.log('message', message);
     // matrix.deleteMessage(message);
+  };
+
+  const handlePress = message => {
+    setSelectedMessage(message);
+  };
+
+  const handleSwipe = message => {
+    setSelectedMessage(message);
   };
 
   return (
@@ -15,7 +25,12 @@ export default function ChatScreen({ goToScreen, currentRoom }) {
       <MessageList
         room={currentRoom}
         enableComposer
+        enableReplies
+        onCancelReply={() => setSelectedMessage(null)}
+        selectedMessage={selectedMessage}
+        onPress={handlePress}
         onLongPress={handleLongPress}
+        onSwipe={handleSwipe}
         keyboardOffset={50}
       />
     </SafeAreaView>

@@ -105,6 +105,25 @@ class MessageService {
             body: ` * ${content}`,
           });
         }
+        case 'm.in_reply_to': {
+          return matrix.getClient().sendEvent(roomId, 'm.room.message', {
+            'm.relates_to': {
+              'm.in_reply_to': {
+                event_id: eventId,
+              },
+            },
+            msgtype: 'm.text',
+            body: `> <${content.relatedMessage.sender.id}> ${
+              content.relatedMessage.content$.getValue().html
+            }\n\n${content.text}`,
+            format: 'org.matrix.custom.html',
+            formatted_body: `<mx-reply><blockquote><a href=\"https://matrix.to/#/${roomId}/${eventId}\">In reply to</a><a href=\"https://matrix.to/#/${
+              content.relatedMessage.sender.id
+            }\">${content.relatedMessage.sender.id}</a><br />${
+              content.relatedMessage.content$.getValue().html
+            }</blockquote></mx-reply>${content.text}`,
+          });
+        }
         default:
           debug('Unhandled message type to send %s:', type, content);
           return;
@@ -112,6 +131,10 @@ class MessageService {
     } catch (e) {
       debug('Error sending message:', { roomId, type, content }, e);
     }
+  }
+
+  sendReply(roomId, relatedMessage, message) {
+    this.send({ relatedMessage, text: message }, 'm.in_reply_to', roomId, relatedMessage.id);
   }
 
   sortByLastSent(messages) {

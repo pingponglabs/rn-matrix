@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Swipe to reply
+
 ### Changed
 
 ### Deprecated
@@ -19,7 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
-## [0.0.14 - Unreleased]
+## [0.0.14 - 7/28/2020]
 
 ### Added
 

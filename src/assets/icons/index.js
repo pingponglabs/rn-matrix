@@ -3,5 +3,6 @@ import CheckCircle from './icon-check-circle.svg';
 import Circle from './icon-circle.svg';
 import Close from './icon-close.svg';
 import Lock from './icon-lock.svg';
+import Reply from './icon-reply.svg';
 
-export { Check, CheckCircle, Circle, Close, Lock };
+export { Check, CheckCircle, Circle, Close, Lock, Reply };

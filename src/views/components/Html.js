@@ -81,7 +81,7 @@ const getHtmlStyles = ({ isMe }) => ({
       borderLeftWidth: 3,
       paddingLeft: 10,
       marginVertical: 10,
-      opacity: 0.8,
+      opacity: 0.75,
     },
     a: {
       color: isMe ? '#fff' : '#222',

@@ -4,12 +4,15 @@ import { useObservableState } from 'observable-hooks';
 import { colors } from '../constants';
 import Icon from './components/Icon';
 import externalService from '../services/external';
+import messageService from '../services/message';
 
 export default function Composer({
   room,
   isEditing = false,
   onEndEdit = () => {},
   selectedMessage = null,
+  enableReplies = false,
+  onCancelReply = () => {},
 }) {
   const [value, setValue] = useState('');
 
@@ -18,13 +21,22 @@ export default function Composer({
   const roomName = useObservableState(room.name$);
 
   const handleSend = () => {
-    room.sendMessage(value, 'm.text');
+    if (enableReplies && !isEditing && selectedMessage) {
+      room.sendReply(selectedMessage, value);
+      onCancelReply();
+    } else {
+      room.sendMessage(value, 'm.text');
+    }
     setValue('');
   };
 
-  const cancelEdit = () => {
+  const cancel = () => {
     setValue('');
-    onEndEdit();
+    if (isEditing) {
+      onEndEdit();
+    } else {
+      onCancelReply();
+    }
   };
 
   const confirmEdit = () => {
@@ -49,26 +61,24 @@ export default function Composer({
     );
   }
 
+  console.log(selectedMessage);
+
   return (
     <View style={styles.wrapper}>
-      {isEditing && (
-        <View
-          style={{
-            margin: 6,
-            padding: 6,
-            borderLeftWidth: 4,
-            borderLeftColor: 'dodgerblue',
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}>
+      {(isEditing || (!isEditing && selectedMessage && enableReplies)) && (
+        <View style={styles.activeMessageBar}>
           <View>
-            <Text style={{ color: 'dodgerblue', fontWeight: 'bold' }}>Editing</Text>
+            <Text style={{ color: 'dodgerblue', fontWeight: 'bold' }}>
+              {isEditing ? 'Editing' : `Replying to ${selectedMessage.sender.name$.getValue()}`}
+            </Text>
             <Text numberOfLines={1} style={{ color: 'gray' }}>
               {selectedMessage.content$?.getValue()?.text}
             </Text>
           </View>
-          <TouchableHighlight onPress={cancelEdit} underlayColor="#ddd">
+          <TouchableHighlight
+            onPress={cancel}
+            underlayColor="#ddd"
+            style={{ padding: 6, borderRadius: 50 }}>
             <View>
               <Icon name="close" color="gray" />
             </View>
@@ -108,6 +118,15 @@ const styles = StyleSheet.create({
     borderTopColor: colors.gray300,
     backgroundColor: colors.white,
     padding: 6,
+  },
+  activeMessageBar: {
+    margin: 6,
+    padding: 6,
+    borderLeftWidth: 4,
+    borderLeftColor: 'dodgerblue',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   input: {
     padding: 12,

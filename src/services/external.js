@@ -76,6 +76,10 @@ class ExternalService {
   editMessage(roomId, messageId, newMessageContent) {
     messages.send(newMessageContent, 'm.edit', roomId, messageId);
   }
+
+  sendReply(roomId, relatedMessage, messageText) {
+    messages.sendReply(roomId, relatedMessage, messageText);
+  }
 }
 
 const external = new ExternalService();

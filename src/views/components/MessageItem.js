@@ -1,5 +1,4 @@
 import React from 'react';
-
 import Message from '../../classes/Message';
 import messages from '../../services/message';
 import EventMessage from './messageTypes/EventMessage';
@@ -9,6 +8,8 @@ import ImageMessage from './messageTypes/ImageMessage';
 import TextMessage from './messageTypes/TextMessage';
 import { TypingAnimation } from 'react-native-typing-animation';
 import { useObservableState } from 'observable-hooks';
+import Swipeable from 'react-native-swipeable';
+import Icon from './Icon';
 
 // const debug = require('debug')('rnm:scenes:chat:message:MessageItem')
 
@@ -73,16 +74,40 @@ export default function MessageItem({
   return <EventMessage {...props} />;
 }
 
-export function BubbleWrapper({ children, isMe, status }) {
-  return (
-    <View
-      style={{
-        marginHorizontal: 12,
-        flexDirection: isMe ? 'row-reverse' : 'row',
-      }}>
-      {children}
-    </View>
-  );
+export function BubbleWrapper({ children, isMe, status, onSwipe = null }) {
+  const rightButtons = [
+    <View style={{ height: '100%', justifyContent: 'center' }}>
+      <Icon name="reply" size={30} color="#666" />
+    </View>,
+  ];
+
+  if (!onSwipe) {
+    return (
+      <View
+        style={{
+          marginHorizontal: 12,
+          flexDirection: isMe ? 'row-reverse' : 'row',
+        }}>
+        {children}
+      </View>
+    );
+  } else {
+    return (
+      <Swipeable
+        rightButtons={rightButtons}
+        rightActionActivationDistance={10}
+        rightButtonWidth={0}
+        onRightActionRelease={onSwipe}>
+        <View
+          style={{
+            marginHorizontal: 12,
+            flexDirection: isMe ? 'row-reverse' : 'row',
+          }}>
+          {children}
+        </View>
+      </Swipeable>
+    );
+  }
 }
 
 export function SenderText({ isMe, children }) {
