@@ -10,6 +10,7 @@ import Html from '../Html';
 import { colors } from '../../../constants';
 import Reactions from '../Reactions';
 import Icon from '../Icon';
+import ReadReceipts from '../ReadReceipts';
 
 const debug = require('debug')('rnm:views:components:messageTypes:TextMessage');
 
@@ -27,6 +28,7 @@ export default function TextMessage({
   const senderName = useObservableState(message.sender.name$);
   const status = useObservableState(message.status$);
   const reactions = useObservableState(message.reactions$);
+  const receipts = useObservableState(message.receipts$);
   const props = { prevSame, nextSame };
   const isMe = myUser.id === message.sender.id;
 
@@ -51,37 +53,42 @@ export default function TextMessage({
           </Emoji>
         ) : (
           <View style={viewStyle(nextSame)}>
-            <TouchableHighlight
-              {...props}
-              underlayColor={isMe ? colors.blue600 : colors.gray400}
-              onPress={onPress ? _onPress : null}
-              onLongPress={onLongPress ? _onLongPress : null}
-              delayPressIn={0}
-              delayLongPress={200}
-              style={[
-                bubbleStyles(isMe, prevSame, nextSame),
-                { backgroundColor: isMe ? colors.blue400 : colors.gray300 },
-                reactions ? { alignSelf: isMe ? 'flex-end' : 'flex-start' } : {},
-              ]}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'flex-end',
-                  alignItems: 'flex-end',
-                  flexWrap: 'wrap',
-                }}>
-                <Html html={content?.html} isMe={isMe} />
-                {isMe && (
-                  <View style={{ marginLeft: 12, marginRight: -6 }}>
-                    <Icon
-                      name={status === EventStatus.SENDING ? 'circle' : 'check-circle'}
-                      size={16}
-                      color="#0f5499"
-                    />
-                  </View>
-                )}
-              </View>
-            </TouchableHighlight>
+            <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
+              {isMe && <ReadReceipts receipts={receipts} isMe />}
+              <TouchableHighlight
+                {...props}
+                underlayColor={isMe ? colors.blue600 : colors.gray400}
+                onPress={onPress ? _onPress : null}
+                onLongPress={onLongPress ? _onLongPress : null}
+                delayPressIn={0}
+                delayLongPress={200}
+                style={[
+                  bubbleStyles(isMe, prevSame, nextSame),
+                  { backgroundColor: isMe ? colors.blue400 : colors.gray300 },
+                  reactions ? { alignSelf: isMe ? 'flex-end' : 'flex-start' } : {},
+                ]}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'flex-end',
+                    alignItems: 'flex-end',
+                    flexWrap: 'wrap',
+                  }}>
+                  <Html html={content?.html} isMe={isMe} />
+                  {isMe && (
+                    <View style={{ marginLeft: 12, marginRight: -6 }}>
+                      <Icon
+                        name={status === EventStatus.SENDING ? 'circle' : 'check-circle'}
+                        size={16}
+                        color="#0f5499"
+                      />
+                    </View>
+                  )}
+                </View>
+              </TouchableHighlight>
+              {!isMe && <ReadReceipts receipts={receipts} />}
+            </View>
+
             {showReactions && reactions && (
               <Reactions
                 reactions={reactions}

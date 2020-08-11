@@ -19,6 +19,7 @@ type Props = {
   showReactions?: boolean,
   enableComposer?: boolean,
   isEditing?: Boolean,
+  isReplying?: Boolean,
   onEndEdit?: Function,
   enableReplies?: Boolean,
   onCancelReply?: Function,
@@ -36,6 +37,7 @@ export default function MessageList({
   showReactions = false,
   enableComposer = false,
   isEditing = false,
+  isReplying = false,
   onEndEdit = null,
   enableReplies = false,
   onCancelReply = () => {},
@@ -108,6 +110,7 @@ export default function MessageList({
         <Composer
           room={room}
           isEditing={isEditing}
+          isReplying={isReplying}
           selectedMessage={selectedMessage}
           onEndEdit={onEndEdit}
           onCancelReply={onCancelReply}

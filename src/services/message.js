@@ -106,6 +106,11 @@ class MessageService {
           });
         }
         case 'm.in_reply_to': {
+          let htmlWithoutPreviousReply = content.relatedMessage.content$.getValue().html;
+          const indexOf = htmlWithoutPreviousReply.lastIndexOf('</mx-reply>');
+          if (indexOf >= 0) {
+            htmlWithoutPreviousReply = htmlWithoutPreviousReply.slice(indexOf + 11);
+          }
           return matrix.getClient().sendEvent(roomId, 'm.room.message', {
             'm.relates_to': {
               'm.in_reply_to': {
@@ -113,15 +118,15 @@ class MessageService {
               },
             },
             msgtype: 'm.text',
-            body: `> <${content.relatedMessage.sender.id}> ${
-              content.relatedMessage.content$.getValue().html
-            }\n\n${content.text}`,
+            body: `> <${content.relatedMessage.sender.id}> ${htmlWithoutPreviousReply}\n\n${
+              content.text
+            }`,
             format: 'org.matrix.custom.html',
             formatted_body: `<mx-reply><blockquote><a href=\"https://matrix.to/#/${roomId}/${eventId}\">In reply to</a><a href=\"https://matrix.to/#/${
               content.relatedMessage.sender.id
-            }\">${content.relatedMessage.sender.id}</a><br />${
-              content.relatedMessage.content$.getValue().html
-            }</blockquote></mx-reply>${content.text}`,
+            }\">${
+              content.relatedMessage.sender.id
+            }</a><br />${htmlWithoutPreviousReply}</blockquote></mx-reply>${content.text}`,
           });
         }
         default:

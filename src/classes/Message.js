@@ -51,6 +51,7 @@ export default class Message {
       this.redacted$ = new BehaviorSubject(this._matrixEvent.isRedacted());
       this.content$ = new BehaviorSubject(this._getContent());
       this.reactions$ = new BehaviorSubject(this._getReactions());
+      this.receipts$ = new BehaviorSubject(this._getReceipts());
     } else {
       if (!event) throw Error(`All local messages should have an event (${this.id})`);
 
@@ -134,6 +135,11 @@ export default class Message {
       const newReactions = this._getReactions();
       if (!isEqual(this.reactions$.getValue(), newReactions)) {
         this.reactions$.next(newReactions);
+      }
+
+      const newReceipts = this._getReceipts();
+      if (!isEqual(this.receipts$.getValue(), newReceipts)) {
+        this.receipts$.next(newReceipts);
       }
     } else {
       if (changes.status && this.status$.getValue() !== changes.status) {
@@ -321,6 +327,19 @@ export default class Message {
     }
   }
 
+  _getReceipts() {
+    const matrixRoom = matrix.getClient().getRoom(this.roomId);
+    const receipts = matrixRoom.getReceiptsForEvent(this._matrixEvent);
+    receipts.forEach(receipt => {
+      const user = users.getUserById(receipt.userId);
+      const avatar = user.avatar$.getValue();
+      const avatarUrl = matrix.getImageUrl(avatar, 20, 20);
+      receipt.avatar = avatarUrl;
+      receipt.name = user.name$.getValue();
+    });
+    return receipts;
+  }
+
   //* *******************************************************************************
   // Helpers
   //* *******************************************************************************
@@ -345,9 +364,9 @@ export default class Message {
 
   static isBubbleMessage(message) {
     if (
-      Message.isTextMessage(message.type$.getValue()) ||
-      Message.isImageMessage(message.type$.getValue()) ||
-      Message.isNoticeMessage(message.type$.getValue())
+      Message.isTextMessage(message.type$?.getValue()) ||
+      Message.isImageMessage(message.type$?.getValue()) ||
+      Message.isNoticeMessage(message.type$?.getValue())
     ) {
       return true;
     }

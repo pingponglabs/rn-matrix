@@ -25,12 +25,12 @@ export default function ChatScreen({ goToScreen, currentRoom }) {
       <MessageList
         room={currentRoom}
         enableComposer
-        enableReplies
+        // enableReplies
         onCancelReply={() => setSelectedMessage(null)}
         selectedMessage={selectedMessage}
         onPress={handlePress}
         onLongPress={handleLongPress}
-        onSwipe={handleSwipe}
+        // onSwipe={handleSwipe}
         keyboardOffset={50}
       />
     </SafeAreaView>

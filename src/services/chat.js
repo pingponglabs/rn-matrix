@@ -203,6 +203,10 @@ class ChatService {
     const roomId = matrixRoom.roomId;
     if (!this._isChatDisplayed(roomId)) return;
 
+    Object.keys(event.getContent()).forEach(messageId => {
+      messages.updateMessage(messageId, matrixRoom.roomId);
+    });
+
     if (this._chats.all[roomId] && this._chats.all[roomId].isDirect$.getValue()) {
       if (!this._syncList[roomId]) this._syncList[roomId] = {};
       this._syncList[roomId].receipt = true;

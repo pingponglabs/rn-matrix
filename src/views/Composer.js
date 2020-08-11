@@ -9,6 +9,7 @@ import messageService from '../services/message';
 export default function Composer({
   room,
   isEditing = false,
+  isReplying = false,
   onEndEdit = () => {},
   selectedMessage = null,
   enableReplies = false,
@@ -21,7 +22,7 @@ export default function Composer({
   const roomName = useObservableState(room.name$);
 
   const handleSend = () => {
-    if (enableReplies && !isEditing && selectedMessage) {
+    if (enableReplies && isReplying && selectedMessage && !isEditing) {
       room.sendReply(selectedMessage, value);
       onCancelReply();
     } else {
@@ -61,30 +62,29 @@ export default function Composer({
     );
   }
 
-  console.log(selectedMessage);
-
   return (
     <View style={styles.wrapper}>
-      {(isEditing || (!isEditing && selectedMessage && enableReplies)) && (
-        <View style={styles.activeMessageBar}>
-          <View>
-            <Text style={{ color: 'dodgerblue', fontWeight: 'bold' }}>
-              {isEditing ? 'Editing' : `Replying to ${selectedMessage.sender.name$.getValue()}`}
-            </Text>
-            <Text numberOfLines={1} style={{ color: 'gray' }}>
-              {selectedMessage.content$?.getValue()?.text}
-            </Text>
-          </View>
-          <TouchableHighlight
-            onPress={cancel}
-            underlayColor="#ddd"
-            style={{ padding: 6, borderRadius: 50 }}>
+      {selectedMessage &&
+        ((isEditing && !isReplying) || (!isEditing && isReplying && enableReplies)) && (
+          <View style={styles.activeMessageBar}>
             <View>
-              <Icon name="close" color="gray" />
+              <Text style={{ color: 'dodgerblue', fontWeight: 'bold' }}>
+                {isEditing ? 'Editing' : `Replying to ${selectedMessage.sender.name$.getValue()}`}
+              </Text>
+              <Text numberOfLines={1} style={{ color: 'gray' }}>
+                {selectedMessage.content$?.getValue()?.text}
+              </Text>
             </View>
-          </TouchableHighlight>
-        </View>
-      )}
+            <TouchableHighlight
+              onPress={cancel}
+              underlayColor="#ddd"
+              style={{ padding: 6, borderRadius: 50 }}>
+              <View>
+                <Icon name="close" color="gray" />
+              </View>
+            </TouchableHighlight>
+          </View>
+        )}
       <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
         {room.isEncrypted() && (
           <Icon name="lock" color="#888" style={{ marginVertical: 10, marginHorizontal: 4 }} />
