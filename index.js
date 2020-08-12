@@ -2,17 +2,17 @@
  * @format
  */
 
-import './shim';
-
 // Uncomment lines 7-14 to run Example App
 
-import { AppRegistry } from 'react-native';
-import { name as appName } from './app.json';
-import App from './ExampleApp/App';
+// import './shim';
 
-console.disableYellowBox = true;
+// import { AppRegistry } from 'react-native';
+// import { name as appName } from './app.json';
+// import App from './ExampleApp/App';
 
-AppRegistry.registerComponent(appName, () => App);
+// console.disableYellowBox = true;
+
+// AppRegistry.registerComponent(appName, () => App);
 
 //********************************************************************************
 // NPM Module
