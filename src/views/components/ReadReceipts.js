@@ -11,10 +11,16 @@ export default function ReadReceipts({ receipts, isMe = false }) {
         .filter((r) => r.userId !== user.id)
         .map((r) => {
           if (r.avatar) {
-            return <Image source={{ uri: r.avatar }} style={[styles.circle, isMeStyle(isMe)]} />;
+            return (
+              <Image
+                key={r.userId}
+                source={{ uri: r.avatar }}
+                style={[styles.circle, isMeStyle(isMe)]}
+              />
+            );
           } else {
             return (
-              <View style={[styles.circle, isMeStyle(isMe)]}>
+              <View key={r.userId} style={[styles.circle, isMeStyle(isMe)]}>
                 <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 12 }}>
                   {r.name?.charAt(0) === '@'
                     ? r.name?.charAt(1)?.toUpperCase()

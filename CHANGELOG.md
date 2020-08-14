@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- sending image messages!
+- WIP: rendering video messages
+
 ### Changed
 
 ### Deprecated
@@ -16,6 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 ### Fixed
+
+- needed keys on read receipts
 
 ### Security
 

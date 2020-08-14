@@ -213,12 +213,36 @@ export default class Message {
       case 'm.audio':
         content.text = i18n.t('messages:content.audioNotSupport');
         break;
+      // Video Message
       case 'm.video':
-        // todo: localize
         console.log(content);
+        // todo: localize
         content.text = `${sender} has sent a video`;
-        content.url = matrix.getImageUrl(content.url, 300, 100);
-        // content.text = i18n.t('messages:content.videoFilesNotSupport');
+        if (this.pending) {
+          //
+        } else {
+          content.full = {
+            height: content.raw.info.h,
+            width: content.raw.info.w,
+          };
+          content.thumb = {
+            url: matrix.getImageUrl(
+              content.raw.info.thumbnail_url,
+              THUMBNAIL_MAX_SIZE,
+              THUMBNAIL_MAX_SIZE
+            ),
+          };
+          content.type = content.raw.info.mimetype;
+          content.url = matrix.getImageUrl(content.raw.url);
+        }
+        const { height, width } = content.full;
+        if (width > height) {
+          content.thumb.height = (height * THUMBNAIL_MAX_SIZE) / width;
+          content.thumb.width = THUMBNAIL_MAX_SIZE;
+        } else {
+          content.thumb.height = THUMBNAIL_MAX_SIZE;
+          content.thumb.width = (width * THUMBNAIL_MAX_SIZE) / height;
+        }
         break;
       case 'm.file':
         content.text = i18n.t('messages:content.fileSharingNotSupport');
