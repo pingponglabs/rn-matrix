@@ -5,6 +5,7 @@ import { colors } from '../constants';
 import Icon from './components/Icon';
 import messages from '../services/message';
 import ImagePicker from 'react-native-image-picker';
+import DocumentPicker from 'react-native-document-picker';
 
 export default function Composer({
   room,
@@ -59,8 +60,16 @@ export default function Composer({
     };
     ImagePicker.launchImageLibrary(options, async (response) => {
       if (response.didCancel) return;
-      console.log('response', response);
-      // room.sendMessage(response, 'm.image');
+      room.sendMessage(response, 'm.image');
+    });
+  };
+
+  const openDocPicker = () => {
+    DocumentPicker.pick({}).then((res) => {
+      if (res) {
+        console.log('response ', res);
+        room.sendMessage(res, 'm.file');
+      }
     });
   };
 
@@ -130,7 +139,7 @@ export default function Composer({
               <Icon name="image" color="#888" size={20} />
             </Pressable>
             <Pressable
-              onPress={() => {}}
+              onPress={openDocPicker}
               style={({ pressed }) => [
                 styles.sendButton,
                 { backgroundColor: pressed ? '#ddd' : 'transparent' },

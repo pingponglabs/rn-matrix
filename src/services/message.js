@@ -103,6 +103,18 @@ class MessageService {
             content.fileName
           );
         }
+        case 'm.file': {
+          return matrix.getClient().sendMessage(roomId, {
+            msgtype: 'm.file',
+            body: content.name,
+            info: {
+              mimetype: content.type,
+              size: content.size,
+              name: content.name,
+            },
+            url: content.url,
+          });
+        }
         case 'm.edit': {
           return matrix.getClient().sendEvent(roomId, 'm.room.message', {
             'm.new_content': { msgtype: 'm.text', body: content },

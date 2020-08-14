@@ -203,6 +203,18 @@ class MatrixService {
     }
   }
 
+  getHttpUrl(mxcUrl, width = null, height = null, resizeMethod = 'scale') {
+    if (!this._client) {
+      throw Error('getHttpUrl: No matrix client');
+    }
+
+    if (width === null && height === null) {
+      return this._client.mxcUrlToHttp(mxcUrl);
+    } else {
+      return this._client.mxcUrlToHttp(mxcUrl, width, height, resizeMethod);
+    }
+  }
+
   getRoomAvatar(matrixRoom) {
     // const roomState = matrixRoom.getLiveTimeline().getState(EventTimeline.FORWARDS);
     // const avatarEvent = roomState.getStateEvents('m.room.avatar', '');
@@ -238,6 +250,17 @@ class MatrixService {
       return url;
     } catch (e) {
       debug('Error uploading image:', e);
+      return null;
+    }
+  }
+
+  async uploadContent(file) {
+    try {
+      const url = await this._client.uploadContent(file);
+      return url;
+    } catch (e) {
+      console.log('error ', e);
+      debug('Error uploading file:', e);
       return null;
     }
   }

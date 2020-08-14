@@ -30,7 +30,7 @@ export default function TextMessage({
   const reactions = useObservableState(message.reactions$);
   const receipts = useObservableState(message.receipts$);
   const props = { prevSame, nextSame };
-  const isMe = myUser.id === message.sender.id;
+  const isMe = myUser?.id === message.sender.id;
 
   //* *******************************************************************************
   // Methods

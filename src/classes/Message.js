@@ -226,14 +226,14 @@ export default class Message {
             width: content.raw.info.w,
           };
           content.thumb = {
-            url: matrix.getImageUrl(
+            url: matrix.getHttpUrl(
               content.raw.info.thumbnail_url,
               THUMBNAIL_MAX_SIZE,
               THUMBNAIL_MAX_SIZE
             ),
           };
           content.type = content.raw.info.mimetype;
-          content.url = matrix.getImageUrl(content.raw.url);
+          content.url = matrix.getHttpUrl(content.raw.url);
         }
         const { height, width } = content.full;
         if (width > height) {
@@ -245,7 +245,9 @@ export default class Message {
         }
         break;
       case 'm.file':
-        content.text = i18n.t('messages:content.fileSharingNotSupport');
+        content.text = `${sender} has sent a file`;
+        content.url = matrix.getHttpUrl(content.raw.url);
+        content.name = content.raw.body;
         break;
       case 'm.location':
         content.text = i18n.t('messages:content.locationSharingNotSupport');

@@ -187,7 +187,7 @@ export default class Chat {
   _getSnippet() {
     const snippet = {};
     const chatMessages = this.messages$.getValue();
-    const lastMessage = messages.getMessageById(chatMessages[0], this.id);
+    const lastMessage = messages.getMessageById(chatMessages[0].id, this.id, chatMessages[0]);
 
     snippet.timestamp = lastMessage?.timestamp;
 
@@ -315,6 +315,39 @@ export default class Chat {
             message: txt,
           };
         } else content.url = response;
+        break;
+      }
+      case 'm.file': {
+        // Add or get pending message
+        const event = {
+          type,
+          timestamp: Date.now(),
+          status: MessageStatus.UPLOADING,
+          content: content,
+        };
+        const pendingMessage = messages.getMessageById(`~~${this.id}:file`, this.id, event, true);
+        // If it's already pending, we update the status, otherwise we add it
+        if (this._pending.includes(pendingMessage.id)) {
+          debug('Pending message already existed');
+          pendingMessage.update({ status: MessageStatus.UPLOADING });
+        } else {
+          debug('Pending message created');
+          this._pending.push(pendingMessage.id);
+          this.update({ timeline: true });
+        }
+
+        // Upload image
+        const mxcUrl = await matrix.uploadContent(content);
+
+        if (!mxcUrl) {
+          // TODO: handle upload error
+          pendingMessage.update({ status: MessageStatus.NOT_UPLOADED });
+          const txt = i18n.t('messages:content.contentNotUploadedNotice');
+          return {
+            error: 'CONTENT_NOT_UPLOADED',
+            message: txt,
+          };
+        } else content.url = mxcUrl;
         break;
       }
       default:
