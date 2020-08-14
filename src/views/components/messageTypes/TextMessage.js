@@ -35,7 +35,7 @@ export default function TextMessage({
   //* *******************************************************************************
   // Methods
   //* *******************************************************************************
-  const toggleReaction = key => {
+  const toggleReaction = (key) => {
     message.toggleReaction(key);
   };
 
@@ -46,7 +46,11 @@ export default function TextMessage({
   if (!content?.html) return null;
   return (
     <>
-      <BubbleWrapper isMe={isMe} status={status} onSwipe={onSwipe ? _onSwipe : null}>
+      <BubbleWrapper
+        isMe={isMe}
+        status={status}
+        onSwipe={onSwipe ? _onSwipe : null}
+        receipts={receipts}>
         {isEmoji(content?.text) ? (
           <Emoji style={!isIos() ? { fontFamily: 'NotoColorEmoji' } : {}} isMe={isMe} {...props}>
             {content.text}
@@ -54,7 +58,7 @@ export default function TextMessage({
         ) : (
           <View style={viewStyle(nextSame)}>
             <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
-              {isMe && <ReadReceipts receipts={receipts} isMe />}
+              {/* {isMe && <ReadReceipts receipts={receipts} isMe />} */}
               <TouchableHighlight
                 {...props}
                 underlayColor={isMe ? colors.blue600 : colors.gray400}
@@ -86,7 +90,7 @@ export default function TextMessage({
                   )}
                 </View>
               </TouchableHighlight>
-              {!isMe && <ReadReceipts receipts={receipts} />}
+              {/* {!isMe && <ReadReceipts receipts={receipts} />} */}
             </View>
 
             {showReactions && reactions && (
@@ -135,7 +139,7 @@ const bubbleStyles = (isMe, prevSame, nextSame) => ({
       }),
 });
 
-const viewStyle = nextSame => ({
+const viewStyle = (nextSame) => ({
   marginTop: 2,
   marginBottom: nextSame ? 1 : 4,
   maxWidth: '85%',

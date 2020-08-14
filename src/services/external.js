@@ -30,6 +30,10 @@ class ExternalService {
     return chats.createChat({ ...defaults, ...options });
   }
 
+  async createEncryptedRoom(usersToInvite) {
+    return chats.createEncryptedChat(usersToInvite);
+  }
+
   getRooms() {
     return chats.getChats();
   }
@@ -60,7 +64,7 @@ class ExternalService {
     for (let i = 0; i < joinedChats.length && !directMessage; i++) {
       const chat = joinedChats[i];
       const members = chat.getMembers();
-      const hasUser = members.find(member => member.id === userId);
+      const hasUser = members.find((member) => member.id === userId);
       if (members.length === 2 && hasUser) {
         directMessage = chat;
       }

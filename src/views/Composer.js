@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableHighlight } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableHighlight, Pressable } from 'react-native';
 import { useObservableState } from 'observable-hooks';
 import { colors } from '../constants';
 import Icon from './components/Icon';
-import externalService from '../services/external';
-import messageService from '../services/message';
+import messages from '../services/message';
+import ImagePicker from 'react-native-image-picker';
 
 export default function Composer({
   room,
@@ -16,10 +16,15 @@ export default function Composer({
   onCancelReply = () => {},
 }) {
   const [value, setValue] = useState('');
+  const [actionButtonsShowing, setActionButtonsShowing] = useState(false);
 
   const textInputRef = useRef(null);
 
   const roomName = useObservableState(room.name$);
+
+  const toggleActionButtons = () => {
+    setActionButtonsShowing(!actionButtonsShowing);
+  };
 
   const handleSend = () => {
     if (enableReplies && isReplying && selectedMessage && !isEditing) {
@@ -41,10 +46,17 @@ export default function Composer({
   };
 
   const confirmEdit = () => {
-    externalService.editMessage(room.id, selectedMessage.id, value);
+    messages.send(value, 'm.edit', room.id, selectedMessage.id);
     setValue('');
     textInputRef.current.blur();
     onEndEdit();
+  };
+
+  const openImagePicker = () => {
+    ImagePicker.showImagePicker(async (response) => {
+      if (response.didCancel) return;
+      room.sendMessage(response, 'm.image');
+    });
   };
 
   useEffect(() => {
@@ -61,6 +73,8 @@ export default function Composer({
       </View>
     );
   }
+
+  console.log('composer');
 
   return (
     <View style={styles.wrapper}>
@@ -89,6 +103,44 @@ export default function Composer({
         {room.isEncrypted() && (
           <Icon name="lock" color="#888" style={{ marginVertical: 10, marginHorizontal: 4 }} />
         )}
+        <Pressable
+          onPress={toggleActionButtons}
+          style={({ pressed }) => [
+            styles.actionButton,
+            { backgroundColor: pressed ? '#ddd' : 'transparent' },
+          ]}>
+          <Icon
+            name={'add'}
+            color="#888"
+            size={30}
+            style={{ transform: [{ rotate: actionButtonsShowing ? '45deg' : '0deg' }] }}
+          />
+        </Pressable>
+        {actionButtonsShowing && (
+          <>
+            <Pressable
+              onPress={openImagePicker}
+              style={({ pressed }) => [
+                styles.sendButton,
+                { backgroundColor: pressed ? '#ddd' : 'transparent' },
+              ]}>
+              <Icon name="image" color="#888" size={20} />
+            </Pressable>
+            <Pressable
+              onPress={() => {}}
+              style={({ pressed }) => [
+                styles.sendButton,
+                { backgroundColor: pressed ? '#ddd' : 'transparent' },
+              ]}>
+              <Icon
+                name="file"
+                color="#888"
+                size={20}
+                style={{ transform: [{ rotate: '38deg' }] }}
+              />
+            </Pressable>
+          </>
+        )}
         <TextInput
           ref={textInputRef}
           style={styles.input}
@@ -96,6 +148,7 @@ export default function Composer({
           placeholder={`Message ${roomName}...`}
           value={value}
           onChangeText={setValue}
+          // onFocus={() => setActionButtonsShowing(false)}
         />
         <TouchableHighlight
           disabled={value.length === 0}
@@ -138,6 +191,13 @@ const styles = StyleSheet.create({
   sendButton: {
     paddingVertical: 10,
     paddingHorizontal: 12,
+    borderRadius: 6,
+  },
+  actionButton: {
+    paddingVertical: 5,
+    paddingHorizontal: 6,
+    // marginVertical: 5,
+    // marginHorizontal: 6,
     borderRadius: 6,
   },
   sendText: {

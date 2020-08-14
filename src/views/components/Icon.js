@@ -17,6 +17,8 @@ export default function Icon({ name, size = 24, color = '#000', style = {} }: Pr
     style,
   };
   switch (name) {
+    case 'add':
+      return <Icons.Add {...props} />;
     case 'check':
       return <Icons.Check {...props} />;
     case 'check-circle':
@@ -25,6 +27,10 @@ export default function Icon({ name, size = 24, color = '#000', style = {} }: Pr
       return <Icons.Circle {...props} />;
     case 'close':
       return <Icons.Close {...props} />;
+    case 'file':
+      return <Icons.File {...props} />;
+    case 'image':
+      return <Icons.Image {...props} />;
     case 'lock':
       return <Icons.Lock {...props} />;
     case 'reply':
@@ -34,4 +40,13 @@ export default function Icon({ name, size = 24, color = '#000', style = {} }: Pr
   }
 }
 
-type IconNames = 'check' | 'check-circle' | 'circle' | 'close' | 'lock' | 'reply';
+type IconNames =
+  | 'add'
+  | 'check'
+  | 'check-circle'
+  | 'circle'
+  | 'close'
+  | 'file'
+  | 'image'
+  | 'lock'
+  | 'reply';

@@ -1,22 +1,31 @@
 import { useObservableState } from 'observable-hooks';
 import React from 'react';
 
+import matrix from '../../../services/matrix';
 import users from '../../../services/user';
-import { View, Image } from 'react-native';
+import { View, Image, Pressable } from 'react-native';
 import { BubbleWrapper, SenderText } from '../MessageItem';
 
 // const debug = require('debug')('rnm:scene:chat:message:components:ImageMessage')
 
 // const PlaceholderImage = require('../../../../assets/images/placeholder.png');
 
-export default function ImageMessage({ message, prevSame, nextSame }) {
+export default function ImageMessage({
+  message,
+  prevSame,
+  nextSame,
+  onPress,
+  onLongPress,
+  onSwipe,
+}) {
   const myUser = users.getMyUser();
   const content = useObservableState(message.content$);
   const senderName = useObservableState(message.sender.name$);
+  const receipts = message.receipts$ ? useObservableState(message.receipts$) : [];
   const status = useObservableState(message.status$);
   const isMe = myUser.id === message.sender.id;
 
-  if (!content) return null;
+  if (!content || message.redacted$.getValue()) return null;
 
   const imageWrapperStyles = {
     marginTop: 2,
@@ -39,16 +48,41 @@ export default function ImageMessage({ message, prevSame, nextSame }) {
         }),
   };
 
+  const _onLongPress = () => onLongPress(message);
+  const _onPress = () => onPress(message);
+  const _onSwipe = () => onSwipe(message);
+
   return (
     <>
-      <BubbleWrapper isMe={isMe} status={status}>
-        <View style={imageWrapperStyles}>
-          <Image
-            source={{ uri: content.thumb.url }}
-            style={imageStyles}
-            // defaultSource={PlaceholderImage}
-          />
-        </View>
+      <BubbleWrapper
+        isMe={isMe}
+        status={status}
+        onSwipe={onSwipe ? _onSwipe : null}
+        receipts={receipts}>
+        <Pressable
+          // {...props}
+          // underlayColor={isMe ? colors.blue600 : colors.gray400}
+          onPress={onPress ? _onPress : null}
+          onLongPress={onLongPress ? _onLongPress : null}
+          delayLongPress={200}
+          //       style={[
+          //         bubbleStyles(isMe, prevSame, nextSame),
+          //         { backgroundColor: isMe ? colors.blue400 : colors.gray300 },
+          //         reactions ? { alignSelf: isMe ? 'flex-end' : 'flex-start' } : {},
+          // ]}
+          style={({ pressed }) => ({
+            opacity: pressed ? 0.75 : 1,
+          })}>
+          <View style={imageWrapperStyles}>
+            <Image
+              source={{
+                uri: content.thumb.url,
+              }}
+              style={imageStyles}
+              // defaultSource={PlaceholderImage}
+            />
+          </View>
+        </Pressable>
       </BubbleWrapper>
 
       {!prevSame && <SenderText isMe={isMe}>{senderName}</SenderText>}

@@ -6,17 +6,14 @@ import { MessageList, matrix } from '..';
 export default function ChatScreen({ goToScreen, currentRoom }) {
   const [selectedMessage, setSelectedMessage] = useState(null);
 
-  const handleLongPress = message => {
+  const handleLongPress = (message) => {
     // console.log('message', message);
-    // matrix.deleteMessage(message);
+    matrix.deleteMessage(message);
   };
 
-  const handlePress = message => {
-    setSelectedMessage(message);
-  };
-
-  const handleSwipe = message => {
-    setSelectedMessage(message);
+  const handlePress = (message) => {
+    // setSelectedMessage(message);
+    console.log(message);
   };
 
   return (
@@ -25,12 +22,10 @@ export default function ChatScreen({ goToScreen, currentRoom }) {
       <MessageList
         room={currentRoom}
         enableComposer
-        // enableReplies
         onCancelReply={() => setSelectedMessage(null)}
         selectedMessage={selectedMessage}
         onPress={handlePress}
         onLongPress={handleLongPress}
-        // onSwipe={handleSwipe}
         keyboardOffset={50}
       />
     </SafeAreaView>

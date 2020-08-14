@@ -33,7 +33,7 @@ type Props = {
 
 export default function MessageList({
   room,
-  keyboardOffset,
+  keyboardOffset = 0,
   showReactions = false,
   enableComposer = false,
   isEditing = false,
@@ -102,7 +102,7 @@ export default function MessageList({
         renderItem={renderMessageItem}
         onEndReached={handleEndReached}
         onEndReachedThreshold={0.5}
-        keyExtractor={item => item}
+        keyExtractor={(item) => item}
         style={{ paddingTop: 6 }}
         {...flatListProps}
       />

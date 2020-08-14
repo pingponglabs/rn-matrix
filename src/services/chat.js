@@ -26,13 +26,13 @@ class ChatService {
     this._syncList = {};
     this._opened = null;
 
-    matrix.isReady$().subscribe(isReady => {
+    matrix.isReady$().subscribe((isReady) => {
       if (isReady) {
         this._listen();
         this._setOpened('all');
       }
     });
-    matrix.isSynced$().subscribe(isSynced => {
+    matrix.isSynced$().subscribe((isSynced) => {
       if (isSynced) this._catchup();
     });
 
@@ -112,7 +112,7 @@ class ChatService {
         }
 
         // Will be used to remove chats that have been removed
-        const prevChatIndex = prevChats.find(roomId => roomId === chat.id);
+        const prevChatIndex = prevChats.find((roomId) => roomId === chat.id);
         if (parseInt(prevChatIndex) !== -1) prevChats.splice(parseInt(prevChatIndex), 1);
       }
 
@@ -177,8 +177,9 @@ class ChatService {
       event.getContent().msgtype === 'm.image' &&
       this._chats.all[roomId]
     ) {
-      const filename = event.getContent().body;
-      this._chats.all[roomId].removePendingMessage(`~~${roomId}:${filename}`);
+      debug('Remove pending image message', roomId, event.getContent());
+      // const filename = event.getContent().body;
+      this._chats.all[roomId].removePendingMessage(`~~${roomId}:image`);
     }
     // If this event updates a message's status
     if (oldEventId && oldEventId === event.getId()) {
@@ -203,7 +204,7 @@ class ChatService {
     const roomId = matrixRoom.roomId;
     if (!this._isChatDisplayed(roomId)) return;
 
-    Object.keys(event.getContent()).forEach(messageId => {
+    Object.keys(event.getContent()).forEach((messageId) => {
       messages.updateMessage(messageId, matrixRoom.roomId);
     });
 
@@ -274,8 +275,8 @@ class ChatService {
   }
 
   _listen() {
-    matrix.getClient().on('accountData', event => this._handleAccountDataEvent(event));
-    matrix.getClient().on('deleteRoom', roomId => this._handleDeleteRoomEvent(roomId));
+    matrix.getClient().on('accountData', (event) => this._handleAccountDataEvent(event));
+    matrix.getClient().on('deleteRoom', (roomId) => this._handleDeleteRoomEvent(roomId));
     matrix
       .getClient()
       .on('Room.localEchoUpdated', (event, room, oldEventId, oldStatus) =>
@@ -297,7 +298,7 @@ class ChatService {
       .getClient()
       .on('Event.decrypted', (event, error) => this._handleEventDecryptedEvent(event, error));
 
-    matrix.getClient().on('sync', state => {
+    matrix.getClient().on('sync', (state) => {
       if (['PREPARED', 'SYNCING'].includes(state)) {
         InteractionManager.runAfterInteractions(this._syncChats.bind(this));
       }
@@ -348,6 +349,22 @@ class ChatService {
       };
     } catch (e) {
       console.warn('Error creating chat: ', e);
+      return { error: true };
+    }
+  }
+
+  async createEncryptedChat(usersToInvite) {
+    try {
+      debug('Creating encrypted chat...');
+      const roomId = await matrix.getClient().createEncryptedRoom(usersToInvite);
+      const matrixRoom = matrix.getClient().getRoom(roomId);
+
+      return {
+        id: matrixRoom.roomId,
+        name: matrixRoom.name,
+      };
+    } catch (e) {
+      console.warn('Error creating encrypted chat: ', e);
       return { error: true };
     }
   }

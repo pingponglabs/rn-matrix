@@ -9,6 +9,7 @@ const mdConverter = new showdown.Converter();
 class MessageService {
   constructor() {
     this._messages = {};
+    // this._userReceiptMap = {};
   }
 
   //* *******************************************************************************
@@ -40,7 +41,7 @@ class MessageService {
       const reactions = message.reactions$.getValue();
       if (reactions) {
         for (const userEvents of Object.values(reactions)) {
-          const reaction = Object.values(userEvents).find(event => event.eventId === eventId);
+          const reaction = Object.values(userEvents).find((event) => event.eventId === eventId);
           if (reaction) return message;
         }
       }
@@ -64,6 +65,14 @@ class MessageService {
       message.update();
     }
   }
+
+  // setReceiptMessageIdForUser(userId, messageId) {
+  //   this._userReceiptMap[userId] = messageId;
+  // }
+
+  // getReceiptMessageIdForUser(userId) {
+  //   return this._userReceiptMap[userId];
+  // }
 
   //* *******************************************************************************
   // Helpers
@@ -118,15 +127,9 @@ class MessageService {
               },
             },
             msgtype: 'm.text',
-            body: `> <${content.relatedMessage.sender.id}> ${htmlWithoutPreviousReply}\n\n${
-              content.text
-            }`,
+            body: `> <${content.relatedMessage.sender.id}> ${htmlWithoutPreviousReply}\n\n${content.text}`,
             format: 'org.matrix.custom.html',
-            formatted_body: `<mx-reply><blockquote><a href=\"https://matrix.to/#/${roomId}/${eventId}\">In reply to</a><a href=\"https://matrix.to/#/${
-              content.relatedMessage.sender.id
-            }\">${
-              content.relatedMessage.sender.id
-            }</a><br />${htmlWithoutPreviousReply}</blockquote></mx-reply>${content.text}`,
+            formatted_body: `<mx-reply><blockquote><a href=\"https://matrix.to/#/${roomId}/${eventId}\">In reply to</a><a href=\"https://matrix.to/#/${content.relatedMessage.sender.id}\">${content.relatedMessage.sender.id}</a><br />${htmlWithoutPreviousReply}</blockquote></mx-reply>${content.text}`,
           });
         }
         default:
@@ -140,6 +143,10 @@ class MessageService {
 
   sendReply(roomId, relatedMessage, message) {
     this.send({ relatedMessage, text: message }, 'm.in_reply_to', roomId, relatedMessage.id);
+  }
+
+  sendImageMessage(roomId, url, width, height, type, fileSize, fileName) {
+    this.send({ width, height, type, fileSize, fileName, url }, 'm.image', roomId);
   }
 
   sortByLastSent(messages) {

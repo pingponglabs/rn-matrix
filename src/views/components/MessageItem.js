@@ -10,6 +10,7 @@ import { TypingAnimation } from 'react-native-typing-animation';
 import { useObservableState } from 'observable-hooks';
 import Swipeable from 'react-native-swipeable';
 import Icon from './Icon';
+import ReadReceipts from './ReadReceipts';
 
 // const debug = require('debug')('rnm:scenes:chat:message:MessageItem')
 
@@ -48,6 +49,7 @@ export default function MessageItem({
   }
 
   const message = messages.getMessageById(messageId, roomId);
+
   const prevMessage =
     prevMessageId && prevMessageId !== 'loading'
       ? messages.getMessageById(prevMessageId, roomId)
@@ -61,6 +63,10 @@ export default function MessageItem({
   const props = { ...otherProps, message, prevSame, nextSame };
 
   const messageType = useObservableState(message.type$);
+
+  if (message.redacted$.getValue()) {
+    return <EventMessage {...props} />;
+  }
 
   if (Message.isTextMessage(messageType)) {
     return <TextMessage {...props} />;
@@ -103,6 +109,7 @@ export function BubbleWrapper({ children, isMe, status, onSwipe = null, receipts
           alignItems: 'center',
         }}>
         {children}
+        <ReadReceipts receipts={receipts} />
       </View>
     </Wrapper>
   );

@@ -61,7 +61,7 @@ export default class Chat {
   // Data
   //* *******************************************************************************
   removePendingMessage(id) {
-    const messageIndex = this._pending.findIndex(messageId => messageId === id);
+    const messageIndex = this._pending.findIndex((messageId) => messageId === id);
     if (messageIndex !== -1) this._pending.splice(messageIndex, 1);
   }
 
@@ -291,12 +291,7 @@ export default class Chat {
           status: MessageStatus.UPLOADING,
           content: content,
         };
-        const pendingMessage = messages.getMessageById(
-          `~~${this.id}:${content.fileName}`,
-          this.id,
-          event,
-          true
-        );
+        const pendingMessage = messages.getMessageById(`~~${this.id}:image`, this.id, event, true);
         // If it's already pending, we update the status, otherwise we add it
         if (this._pending.includes(pendingMessage.id)) {
           debug('Pending message already existed');

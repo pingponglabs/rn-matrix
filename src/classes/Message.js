@@ -6,6 +6,7 @@ const THUMBNAIL_MAX_SIZE = 250;
 
 import matrix from '../services/matrix';
 import users from '../services/user';
+import messages from '../services/message';
 import i18n from '../utilities/i18n';
 
 const debug = require('debug')('rnm:classes:Message');
@@ -29,12 +30,12 @@ export default class Message {
         if (roomId) {
           const matrixRoom = matrix.getClient().getRoom(roomId);
           const roomEvents = matrixRoom.getLiveTimeline().getEvents();
-          const roomEvent = roomEvents.find(event => event.getId() === eventId);
+          const roomEvent = roomEvents.find((event) => event.getId() === eventId);
           if (roomEvent) {
             this._matrixEvent = roomEvent;
           } else if (matrixRoom.hasPendingEvent(eventId)) {
             const pendingEvents = matrixRoom.getPendingEvents();
-            this._matrixEvent = pendingEvents.find(event => event.getId() === eventId);
+            this._matrixEvent = pendingEvents.find((event) => event.getId() === eventId);
           }
         }
         if (!this._matrixEvent) {
@@ -330,12 +331,17 @@ export default class Message {
   _getReceipts() {
     const matrixRoom = matrix.getClient().getRoom(this.roomId);
     const receipts = matrixRoom.getReceiptsForEvent(this._matrixEvent);
-    receipts.forEach(receipt => {
+    receipts.forEach((receipt) => {
       const user = users.getUserById(receipt.userId);
       const avatar = user.avatar$.getValue();
       const avatarUrl = matrix.getImageUrl(avatar, 20, 20);
       receipt.avatar = avatarUrl;
       receipt.name = user.name$.getValue();
+
+      // Update receipts on the previous message this user saw
+      // const prevReceiptMessageId = messages.getReceiptMessageIdForUser(receipt.userId);
+      // messages.updateMessage(prevReceiptMessageId, this.roomId);
+      // messages.setReceiptMessageIdForUser(receipt.userId, this.id);
     });
     return receipts;
   }
