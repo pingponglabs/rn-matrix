@@ -175,7 +175,7 @@ export default class Message {
         break;
       // ImageMessage
       case 'm.image': {
-        content.text = i18n.t('messages:content.imageSent', { sender: sender });
+        content.text = i18n.t('messages:content.imageSent', { sender });
 
         if (this.pending) {
           // TODO: create thumb to free memory?
@@ -214,7 +214,11 @@ export default class Message {
         content.text = i18n.t('messages:content.audioNotSupport');
         break;
       case 'm.video':
-        content.text = i18n.t('messages:content.videoFilesNotSupport');
+        // todo: localize
+        console.log(content);
+        content.text = `${sender} has sent a video`;
+        content.url = matrix.getImageUrl(content.url, 300, 100);
+        // content.text = i18n.t('messages:content.videoFilesNotSupport');
         break;
       case 'm.file':
         content.text = i18n.t('messages:content.fileSharingNotSupport');
@@ -372,6 +376,7 @@ export default class Message {
     if (
       Message.isTextMessage(message.type$?.getValue()) ||
       Message.isImageMessage(message.type$?.getValue()) ||
+      Message.isVideoMessage(message.type$?.getValue()) ||
       Message.isNoticeMessage(message.type$?.getValue())
     ) {
       return true;
@@ -387,6 +392,7 @@ export default class Message {
       Message.isTextMessage(type) ||
       Message.isEventMessage(type) ||
       Message.isImageMessage(type) ||
+      Message.isVideoMessage(type) ||
       Message.isNoticeMessage(type)
     ) {
       return true;
@@ -430,6 +436,11 @@ export default class Message {
 
   static isImageMessage(type) {
     if (type === 'm.image') return true;
+    return false;
+  }
+
+  static isVideoMessage(type) {
+    if (type === 'm.video') return true;
     return false;
   }
 

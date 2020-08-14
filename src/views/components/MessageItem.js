@@ -5,6 +5,7 @@ import EventMessage from './messageTypes/EventMessage';
 import NoticeMessage from './messageTypes/NoticeMessage';
 import { View, Text, Image, ActivityIndicator } from 'react-native';
 import ImageMessage from './messageTypes/ImageMessage';
+import VideoMessage from './messageTypes/VideoMessage';
 import TextMessage from './messageTypes/TextMessage';
 import { TypingAnimation } from 'react-native-typing-animation';
 import { useObservableState } from 'observable-hooks';
@@ -73,6 +74,9 @@ export default function MessageItem({
   }
   if (Message.isImageMessage(messageType)) {
     return <ImageMessage {...props} />;
+  }
+  if (Message.isVideoMessage(messageType)) {
+    return <VideoMessage {...props} />;
   }
   if (Message.isNoticeMessage(messageType)) {
     return <NoticeMessage {...props} />;

@@ -53,9 +53,14 @@ export default function Composer({
   };
 
   const openImagePicker = () => {
-    ImagePicker.showImagePicker(async (response) => {
+    const options = {
+      mediaType: 'mixed',
+      allowsEditing: true,
+    };
+    ImagePicker.launchImageLibrary(options, async (response) => {
       if (response.didCancel) return;
-      room.sendMessage(response, 'm.image');
+      console.log('response', response);
+      // room.sendMessage(response, 'm.image');
     });
   };
 
@@ -73,8 +78,6 @@ export default function Composer({
       </View>
     );
   }
-
-  console.log('composer');
 
   return (
     <View style={styles.wrapper}>
