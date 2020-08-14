@@ -1,9 +1,9 @@
 import React from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 import users from '../../../services/user';
 import { useObservableState } from 'observable-hooks';
 import { BubbleWrapper, SenderText } from '../MessageItem';
-import { WebView } from 'react-native-webview';
+import Video from 'react-native-video';
 
 export default function VideoMessage({
   message,
@@ -43,29 +43,17 @@ export default function VideoMessage({
         onSwipe={onSwipe ? _onSwipe : null}
         receipts={receipts}>
         <View style={{ borderRadius: 20, overflow: 'hidden' }}>
-          <WebView
-            source={{ html: test }}
+          <Video
+            controls
+            source={{ uri: content.url, type: content.type }}
             style={{
               width,
               height,
               backgroundColor: '#ddd',
             }}
-            onFileDownload={({ nativeEvent: { downloadUrl } }) => {
-              console.log('download ', downloadUrl);
-              // You use downloadUrl which is a string to download files however you want.
-            }}
             onError={console.warn}
-            allowsFullscreenVideo
-            useWebKit
-            javascriptEnabled
-            originWhitelist={['*']}
-            bounces={false}
-            dataDetectorTypes="link"
-            scalesPageToFit={false}
-            scrollEnabled={false}
-            automaticallyAdjustContentInsets={false}
-            allowsInlineMediaPlayback
-            mediaPlaybackRequiresUserAction={false}
+            fullscreen
+            pictureInPicture
           />
         </View>
       </BubbleWrapper>
