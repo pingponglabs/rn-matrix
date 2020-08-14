@@ -9,7 +9,7 @@ const mdConverter = new showdown.Converter();
 class MessageService {
   constructor() {
     this._messages = {};
-    // this._userReceiptMap = {};
+    this._userReceiptMap = {};
   }
 
   //* *******************************************************************************
@@ -66,13 +66,13 @@ class MessageService {
     }
   }
 
-  // setReceiptMessageIdForUser(userId, messageId) {
-  //   this._userReceiptMap[userId] = messageId;
-  // }
+  setReceiptMessageIdForUser(userId, messageId) {
+    this._userReceiptMap[userId] = messageId;
+  }
 
-  // getReceiptMessageIdForUser(userId) {
-  //   return this._userReceiptMap[userId];
-  // }
+  getReceiptMessageIdForUser(userId) {
+    return this._userReceiptMap[userId];
+  }
 
   //* *******************************************************************************
   // Helpers

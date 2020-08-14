@@ -109,7 +109,7 @@ export function BubbleWrapper({ children, isMe, status, onSwipe = null, receipts
           alignItems: 'center',
         }}>
         {children}
-        <ReadReceipts receipts={receipts} />
+        <ReadReceipts isMe={isMe} receipts={receipts} />
       </View>
     </Wrapper>
   );

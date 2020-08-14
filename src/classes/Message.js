@@ -339,9 +339,9 @@ export default class Message {
       receipt.name = user.name$.getValue();
 
       // Update receipts on the previous message this user saw
-      // const prevReceiptMessageId = messages.getReceiptMessageIdForUser(receipt.userId);
-      // messages.updateMessage(prevReceiptMessageId, this.roomId);
-      // messages.setReceiptMessageIdForUser(receipt.userId, this.id);
+      const prevReceiptMessageId = messages.getReceiptMessageIdForUser(receipt.userId);
+      messages.updateMessage(prevReceiptMessageId, this.roomId);
+      messages.setReceiptMessageIdForUser(receipt.userId, this.id);
     });
     return receipts;
   }

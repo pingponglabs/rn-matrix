@@ -4,9 +4,8 @@ import users from '../../services/user';
 
 export default function ReadReceipts({ receipts, isMe = false }) {
   const user = users.getMyUser();
-  console.log('receipts');
   return (
-    <View style={styles.wrapper}>
+    <View style={[styles.wrapper, { justifyContent: isMe ? 'flex-end' : 'flex-start' }]}>
       {receipts
         .slice(0, 5)
         .filter((r) => r.userId !== user.id)
