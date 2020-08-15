@@ -55,7 +55,7 @@ export default function Composer({
 
   const openImagePicker = () => {
     const options = {
-      mediaType: 'mixed',
+      mediaType: 'photos',
       allowsEditing: true,
     };
     ImagePicker.launchImageLibrary(options, async (response) => {

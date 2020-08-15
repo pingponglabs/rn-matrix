@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - sending image messages!
 - sending file messages!
 - viewing file messages!
-- WIP: rendering video messages (works on Android)
+- WIP: rendering video messages (works on Android, not iOS)
 
 ### Changed
 
