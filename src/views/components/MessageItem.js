@@ -1,6 +1,7 @@
 import React from 'react';
 import Message from '../../classes/Message';
 import messages from '../../services/message';
+import users from '../../services/user';
 import EventMessage from './messageTypes/EventMessage';
 import NoticeMessage from './messageTypes/NoticeMessage';
 import { View, Text, Image, ActivityIndicator } from 'react-native';
@@ -12,6 +13,8 @@ import { useObservableState } from 'observable-hooks';
 import Swipeable from 'react-native-swipeable';
 import Icon from './Icon';
 import ReadReceipts from './ReadReceipts';
+import FileMessage from './messageTypes/FileMessage';
+import Reactions from './Reactions';
 
 // const debug = require('debug')('rnm:scenes:chat:message:MessageItem')
 
@@ -78,13 +81,32 @@ export default function MessageItem({
   if (Message.isVideoMessage(messageType)) {
     return <VideoMessage {...props} />;
   }
+  if (Message.isFileMessage(messageType)) {
+    return <FileMessage {...props} />;
+  }
   if (Message.isNoticeMessage(messageType)) {
     return <NoticeMessage {...props} />;
   }
   return <EventMessage {...props} />;
 }
 
-export function BubbleWrapper({ children, isMe, status, onSwipe = null, receipts = [] }) {
+export function BubbleWrapper({
+  children,
+  isMe,
+  status,
+  onSwipe = null,
+  message,
+  showReactions = false,
+}) {
+  const reactions = message ? useObservableState(message.reactions$) : null;
+  const receipts = message ? useObservableState(message.receipts$) : null;
+
+  const myUser = users.getMyUser();
+
+  const toggleReaction = (key) => {
+    message.toggleReaction(key);
+  };
+
   const rightButtons = [
     <View style={{ height: '100%', justifyContent: 'center' }}>
       <Icon name="reply" size={30} color="#666" />
@@ -106,14 +128,23 @@ export function BubbleWrapper({ children, isMe, status, onSwipe = null, receipts
 
   return (
     <Wrapper>
-      <View
-        style={{
-          marginHorizontal: 12,
-          flexDirection: isMe ? 'row-reverse' : 'row',
-          alignItems: 'center',
-        }}>
-        {children}
-        <ReadReceipts isMe={isMe} receipts={receipts} />
+      <View style={{ marginHorizontal: 12 }}>
+        <View
+          style={{
+            flexDirection: isMe ? 'row-reverse' : 'row',
+            alignItems: 'center',
+          }}>
+          {children}
+          {receipts && <ReadReceipts isMe={isMe} receipts={receipts} />}
+        </View>
+        {reactions && showReactions && (
+          <Reactions
+            reactions={reactions}
+            toggleReaction={toggleReaction}
+            myUserId={myUser.id}
+            isMyBubble={isMe}
+          />
+        )}
       </View>
     </Wrapper>
   );

@@ -187,7 +187,7 @@ export default class Chat {
   _getSnippet() {
     const snippet = {};
     const chatMessages = this.messages$.getValue();
-    const lastMessage = messages.getMessageById(chatMessages[0].id, this.id, chatMessages[0]);
+    const lastMessage = messages.getMessageById(chatMessages[0], this.id);
 
     snippet.timestamp = lastMessage?.timestamp;
 

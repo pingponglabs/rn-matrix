@@ -259,7 +259,6 @@ class MatrixService {
       const url = await this._client.uploadContent(file);
       return url;
     } catch (e) {
-      console.log('error ', e);
       debug('Error uploading file:', e);
       return null;
     }

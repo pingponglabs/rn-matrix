@@ -8,7 +8,8 @@ export default function ChatScreen({ goToScreen, currentRoom }) {
 
   const handleLongPress = (message) => {
     // console.log('message', message);
-    matrix.deleteMessage(message);
+    // matrix.deleteMessage(message);
+    console.log('reactions ', message.reactions$.getValue());
   };
 
   const handlePress = (message) => {
@@ -22,6 +23,7 @@ export default function ChatScreen({ goToScreen, currentRoom }) {
       <MessageList
         room={currentRoom}
         enableComposer
+        showReactions
         onCancelReply={() => setSelectedMessage(null)}
         selectedMessage={selectedMessage}
         onPress={handlePress}

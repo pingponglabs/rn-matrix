@@ -215,7 +215,6 @@ export default class Message {
         break;
       // Video Message
       case 'm.video':
-        console.log(content);
         // todo: localize
         content.text = `${sender} has sent a video`;
         if (this.pending) {
@@ -403,6 +402,7 @@ export default class Message {
       Message.isTextMessage(message.type$?.getValue()) ||
       Message.isImageMessage(message.type$?.getValue()) ||
       Message.isVideoMessage(message.type$?.getValue()) ||
+      Message.isFileMessage(message.type$?.getValue()) ||
       Message.isNoticeMessage(message.type$?.getValue())
     ) {
       return true;
@@ -419,6 +419,7 @@ export default class Message {
       Message.isEventMessage(type) ||
       Message.isImageMessage(type) ||
       Message.isVideoMessage(type) ||
+      Message.isFileMessage(type) ||
       Message.isNoticeMessage(type)
     ) {
       return true;
@@ -449,11 +450,8 @@ export default class Message {
         return true;
       // Below are other messages unsupported for now but still displayed as events
       case 'm.audio':
-      case 'm.video':
-      case 'm.file':
       case 'm.location':
       case 'm.sticker':
-      case 'm.room.encrypted':
         return true;
       default:
         return false;
@@ -467,6 +465,11 @@ export default class Message {
 
   static isVideoMessage(type) {
     if (type === 'm.video') return true;
+    return false;
+  }
+
+  static isFileMessage(type) {
+    if (type === 'm.file') return true;
     return false;
   }
 

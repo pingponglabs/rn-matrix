@@ -67,7 +67,6 @@ export default function Composer({
   const openDocPicker = () => {
     DocumentPicker.pick({}).then((res) => {
       if (res) {
-        console.log('response ', res);
         room.sendMessage(res, 'm.file');
       }
     });
@@ -145,7 +144,7 @@ export default function Composer({
                 { backgroundColor: pressed ? '#ddd' : 'transparent' },
               ]}>
               <Icon
-                name="file"
+                name="attach"
                 color="#888"
                 size={20}
                 style={{ transform: [{ rotate: '38deg' }] }}

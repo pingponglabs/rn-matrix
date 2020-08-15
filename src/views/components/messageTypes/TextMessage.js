@@ -28,16 +28,12 @@ export default function TextMessage({
   const senderName = useObservableState(message.sender.name$);
   const status = useObservableState(message.status$);
   const reactions = useObservableState(message.reactions$);
-  const receipts = useObservableState(message.receipts$);
   const props = { prevSame, nextSame };
   const isMe = myUser?.id === message.sender.id;
 
   //* *******************************************************************************
   // Methods
   //* *******************************************************************************
-  const toggleReaction = (key) => {
-    message.toggleReaction(key);
-  };
 
   const _onLongPress = () => onLongPress(message);
   const _onPress = () => onPress(message);
@@ -50,7 +46,8 @@ export default function TextMessage({
         isMe={isMe}
         status={status}
         onSwipe={onSwipe ? _onSwipe : null}
-        receipts={receipts}>
+        message={message}
+        showReactions={showReactions}>
         {isEmoji(content?.text) ? (
           <Emoji style={!isIos() ? { fontFamily: 'NotoColorEmoji' } : {}} isMe={isMe} {...props}>
             {content.text}
@@ -58,7 +55,6 @@ export default function TextMessage({
         ) : (
           <View style={viewStyle(nextSame)}>
             <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
-              {/* {isMe && <ReadReceipts receipts={receipts} isMe />} */}
               <TouchableHighlight
                 {...props}
                 underlayColor={isMe ? colors.blue600 : colors.gray400}
@@ -90,17 +86,7 @@ export default function TextMessage({
                   )}
                 </View>
               </TouchableHighlight>
-              {/* {!isMe && <ReadReceipts receipts={receipts} />} */}
             </View>
-
-            {showReactions && reactions && (
-              <Reactions
-                reactions={reactions}
-                toggleReaction={toggleReaction}
-                myUserId={myUser.id}
-                isMyBubble={isMe}
-              />
-            )}
           </View>
         )}
       </BubbleWrapper>
