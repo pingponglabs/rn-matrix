@@ -1,0 +1,30 @@
+{
+  "name": "@rn-matrix/core",
+  "version": "0.0.16",
+  "description": "The core data functionality of rn-matrix",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/annie-elequin/rn-matrix.git",
+    "directory": "packages/core"
+  },
+  "keywords": [
+    "matrix",
+    "decentralized",
+    "chat",
+    "sdk",
+    "communication",
+    "protocol",
+    "react",
+    "native"
+  ],
+  "author": "Annie Elequin <annie@elequin.io>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://gitlab.com/annie-elequin/rn-matrix/issues"
+  },
+  "homepage": "https://rnmatrix.com"
+}
