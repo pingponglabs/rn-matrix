@@ -4,12 +4,15 @@
  *
  * @format
  */
-const {getDefaultConfig} = require('metro-config');
+// const {getDefaultConfig} = require('metro-config');
+const path = require('path');
+
+const watchFolders = [path.resolve(__dirname, '..', 'node_modules')];
 
 module.exports = (async () => {
-  const {
-    resolver: {sourceExts, assetExts},
-  } = await getDefaultConfig();
+  // const {
+  //   resolver: {sourceExts, assetExts},
+  // } = await getDefaultConfig();
 
   return {
     transformer: {
@@ -21,5 +24,10 @@ module.exports = (async () => {
     //   assetExts: assetExts.filter((ext) => ext !== 'svg'),
     //   sourceExts: [...sourceExts, 'svg'],
     // },
+    resolver: {
+      extraNodeModules: {
+        '@rn-matrix/core': `${__dirname}/../node_modules/@rn-matrix/core`,
+      },
+    },
   };
 })();

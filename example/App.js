@@ -6,7 +6,7 @@
  * @flow strict-local
  */
 
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -24,7 +24,22 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
+import {matrix} from '@rn-matrix';
+
+const accessToken =
+  'MDAxOGxvY2F0aW9uIGRpdHRvLmNoYXQKMDAxM2lkZW50aWZpZXIga2V5CjAwMTBjaWQgZ2VuID0gMQowMDIzY2lkIHVzZXJfaWQgPSBAdGVzdDpkaXR0by5jaGF0CjAwMTZjaWQgdHlwZSA9IGFjY2VzcwowMDIxY2lkIG5vbmNlID0gLVZuX3RZVjJpRk80V2QsKwowMDJmc2lnbmF0dXJlIGYlwrKiStuijF4uaQ9KJStxRDueNHpAT3b74ZaZI-n_Cg';
+const deviceId = 'EBIPBHNMDO';
+
 const App: () => React$Node = () => {
+  useEffect(() => {
+    matrix.createClient(
+      'https://matrix.ditto.chat',
+      accessToken,
+      '@test:ditto.chat',
+      deviceId,
+    );
+    matrix.start(true);
+  }, []);
   return (
     <>
       <StatusBar barStyle="dark-content" />

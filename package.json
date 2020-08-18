@@ -5,11 +5,17 @@
     "nohoist": [
       "**/react-native",
       "**/react-native/**",
-      "**/react-native-randombytes/**"
+      "**/react-native-randombytes/**",
+      "**/react-native-localize/**",
+      "**/@react-native-community**",
+      "**/rn-nodeify/**",
+      "**/react-native-svg/**",
+      "**/react-native-svg-transformer/**"
     ],
     "packages": [
       "example",
-      "packages/*"
+      "packages/*",
+      "packages/core"
     ]
   },
   "publishConfig": {
