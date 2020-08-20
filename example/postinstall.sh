@@ -1,1 +1,0 @@
-./node_modules/.bin/rn-nodeify --install 'url,process,fs,events,buffer,crypto,stream,path,vm,util' --hack --yarn
