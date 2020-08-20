@@ -31,8 +31,7 @@
     "start": "react-native start",
     "test": "echo 'No tests'",
     "lint": "eslint .",
-    "pub": "np --any-branch --no-tests",
-    "postinstall": "../postinstall.sh"
+    "pub": "np --any-branch --no-tests"
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.12.0",
