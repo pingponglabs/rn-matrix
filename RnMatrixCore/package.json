@@ -4,7 +4,7 @@
   "author": "Annie Elequin <annie@elequin.io>",
   "description": "The core data functionality of rn-matrix",
   "license": "Apache-2.0",
-  "private": "false",
+  "private": false,
   "bugs": {
     "url": "https://gitlab.com/annie-elequin/rn-matrix/issues"
   },
@@ -99,5 +99,13 @@
     "_stream_passthrough": "readable-stream/passthrough",
     "stream": "stream-browserify",
     "vm": "vm-browserify"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "np": {
+    "tests": false,
+    "anyBranch": true
   }
 }
