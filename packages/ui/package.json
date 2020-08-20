@@ -1,6 +1,6 @@
 {
   "name": "@rn-matrix/ui",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "UI components to be used alongside the data in rn-matrix",
   "main": "index.js",
   "scripts": {

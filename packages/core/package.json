@@ -1,6 +1,6 @@
 {
   "name": "@rn-matrix/core",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "The core data functionality of rn-matrix",
   "main": "index.js",
   "scripts": {
