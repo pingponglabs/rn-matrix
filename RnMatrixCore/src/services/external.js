@@ -38,7 +38,7 @@ class ExternalService {
     return chats.createEncryptedChat(usersToInvite);
   }
 
-  getRooms() {
+  getRooms$() {
     return chats.getChats();
   }
 
@@ -87,6 +87,12 @@ class ExternalService {
 
   sendReply(roomId, relatedMessage, messageText) {
     messages.sendReply(roomId, relatedMessage, messageText);
+  }
+
+  // MESSAGES
+
+  getMessageById(eventId, roomId, event = null) {
+    return messages.getMessageById(eventId, roomId, event);
   }
 }
 
