@@ -1,11 +1,10 @@
 {
-  "packages": ["packages/*"],
+  "packages": ["packages/core"],
   "npmClient": "yarn",
   "useWorkspaces": true,
   "version": "independent",
   "command": {
     "publish": {
-      "allowBranch": "master",
       "conventionalCommits": true,
       "createRelease": "gitlab",
       "message": "chore: publish",

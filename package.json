@@ -3,19 +3,12 @@
   "private": true,
   "workspaces": {
     "nohoist": [
-      "**/react-native",
-      "**/react-native/**",
-      "**/react-native-randombytes/**",
-      "**/react-native-localize/**",
-      "**/@react-native-community**",
-      "**/rn-nodeify/**",
-      "**/react-native-svg/**",
-      "**/react-native-svg-transformer/**"
+      "**/example/**"
     ],
     "packages": [
       "example",
-      "packages/*",
-      "packages/core"
+      "packages/core",
+      "packages/ui"
     ]
   },
   "publishConfig": {

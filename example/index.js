@@ -4,7 +4,8 @@
 import './shim.js';
 
 import {AppRegistry} from 'react-native';
-import App from './App';
+import Core from './CoreApp';
+import Ui from './UiApp';
 import {name as appName} from './app.json';
 
-AppRegistry.registerComponent(appName, () => App);
+AppRegistry.registerComponent(appName, () => Core);
