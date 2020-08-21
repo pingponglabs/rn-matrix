@@ -1,4 +1,5 @@
-![npm](https://img.shields.io/npm/v/rn-matrix?color=dodgerblue)
+![npm (scoped)](https://img.shields.io/npm/v/@rn-matrix/core?label=core%20%28npm%29)
+![npm (scoped)](https://img.shields.io/npm/v/@rn-matrix/ui?color=dodgerblue&label=ui%20%28npm%29)
 
 ## Documentation
 
