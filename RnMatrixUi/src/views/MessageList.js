@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useObservableState } from 'observable-hooks';
+import React, {useState, useEffect} from 'react';
+import {useObservableState} from 'observable-hooks';
 import {
   FlatList,
   FlatListProps,
@@ -9,8 +9,7 @@ import {
   SafeAreaView,
 } from 'react-native';
 import MessageItem from './components/MessageItem';
-import Chat from '../classes/Chat';
-import Message from '../classes/Message';
+import {Chat, Message} from '@rn-matrix/core';
 import Composer from './Composer';
 
 type Props = {
@@ -62,7 +61,7 @@ export default function MessageList({
     }
   };
 
-  const renderMessageItem = ({ item: messageId, index }) => {
+  const renderMessageItem = ({item: messageId, index}) => {
     return (
       <MessageItem
         roomId={room.id}
@@ -103,7 +102,7 @@ export default function MessageList({
         onEndReached={handleEndReached}
         onEndReachedThreshold={0.5}
         keyExtractor={(item) => item}
-        style={{ paddingTop: 6 }}
+        style={{paddingTop: 6}}
         {...flatListProps}
       />
       {enableComposer && (
@@ -121,13 +120,16 @@ export default function MessageList({
   );
 }
 
-const Wrapper = ({ offset, children }) => {
+const Wrapper = ({offset, children}) => {
   const style = {
     flex: 1,
   };
   return Platform.OS === 'ios' ? (
     <SafeAreaView style={style}>
-      <KeyboardAvoidingView style={style} behavior="padding" keyboardVerticalOffset={offset}>
+      <KeyboardAvoidingView
+        style={style}
+        behavior="padding"
+        keyboardVerticalOffset={offset}>
         {children}
       </KeyboardAvoidingView>
     </SafeAreaView>
