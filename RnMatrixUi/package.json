@@ -10,8 +10,22 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@react-native-community/async-storage": "^1.12.0",
+    "@rn-matrix/core": "^0.0.5",
+    "moment": "^2.27.0",
+    "observable-hooks": "^3.1.0",
     "react": "16.13.1",
-    "react-native": "0.63.2"
+    "react-native": "0.63.2",
+    "react-native-document-picker": "^3.5.4",
+    "react-native-file-viewer": "^2.1.1",
+    "react-native-image-picker": "^2.3.3",
+    "react-native-localize": "^1.4.1",
+    "react-native-randombytes": "^3.0.0",
+    "react-native-svg": "^12.1.0",
+    "react-native-svg-transformer": "^0.14.3",
+    "react-native-video": "^5.1.0-alpha8",
+    "rn-nodeify": "^10.2.0",
+    "rxjs": "^6.6.2"
   },
   "devDependencies": {
     "@babel/core": "^7.11.1",
@@ -25,5 +39,29 @@
   },
   "jest": {
     "preset": "react-native"
+  },
+  "react-native": {
+    "crypto": "react-native-crypto",
+    "path": "path-browserify",
+    "fs": "react-native-level-fs",
+    "_stream_transform": "readable-stream/transform",
+    "_stream_readable": "readable-stream/readable",
+    "_stream_writable": "readable-stream/writable",
+    "_stream_duplex": "readable-stream/duplex",
+    "_stream_passthrough": "readable-stream/passthrough",
+    "stream": "stream-browserify",
+    "vm": "vm-browserify"
+  },
+  "browser": {
+    "crypto": "react-native-crypto",
+    "path": "path-browserify",
+    "fs": "react-native-level-fs",
+    "_stream_transform": "readable-stream/transform",
+    "_stream_readable": "readable-stream/readable",
+    "_stream_writable": "readable-stream/writable",
+    "_stream_duplex": "readable-stream/duplex",
+    "_stream_passthrough": "readable-stream/passthrough",
+    "stream": "stream-browserify",
+    "vm": "vm-browserify"
   }
 }

@@ -1,8 +1,7 @@
 import React from 'react';
-import { View, FlatList, ActivityIndicator, Text } from 'react-native';
-import matrix from '../services/matrix';
-import chatService from '../services/chat';
-import { useObservableState } from 'observable-hooks';
+import {View, FlatList, ActivityIndicator} from 'react-native';
+import {matrix} from '@rn-matrix/core';
+import {useObservableState} from 'observable-hooks';
 import RoomListItem from './components/RoomListItem';
 import RoomInviteItem from './components/RoomInviteItem';
 
@@ -17,22 +16,23 @@ export default function RoomList({
   renderInvite = null,
   onRowPress = () => {},
 }: Props) {
-  const inviteList = useObservableState(chatService.getListByType$('invites'));
-  const chatList = useObservableState(chatService.getChats());
+  const inviteList = useObservableState(matrix.getRoomsByType$('invites'));
+  const chatList = useObservableState(matrix.getRooms$());
   const isReady = useObservableState(matrix.isReady$());
-  const isSynced = useObservableState(matrix.isSynced$());
+  // const isSynced = useObservableState(matrix.isSynced$());
+  const isSynced = true;
 
-  const renderRow = ({ item }) => {
+  const renderRow = ({item}) => {
     return <RoomListItem key={item.id} room={item} onPress={onRowPress} />;
   };
 
-  const renderInviteRow = ({ item }) => {
+  const renderInviteRow = ({item}) => {
     return <RoomInviteItem key={item.id} room={item} />;
   };
 
   if (!isReady || !isSynced) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
         <ActivityIndicator size="large" />
       </View>
     );
@@ -40,7 +40,9 @@ export default function RoomList({
 
   const InviteList = () => (
     <>
-      {inviteList.map(item => (renderInvite ? renderInvite({ item }) : renderInviteRow({ item })))}
+      {inviteList.map((item) =>
+        renderInvite ? renderInvite({item}) : renderInviteRow({item}),
+      )}
     </>
   );
 
@@ -48,7 +50,7 @@ export default function RoomList({
     <FlatList
       data={chatList}
       renderItem={renderListItem ? renderListItem : renderRow}
-      keyExtractor={item => item.id}
+      keyExtractor={(item) => item.id}
       ListHeaderComponent={InviteList}
     />
   );

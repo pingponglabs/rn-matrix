@@ -5,6 +5,10 @@ import messages from './message';
 const debug = require('debug')('rnm:services:external.js');
 
 class ExternalService {
+  /*************************************************
+   * CLIENT METHODS
+   *************************************************/
+
   async createClient(baseUrl, accessToken, userId, deviceId) {
     return matrix.createClient(baseUrl, accessToken, userId, deviceId);
   }
@@ -17,13 +21,13 @@ class ExternalService {
     return matrix.isReady$();
   }
 
-  deleteMessage(message) {
-    const {event} = message.getMatrixEvent();
-    const eventId = event.event_id;
-    const roomId = event.room_id;
-    matrix.getClient().redactEvent(roomId, eventId);
-    message.update();
+  isSynced$() {
+    return matrix.isSynced$();
   }
+
+  /*************************************************
+   * ROOM METHODS
+   *************************************************/
 
   async createRoom(options = {}) {
     const defaults = {
@@ -62,7 +66,7 @@ class ExternalService {
     chats.leaveRoom(roomId);
   }
 
-  getDirectMessage(userId: string) {
+  getDirectChat(userId: string) {
     let directMessage = null;
     const joinedChats = chats.getChats().getValue();
     for (let i = 0; i < joinedChats.length && !directMessage; i++) {
@@ -81,18 +85,28 @@ class ExternalService {
     chat.setName(name);
   }
 
-  editMessage(roomId, messageId, newMessageContent) {
-    messages.send(newMessageContent, 'm.edit', roomId, messageId);
-  }
-
   sendReply(roomId, relatedMessage, messageText) {
     messages.sendReply(roomId, relatedMessage, messageText);
   }
 
-  // MESSAGES
+  /*************************************************
+   * MESSAGE METHODS
+   *************************************************/
 
   getMessageById(eventId, roomId, event = null) {
     return messages.getMessageById(eventId, roomId, event);
+  }
+
+  deleteMessage(message) {
+    const {event} = message.getMatrixEvent();
+    const eventId = event.event_id;
+    const roomId = event.room_id;
+    matrix.getClient().redactEvent(roomId, eventId);
+    message.update();
+  }
+
+  editMessage(roomId, messageId, newMessageContent) {
+    messages.send(newMessageContent, 'm.edit', roomId, messageId);
   }
 }
 
