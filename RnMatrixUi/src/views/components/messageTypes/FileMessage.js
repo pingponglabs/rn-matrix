@@ -1,13 +1,13 @@
-import { useObservableState } from 'observable-hooks';
+import {useObservableState} from 'observable-hooks';
 import React from 'react';
-import { EventStatus } from 'matrix-js-sdk';
-import users from '../../../services/user';
-import { Text, TouchableHighlight, View, Pressable } from 'react-native';
-import { SenderText, BubbleWrapper } from '../MessageItem';
-import { colors } from '../../../constants';
+import {EventStatus} from 'matrix-js-sdk';
+import {Text, TouchableHighlight, View, Pressable} from 'react-native';
+import {SenderText, BubbleWrapper} from '../MessageItem';
+import {colors} from '../../../constants';
 import Icon from '../Icon';
 import RNFS from 'react-native-fs';
 import FileViewer from 'react-native-file-viewer';
+import {matrix} from '@rn-matrix/core';
 
 const debug = require('debug')('rnm:views:components:messageTypes:TextMessage');
 
@@ -20,12 +20,12 @@ export default function FileMessage({
   onSwipe,
   showReactions,
 }) {
-  const myUser = users.getMyUser();
+  const myUser = matrix.getMyUser();
   const content = useObservableState(message.content$);
   const senderName = useObservableState(message.sender.name$);
   const status = useObservableState(message.status$);
   const reactions = useObservableState(message.reactions$);
-  const props = { prevSame, nextSame };
+  const props = {prevSame, nextSame};
   const isMe = myUser?.id === message.sender.id;
 
   if (!content) return null;
@@ -45,7 +45,9 @@ export default function FileMessage({
       toFile: localFile,
     };
     RNFS.downloadFile(options)
-      .promise.then(() => FileViewer.open(localFile, { showOpenWithDialog: true }))
+      .promise.then(() =>
+        FileViewer.open(localFile, {showOpenWithDialog: true}),
+      )
       .then(() => {
         // success
       })
@@ -57,7 +59,7 @@ export default function FileMessage({
   const downloadIcon = (
     <Pressable
       onPress={openFile}
-      style={({ pressed }) => ({
+      style={({pressed}) => ({
         justifyContent: 'center',
         alignItems: 'center',
         padding: 12,
@@ -85,7 +87,7 @@ export default function FileMessage({
         message={message}
         showReactions={showReactions}>
         <View style={viewStyle(nextSame)}>
-          <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
+          <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
             <TouchableHighlight
               {...props}
               underlayColor={isMe ? colors.blue600 : colors.gray400}
@@ -95,11 +97,11 @@ export default function FileMessage({
               delayLongPress={200}
               style={[
                 bubbleStyles(isMe, prevSame, nextSame),
-                { backgroundColor: isMe ? colors.blue400 : colors.gray300 },
-                reactions ? { alignSelf: isMe ? 'flex-end' : 'flex-start' } : {},
+                {backgroundColor: isMe ? colors.blue400 : colors.gray300},
+                reactions ? {alignSelf: isMe ? 'flex-end' : 'flex-start'} : {},
               ]}>
-              <View style={{ alignItems: 'flex-end' }}>
-                <View style={{ flexDirection: 'row' }}>
+              <View style={{alignItems: 'flex-end'}}>
+                <View style={{flexDirection: 'row'}}>
                   {downloadIcon}
                   <Text
                     onPress={openFile}
@@ -115,9 +117,13 @@ export default function FileMessage({
                   </Text>
                 </View>
                 {isMe && (
-                  <View style={{ marginLeft: 12, marginRight: -6 }}>
+                  <View style={{marginLeft: 12, marginRight: -6}}>
                     <Icon
-                      name={status === EventStatus.SENDING ? 'circle' : 'check-circle'}
+                      name={
+                        status === EventStatus.SENDING
+                          ? 'circle'
+                          : 'check-circle'
+                      }
                       size={16}
                       color="#0f5499"
                     />
@@ -141,12 +147,12 @@ const bubbleStyles = (isMe, prevSame, nextSame) => ({
   borderRadius: 18,
   ...(isMe
     ? {
-        ...(prevSame ? { borderTopRightRadius: sharpBorderRadius } : {}),
-        ...(nextSame ? { borderBottomRightRadius: sharpBorderRadius } : {}),
+        ...(prevSame ? {borderTopRightRadius: sharpBorderRadius} : {}),
+        ...(nextSame ? {borderBottomRightRadius: sharpBorderRadius} : {}),
       }
     : {
-        ...(prevSame ? { borderTopLeftRadius: sharpBorderRadius } : {}),
-        ...(nextSame ? { borderBottomLeftRadius: sharpBorderRadius } : {}),
+        ...(prevSame ? {borderTopLeftRadius: sharpBorderRadius} : {}),
+        ...(nextSame ? {borderBottomLeftRadius: sharpBorderRadius} : {}),
       }),
 });
 

@@ -18,4 +18,4 @@ const colors = {
   gray900: '#222',
 };
 
-export { colors };
+export {colors};

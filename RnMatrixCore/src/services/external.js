@@ -1,6 +1,7 @@
 import chats from './chat';
 import matrix from './matrix';
 import messages from './message';
+import users from './user';
 
 const debug = require('debug')('rnm:services:external.js');
 
@@ -23,6 +24,14 @@ class ExternalService {
 
   isSynced$() {
     return matrix.isSynced$();
+  }
+
+  /*************************************************
+   * USER METHODS
+   *************************************************/
+
+  getMyUser() {
+    return users.getMyUser();
   }
 
   /*************************************************
@@ -85,13 +94,17 @@ class ExternalService {
     chat.setName(name);
   }
 
-  sendReply(roomId, relatedMessage, messageText) {
-    messages.sendReply(roomId, relatedMessage, messageText);
-  }
-
   /*************************************************
    * MESSAGE METHODS
    *************************************************/
+
+  send(content, type, roomId, eventId = null) {
+    messages.send(content, type, roomId, eventId);
+  }
+
+  sendReply(roomId, relatedMessage, messageText) {
+    messages.sendReply(roomId, relatedMessage, messageText);
+  }
 
   getMessageById(eventId, roomId, event = null) {
     return messages.getMessageById(eventId, roomId, event);

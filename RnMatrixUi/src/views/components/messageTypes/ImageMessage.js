@@ -1,10 +1,9 @@
-import { useObservableState } from 'observable-hooks';
+import {useObservableState} from 'observable-hooks';
 import React from 'react';
 
-import matrix from '../../../services/matrix';
-import users from '../../../services/user';
-import { View, Image, Pressable } from 'react-native';
-import { BubbleWrapper, SenderText } from '../MessageItem';
+import {View, Image, Pressable} from 'react-native';
+import {BubbleWrapper, SenderText} from '../MessageItem';
+import {matrix} from '@rn-matrix/core';
 
 // const debug = require('debug')('rnm:scene:chat:message:components:ImageMessage')
 
@@ -18,10 +17,12 @@ export default function ImageMessage({
   onLongPress,
   onSwipe,
 }) {
-  const myUser = users.getMyUser();
+  const myUser = matrix.getMyUser();
   const content = useObservableState(message.content$);
   const senderName = useObservableState(message.sender.name$);
-  const receipts = message.receipts$ ? useObservableState(message.receipts$) : [];
+  const receipts = message.receipts$
+    ? useObservableState(message.receipts$)
+    : [];
   const status = useObservableState(message.status$);
   const isMe = myUser.id === message.sender.id;
 
@@ -39,12 +40,12 @@ export default function ImageMessage({
     borderRadius: 20,
     ...(isMe
       ? {
-          ...(prevSame ? { borderTopRightRadius: sharpBorderRadius } : {}),
-          ...(nextSame ? { borderBottomRightRadius: sharpBorderRadius } : {}),
+          ...(prevSame ? {borderTopRightRadius: sharpBorderRadius} : {}),
+          ...(nextSame ? {borderBottomRightRadius: sharpBorderRadius} : {}),
         }
       : {
-          ...(prevSame ? { borderTopLeftRadius: sharpBorderRadius } : {}),
-          ...(nextSame ? { borderBottomLeftRadius: sharpBorderRadius } : {}),
+          ...(prevSame ? {borderTopLeftRadius: sharpBorderRadius} : {}),
+          ...(nextSame ? {borderBottomLeftRadius: sharpBorderRadius} : {}),
         }),
   };
 
@@ -70,7 +71,7 @@ export default function ImageMessage({
           //         { backgroundColor: isMe ? colors.blue400 : colors.gray300 },
           //         reactions ? { alignSelf: isMe ? 'flex-end' : 'flex-start' } : {},
           // ]}
-          style={({ pressed }) => ({
+          style={({pressed}) => ({
             opacity: pressed ? 0.75 : 1,
           })}>
           <View style={imageWrapperStyles}>

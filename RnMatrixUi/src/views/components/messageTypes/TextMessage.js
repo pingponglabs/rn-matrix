@@ -1,16 +1,14 @@
-import { useObservableState } from 'observable-hooks';
+import {useObservableState} from 'observable-hooks';
 import React from 'react';
-import { EventStatus } from 'matrix-js-sdk';
-import users from '../../../services/user';
-import { Text, TouchableHighlight, View } from 'react-native';
-import { SenderText, BubbleWrapper } from '../MessageItem';
-import { isIos } from '../../../utilities/misc';
-import { isEmoji } from '../../../utilities/emojis';
+import {EventStatus} from 'matrix-js-sdk';
+import {Text, TouchableHighlight, View} from 'react-native';
+import {SenderText, BubbleWrapper} from '../MessageItem';
+import {isIos} from '../../../utilities/misc';
+import {isEmoji} from '../../../utilities/emojis';
 import Html from '../Html';
-import { colors } from '../../../constants';
-import Reactions from '../Reactions';
+import {colors} from '../../../constants';
 import Icon from '../Icon';
-import ReadReceipts from '../ReadReceipts';
+import {matrix} from '@rn-matrix/core';
 
 const debug = require('debug')('rnm:views:components:messageTypes:TextMessage');
 
@@ -23,12 +21,12 @@ export default function TextMessage({
   onSwipe,
   showReactions,
 }) {
-  const myUser = users.getMyUser();
+  const myUser = matrix.getMyUser();
   const content = useObservableState(message.content$);
   const senderName = useObservableState(message.sender.name$);
   const status = useObservableState(message.status$);
   const reactions = useObservableState(message.reactions$);
-  const props = { prevSame, nextSame };
+  const props = {prevSame, nextSame};
   const isMe = myUser?.id === message.sender.id;
 
   //* *******************************************************************************
@@ -49,12 +47,15 @@ export default function TextMessage({
         message={message}
         showReactions={showReactions}>
         {isEmoji(content?.text) ? (
-          <Emoji style={!isIos() ? { fontFamily: 'NotoColorEmoji' } : {}} isMe={isMe} {...props}>
+          <Emoji
+            style={!isIos() ? {fontFamily: 'NotoColorEmoji'} : {}}
+            isMe={isMe}
+            {...props}>
             {content.text}
           </Emoji>
         ) : (
           <View style={viewStyle(nextSame)}>
-            <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
+            <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
               <TouchableHighlight
                 {...props}
                 underlayColor={isMe ? colors.blue600 : colors.gray400}
@@ -64,8 +65,10 @@ export default function TextMessage({
                 delayLongPress={200}
                 style={[
                   bubbleStyles(isMe, prevSame, nextSame),
-                  { backgroundColor: isMe ? colors.blue400 : colors.gray300 },
-                  reactions ? { alignSelf: isMe ? 'flex-end' : 'flex-start' } : {},
+                  {backgroundColor: isMe ? colors.blue400 : colors.gray300},
+                  reactions
+                    ? {alignSelf: isMe ? 'flex-end' : 'flex-start'}
+                    : {},
                 ]}>
                 <View
                   style={{
@@ -76,9 +79,13 @@ export default function TextMessage({
                   }}>
                   <Html html={content?.html} isMe={isMe} />
                   {isMe && (
-                    <View style={{ marginLeft: 12, marginRight: -6 }}>
+                    <View style={{marginLeft: 12, marginRight: -6}}>
                       <Icon
-                        name={status === EventStatus.SENDING ? 'circle' : 'check-circle'}
+                        name={
+                          status === EventStatus.SENDING
+                            ? 'circle'
+                            : 'check-circle'
+                        }
                         size={16}
                         color="#0f5499"
                       />
@@ -96,7 +103,7 @@ export default function TextMessage({
   );
 }
 
-const Emoji = ({ style, isMe, children }) => (
+const Emoji = ({style, isMe, children}) => (
   <Text
     style={{
       ...style,
@@ -116,12 +123,12 @@ const bubbleStyles = (isMe, prevSame, nextSame) => ({
   borderRadius: 18,
   ...(isMe
     ? {
-        ...(prevSame ? { borderTopRightRadius: sharpBorderRadius } : {}),
-        ...(nextSame ? { borderBottomRightRadius: sharpBorderRadius } : {}),
+        ...(prevSame ? {borderTopRightRadius: sharpBorderRadius} : {}),
+        ...(nextSame ? {borderBottomRightRadius: sharpBorderRadius} : {}),
       }
     : {
-        ...(prevSame ? { borderTopLeftRadius: sharpBorderRadius } : {}),
-        ...(nextSame ? { borderBottomLeftRadius: sharpBorderRadius } : {}),
+        ...(prevSame ? {borderTopLeftRadius: sharpBorderRadius} : {}),
+        ...(nextSame ? {borderBottomLeftRadius: sharpBorderRadius} : {}),
       }),
 });
 
