@@ -57,6 +57,8 @@ export default function MessageItem({
 
   const message = matrix.getMessageById(messageId, roomId);
 
+  if (!message.type$) return null;
+
   const prevMessage =
     prevMessageId && prevMessageId !== 'loading'
       ? matrix.getMessageById(prevMessageId, roomId)
@@ -104,7 +106,7 @@ export function BubbleWrapper({
   const reactions = message ? useObservableState(message.reactions$) : null;
   const receipts = message ? useObservableState(message.receipts$) : null;
 
-  const myUser = users.getMyUser();
+  const myUser = matrix.getMyUser();
 
   const toggleReaction = (key) => {
     message.toggleReaction(key);

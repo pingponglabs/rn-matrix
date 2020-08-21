@@ -14,7 +14,7 @@ import Composer from './Composer';
 
 type Props = {
   room: Chat,
-  keyboardOffset: number,
+  keyboardOffset?: number,
   showReactions?: boolean,
   enableComposer?: boolean,
   isEditing?: Boolean,

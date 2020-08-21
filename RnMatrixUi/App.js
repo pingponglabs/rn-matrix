@@ -27,7 +27,7 @@ const App = () => {
         <RoomList onRowPress={setRoom} />
       </SafeAreaView>
       <SafeAreaView style={{flex: 1}}>
-        {room && <MessageList room={room} />}
+        {room && <MessageList room={room} enableComposer />}
       </SafeAreaView>
     </>
   );
