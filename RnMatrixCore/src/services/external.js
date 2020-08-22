@@ -2,6 +2,7 @@ import chats from './chat';
 import matrix from './matrix';
 import messages from './message';
 import users from './user';
+import auth from './auth';
 
 const debug = require('debug')('rnm:services:external.js');
 
@@ -18,12 +19,44 @@ class ExternalService {
     return matrix.start(useCrypto);
   }
 
+  async getHomeserverData(domain) {
+    return matrix.getHomeserverData(domain);
+  }
+
+  /*************************************************
+   * AUTH METHODS
+   *************************************************/
+
+  initAuth() {
+    return auth.init();
+  }
+
+  loginWithPassword(username, password, homeserver, initCrypto = false) {
+    return auth.loginWithPassword(username, password, homeserver, initCrypto);
+  }
+
+  logout() {
+    return auth.logout();
+  }
+
+  /*************************************************
+   * VALUES
+   *************************************************/
+
   isReady$() {
     return matrix.isReady$();
   }
 
   isSynced$() {
     return matrix.isSynced$();
+  }
+
+  authIsLoaded$() {
+    return auth.isLoaded$();
+  }
+
+  isLoggedIn$() {
+    return auth.isLoggedIn$();
   }
 
   /*************************************************
@@ -44,7 +77,7 @@ class ExternalService {
       invite: [], // list of user IDs
       room_topic: '',
     };
-    return chats.createChat({...defaults, ...options});
+    return chats.createChat({ ...defaults, ...options });
   }
 
   async createEncryptedRoom(usersToInvite) {
@@ -111,7 +144,7 @@ class ExternalService {
   }
 
   deleteMessage(message) {
-    const {event} = message.getMatrixEvent();
+    const { event } = message.getMatrixEvent();
     const eventId = event.event_id;
     const roomId = event.room_id;
     matrix.getClient().redactEvent(roomId, eventId);

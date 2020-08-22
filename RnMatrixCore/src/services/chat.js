@@ -1,12 +1,12 @@
-import {InteractionManager} from 'react-native';
-import {BehaviorSubject} from 'rxjs';
+import { InteractionManager } from 'react-native';
+import { BehaviorSubject } from 'rxjs';
 
 // import matrix from '../../services/matrix/matrixService';
 // import { route$ } from '../../services/navigation/navigationService';
 // import Message from './message/Message';
 // import messages from './message/messageService';
 
-import Chat, {ChatDetails} from '../classes/Chat';
+import Chat, { ChatDetails } from '../classes/Chat';
 import matrix from './matrix';
 import users from './user';
 import messages from './message';
@@ -113,14 +113,11 @@ class ChatService {
 
         // Will be used to remove chats that have been removed
         const prevChatIndex = prevChats.find((roomId) => roomId === chat.id);
-        if (parseInt(prevChatIndex) !== -1)
-          prevChats.splice(parseInt(prevChatIndex), 1);
+        if (parseInt(prevChatIndex) !== -1) prevChats.splice(parseInt(prevChatIndex), 1);
       }
 
       chats = chats.sort((a, b) => {
-        return (
-          b.snippet$.getValue()?.timestamp - a.snippet$.getValue()?.timestamp
-        );
+        return b.snippet$.getValue()?.timestamp - a.snippet$.getValue()?.timestamp;
       });
       this._chats.all$.next(chats);
 
@@ -177,8 +174,7 @@ class ChatService {
     if (
       !oldEventId &&
       event.getType() === 'm.room.message' &&
-      (event.getContent().msgtype === 'm.image' ||
-        event.getContent().msgtype === 'm.file') &&
+      (event.getContent().msgtype === 'm.image' || event.getContent().msgtype === 'm.file') &&
       this._chats.all[roomId]
     ) {
       debug('Remove pending image message', roomId, event.getContent());
@@ -202,7 +198,7 @@ class ChatService {
       messages.updateMessage(mainEventId, roomId);
     }
 
-    this._chats.all[roomId].update({timeline: true});
+    this._chats.all[roomId].update({ timeline: true });
   }
 
   _handleRoomReceiptEvent(event, matrixRoom) {
@@ -213,10 +209,7 @@ class ChatService {
       messages.updateMessage(messageId, matrixRoom.roomId);
     });
 
-    if (
-      this._chats.all[roomId] &&
-      this._chats.all[roomId].isDirect$.getValue()
-    ) {
+    if (this._chats.all[roomId] && this._chats.all[roomId].isDirect$.getValue()) {
       if (!this._syncList[roomId]) this._syncList[roomId] = {};
       this._syncList[roomId].receipt = true;
     }
@@ -240,15 +233,11 @@ class ChatService {
       if (Message.isMessageUpdate(relatedEvent)) {
         // We need to look for the eventIds in memory because the associated id
         // has been redacted too
-        const mainMessage = messages.getMessageByRelationId(
-          relatedEvent.getId(),
-          roomId,
-        );
+        const mainMessage = messages.getMessageByRelationId(relatedEvent.getId(), roomId);
         if (!mainMessage) return;
         mainEventId = mainMessage.id;
       }
-      if (!this._syncList[roomId].messages)
-        this._syncList[roomId].messages = {};
+      if (!this._syncList[roomId].messages) this._syncList[roomId].messages = {};
       this._syncList[roomId].messages[mainEventId] = true;
     }
   }
@@ -271,11 +260,7 @@ class ChatService {
 
   _handleEventDecryptedEvent(event, error) {
     if (!error) {
-      const decryptedMessage = messages.getMessageById(
-        event.getId(),
-        event.getRoomId(),
-        event,
-      );
+      const decryptedMessage = messages.getMessageById(event.getId(), event.getRoomId(), event);
       if (decryptedMessage) {
         decryptedMessage.setMatrixEvent(event);
         decryptedMessage.update();
@@ -291,42 +276,28 @@ class ChatService {
   }
 
   _listen() {
-    matrix
-      .getClient()
-      .on('accountData', (event) => this._handleAccountDataEvent(event));
-    matrix
-      .getClient()
-      .on('deleteRoom', (roomId) => this._handleDeleteRoomEvent(roomId));
+    matrix.getClient().on('accountData', (event) => this._handleAccountDataEvent(event));
+    matrix.getClient().on('deleteRoom', (roomId) => this._handleDeleteRoomEvent(roomId));
     matrix
       .getClient()
       .on('Room.localEchoUpdated', (event, room, oldEventId, oldStatus) =>
-        this._handleRoomLocalEchoUpdatedEvent(event, room, oldEventId),
+        this._handleRoomLocalEchoUpdatedEvent(event, room, oldEventId)
       );
     matrix
       .getClient()
-      .on('Room.receipt', (event, room) =>
-        this._handleRoomReceiptEvent(event, room),
-      );
+      .on('Room.receipt', (event, room) => this._handleRoomReceiptEvent(event, room));
     matrix
       .getClient()
-      .on('Room.timeline', (event, room) =>
-        this._handleRoomTimelineEvent(event, room),
-      );
+      .on('Room.timeline', (event, room) => this._handleRoomTimelineEvent(event, room));
     matrix
       .getClient()
-      .on('RoomMember.typing', (event, member) =>
-        this._handleRoomMemberTypingEvent(event, member),
-      );
+      .on('RoomMember.typing', (event, member) => this._handleRoomMemberTypingEvent(event, member));
     matrix
       .getClient()
-      .on('RoomState.events', (event, roomState) =>
-        this._handleRoomStateEvent(event, roomState),
-      );
+      .on('RoomState.events', (event, roomState) => this._handleRoomStateEvent(event, roomState));
     matrix
       .getClient()
-      .on('Event.decrypted', (event, error) =>
-        this._handleEventDecryptedEvent(event, error),
-      );
+      .on('Event.decrypted', (event, error) => this._handleEventDecryptedEvent(event, error));
 
     matrix.getClient().on('sync', (state) => {
       if (['PREPARED', 'SYNCING'].includes(state)) {
@@ -358,10 +329,7 @@ class ChatService {
         this._chats.all[roomId].update(changes);
       }
     }
-    if (
-      this._isChatDisplayed('all') &&
-      Object.keys(this._syncList).length > 0
-    ) {
+    if (this._isChatDisplayed('all') && Object.keys(this._syncList).length > 0) {
       await this.updateLists();
     }
     this._syncList = {};
@@ -382,16 +350,14 @@ class ChatService {
       };
     } catch (e) {
       console.warn('Error creating chat: ', e);
-      return {error: true};
+      return { error: true };
     }
   }
 
   async createEncryptedChat(usersToInvite) {
     try {
       debug('Creating encrypted chat...');
-      const roomId = await matrix
-        .getClient()
-        .createEncryptedRoom(usersToInvite);
+      const roomId = await matrix.getClient().createEncryptedRoom(usersToInvite);
       const matrixRoom = matrix.getClient().getRoom(roomId);
 
       return {
@@ -400,7 +366,7 @@ class ChatService {
       };
     } catch (e) {
       console.warn('Error creating encrypted chat: ', e);
-      return {error: true};
+      return { error: true };
     }
   }
 
@@ -415,19 +381,9 @@ class ChatService {
   }
 
   sortChatsByLastMessage(chatA, chatB) {
-    const latestA = messages.getMessageById(
-      chatA.messages$.getValue()[0],
-      chatA.id,
-    )?.timestamp;
-    const latestB = messages.getMessageById(
-      chatB.messages$.getValue()[0],
-      chatB.id,
-    )?.timestamp;
-    return latestA && latestB && latestA > latestB
-      ? -1
-      : latestA < latestB
-      ? 1
-      : 0;
+    const latestA = messages.getMessageById(chatA.messages$.getValue()[0], chatA.id)?.timestamp;
+    const latestB = messages.getMessageById(chatB.messages$.getValue()[0], chatB.id)?.timestamp;
+    return latestA && latestB && latestA > latestB ? -1 : latestA < latestB ? 1 : 0;
   }
 
   isEqualById(a, b) {

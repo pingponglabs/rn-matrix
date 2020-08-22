@@ -1,11 +1,13 @@
 /**
  * @format
  */
-import './shim.js';
-import {AppRegistry} from 'react-native';
-import App from './App';
-import {name as appName} from './app.json';
-AppRegistry.registerComponent(appName, () => App);
+// import './shim.js';
+// import {AppRegistry} from 'react-native';
+// import App from './App';
+// import {name as appName} from './app.json';
+// AppRegistry.registerComponent(appName, () => App);
 
-// import RoomList from './src/views/RoomList'
-// import MessageList from './src/views/MessageList'
+import RoomList from './src/views/RoomList';
+import MessageList from './src/views/MessageList';
+
+export { RoomList, MessageList };

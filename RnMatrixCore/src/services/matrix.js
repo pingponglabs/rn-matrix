@@ -1,21 +1,14 @@
 import '../utilities/poly';
 
-// import { polyfillGlobal } from 'react-native/Libraries/Utilities/PolyfillFunctions';
-
-// // React Native's polyfills don't implement everything
-// polyfillGlobal('Buffer', () => require('buffer').Buffer);
-
 import loglevel from 'loglevel';
-import matrixSdk, { EventTimeline, MemoryStore } from 'matrix-js-sdk';
+import matrixSdk, { EventTimeline, MemoryStore, AutoDiscovery } from 'matrix-js-sdk';
 import { BehaviorSubject } from 'rxjs';
 import request from 'xmlhttp-request';
 import AsyncStorage from '@react-native-community/async-storage';
 import AsyncCryptoStore from '../storage/AsyncCryptoStore';
 import Olm from 'olm/olm_legacy';
 import { toImageBuffer } from '../utilities/misc';
-
-// import i18n from '../../i18n';
-// import SqlStore from './SqlStore';
+import i18n from '../utilities/i18n';
 
 const debug = require('debug')('rnm:matrix.js');
 // We need to put matrix logs to silent otherwise it throws exceptions we can't
@@ -23,14 +16,8 @@ const debug = require('debug')('rnm:matrix.js');
 const logger = loglevel.getLogger('matrix');
 logger.setLevel('silent');
 
-// const MATRIX_CLIENT_CREATE_OPTIONS = {
-//   request: request,
-//   timelineSupport: true,
-//   unstableClientRelationAggregation: true,
-// };
-
 const MATRIX_CLIENT_START_OPTIONS = {
-  initialSyncLimit: 8,
+  initialSyncLimit: 6,
   request: request,
   lazyLoadMembers: true,
   pendingEventOrdering: 'detached',
@@ -88,7 +75,7 @@ class MatrixService {
   // ********************************************************************************
   // Actions
   // ********************************************************************************
-  async createClient(baseUrl, accessToken, userId, deviceId) {
+  async createClient(baseUrl, accessToken = null, userId = null, deviceId = null) {
     if (this._client) {
       if (this._client.baseUrl === baseUrl && this._client.getAccessToken() === accessToken) {
         debug('Client exists already, ignoring…');
@@ -103,6 +90,7 @@ class MatrixService {
         deviceId,
         ...MATRIX_CLIENT_START_OPTIONS,
       });
+      debug('Client created: ', this._client);
       return this._client;
     }
   }
@@ -123,7 +111,10 @@ class MatrixService {
       await this._client.initCrypto();
     }
     await this._client.startClient(MATRIX_CLIENT_START_OPTIONS);
-    this._client.setGlobalErrorOnUnknownDevices(false);
+
+    if (useCrypto) {
+      this._client.setGlobalErrorOnUnknownDevices(false);
+    }
     this._started = true;
     debug('Matrix client started');
   }
@@ -144,6 +135,7 @@ class MatrixService {
   }
 
   _onSyncEvent(state, prevState, data) {
+    debug('sync event ', state);
     switch (state) {
       case 'PREPARED':
         if (data.fromCache) {
@@ -176,19 +168,19 @@ class MatrixService {
   // Helpers
   // ********************************************************************************
   async getHomeserverData(domain) {
-    // const clientConfig = await AutoDiscovery.findClientConfig(domain);
-    // const config = clientConfig['m.homeserver'];
-    // if (config.state !== AutoDiscovery.SUCCESS) {
-    //   debug('AutoDiscovery error', config);
-    //   return {
-    //     error: 'INVALID_HOMESERVER',
-    //     message: i18n.t('auth:login.invalidHomeserverError'),
-    //   };
-    // }
-    // return {
-    //   domain,
-    //   baseUrl: config.base_url,
-    // };
+    const clientConfig = await AutoDiscovery.findClientConfig(domain);
+    const config = clientConfig['m.homeserver'];
+    if (config.state !== AutoDiscovery.SUCCESS) {
+      debug('AutoDiscovery error', config);
+      return {
+        error: 'INVALID_HOMESERVER',
+        message: i18n.t('auth:login.invalidHomeserverError'),
+      };
+    }
+    return {
+      domain,
+      baseUrl: config.base_url,
+    };
   }
 
   getImageUrl(mxcUrl, width, height, resizeMethod = 'scale') {
