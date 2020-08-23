@@ -6698,6 +6698,11 @@ react-is@^16.12.0, react-is@^16.13.0, react-is@^16.8.1, react-is@^16.8.4, react-
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
 
+react-native-actions-sheet@^0.3.4:
+  version "0.3.4"
+  resolved "https://registry.yarnpkg.com/react-native-actions-sheet/-/react-native-actions-sheet-0.3.4.tgz#f4d165b53a46ce53f2880c63966ab3b1691810e1"
+  integrity sha512-XBJspyulVf6X8faDIVVEg4RqYYeKvDZfPBxzseDpRaaUExroAXIRGy2sFFaFNwQDa1GF4UfKLXRopv6DtRUd/A==
+
 react-native-crypto@^2.1.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/react-native-crypto/-/react-native-crypto-2.2.0.tgz#c999ed7c96064f830e1f958687f53d0c44025770"

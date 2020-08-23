@@ -1,7 +1,7 @@
 import {createStackNavigator} from '@react-navigation/stack';
 import {useObservableState} from 'observable-hooks';
 import React from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, Pressable} from 'react-native';
 
 import ChatListScreen from './scenes/chatList/ChatListScreen';
 import ChatScreen from './scenes/chat/ChatScreen';
@@ -38,9 +38,32 @@ export default function AppNavigator() {
     );
   } else if (authLoggedIn) {
     return (
-      <Stack.Navigator mode="modal" headerMode="none">
-        <Stack.Screen name="ChatList" component={ChatListScreen} />
-        <Stack.Screen name="Chat" component={ChatScreen} />
+      <Stack.Navigator>
+        <Stack.Screen
+          name="ChatList"
+          component={ChatListScreen}
+          options={{
+            title: 'Chats',
+            headerLeft: () => (
+              <Pressable
+                style={({pressed}) => ({
+                  marginLeft: 6,
+                  padding: 12,
+                  borderRadius: 8,
+                  backgroundColor: pressed ? 'lightgray' : '#fff',
+                })}>
+                <Text style={{fontWeight: 'bold', color: 'dodgerblue'}}>
+                  LOGOUT
+                </Text>
+              </Pressable>
+            ),
+          }}
+        />
+        <Stack.Screen
+          name="Chat"
+          component={ChatScreen}
+          options={{headerBackTitle: 'Back'}}
+        />
         {/* <Stack.Screen name="Main" component={MainScreens} />
         <Stack.Screen name="Settings" component={SettingsScreen} />
         <Stack.Screen name="NewChat" component={NewChatScreens} /> */}

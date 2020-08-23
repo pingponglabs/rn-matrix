@@ -1,17 +1,11 @@
-import React, {useState, useEffect, useRef} from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  TouchableHighlight,
-  Pressable,
-} from 'react-native';
-import {useObservableState} from 'observable-hooks';
-import {colors} from '../constants';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, TextInput, StyleSheet, TouchableHighlight, Pressable } from 'react-native';
+import { useObservableState } from 'observable-hooks';
+import { colors } from '../constants';
 import Icon from './components/Icon';
 import ImagePicker from 'react-native-image-picker';
 import DocumentPicker from 'react-native-document-picker';
+import { matrix } from '@rn-matrix/core';
 
 export default function Composer({
   room,
@@ -88,7 +82,7 @@ export default function Composer({
   if (!room) {
     return (
       <View style={styles.wrapper}>
-        <Text style={{marginLeft: 12}}>No room specified.</Text>
+        <Text style={{ marginLeft: 12 }}>No room specified.</Text>
       </View>
     );
   }
@@ -96,49 +90,42 @@ export default function Composer({
   return (
     <View style={styles.wrapper}>
       {selectedMessage &&
-        ((isEditing && !isReplying) ||
-          (!isEditing && isReplying && enableReplies)) && (
+        ((isEditing && !isReplying) || (!isEditing && isReplying && enableReplies)) && (
           <View style={styles.activeMessageBar}>
             <View>
-              <Text style={{color: 'dodgerblue', fontWeight: 'bold'}}>
-                {isEditing
-                  ? 'Editing'
-                  : `Replying to ${selectedMessage.sender.name$.getValue()}`}
+              <Text style={{ color: 'dodgerblue', fontWeight: 'bold' }}>
+                {isEditing ? 'Editing' : `Replying to ${selectedMessage.sender.name$.getValue()}`}
               </Text>
-              <Text numberOfLines={1} style={{color: 'gray'}}>
+              <Text numberOfLines={1} style={{ color: 'gray' }}>
                 {selectedMessage.content$?.getValue()?.text}
               </Text>
             </View>
             <TouchableHighlight
               onPress={cancel}
               underlayColor="#ddd"
-              style={{padding: 6, borderRadius: 50}}>
+              style={{ padding: 6, borderRadius: 50 }}>
               <View>
                 <Icon name="close" color="gray" />
               </View>
             </TouchableHighlight>
           </View>
         )}
-      <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
+      <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
         {room.isEncrypted() && (
-          <Icon
-            name="lock"
-            color="#888"
-            style={{marginVertical: 10, marginHorizontal: 4}}
-          />
+          <Icon name="lock" color="#888" style={{ marginVertical: 10, marginHorizontal: 4 }} />
         )}
         <Pressable
           onPress={toggleActionButtons}
-          style={({pressed}) => [
+          style={({ pressed }) => [
             styles.actionButton,
-            {backgroundColor: pressed ? '#ddd' : 'transparent'},
+            { backgroundColor: pressed ? '#ddd' : 'transparent' },
           ]}>
           <Icon
             name={'add'}
             color="#888"
             size={30}
             style={{
-              transform: [{rotate: actionButtonsShowing ? '45deg' : '0deg'}],
+              transform: [{ rotate: actionButtonsShowing ? '45deg' : '0deg' }],
             }}
           />
         </Pressable>
@@ -146,23 +133,23 @@ export default function Composer({
           <>
             <Pressable
               onPress={openImagePicker}
-              style={({pressed}) => [
+              style={({ pressed }) => [
                 styles.sendButton,
-                {backgroundColor: pressed ? '#ddd' : 'transparent'},
+                { backgroundColor: pressed ? '#ddd' : 'transparent' },
               ]}>
               <Icon name="image" color="#888" size={20} />
             </Pressable>
             <Pressable
               onPress={openDocPicker}
-              style={({pressed}) => [
+              style={({ pressed }) => [
                 styles.sendButton,
-                {backgroundColor: pressed ? '#ddd' : 'transparent'},
+                { backgroundColor: pressed ? '#ddd' : 'transparent' },
               ]}>
               <Icon
                 name="attach"
                 color="#888"
                 size={20}
-                style={{transform: [{rotate: '38deg'}]}}
+                style={{ transform: [{ rotate: '38deg' }] }}
               />
             </Pressable>
           </>
@@ -181,11 +168,7 @@ export default function Composer({
           onPress={isEditing ? confirmEdit : handleSend}
           underlayColor="#ddd"
           style={styles.sendButton}>
-          <Text
-            style={[
-              styles.sendText,
-              value.length === 0 ? {color: '#888'} : {},
-            ]}>
+          <Text style={[styles.sendText, value.length === 0 ? { color: '#888' } : {}]}>
             {isEditing ? 'Save' : 'Send'}
           </Text>
         </TouchableHighlight>

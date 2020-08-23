@@ -76,7 +76,8 @@ class MatrixService {
   // Actions
   // ********************************************************************************
   async createClient(baseUrl, accessToken = null, userId = null, deviceId = null) {
-    if (this._client) {
+    debug('createClient', baseUrl, accessToken.slice(0, 10), userId, deviceId);
+    if (this._client && !deviceId) {
       if (this._client.baseUrl === baseUrl && this._client.getAccessToken() === accessToken) {
         debug('Client exists already, ignoring…');
         return;
@@ -135,7 +136,6 @@ class MatrixService {
   }
 
   _onSyncEvent(state, prevState, data) {
-    debug('sync event ', state);
     switch (state) {
       case 'PREPARED':
         if (data.fromCache) {

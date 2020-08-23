@@ -99,7 +99,7 @@ class AuthService {
     try {
       let user = username;
       let domain = homeserver;
-      if (domain.length === 0) {
+      if (domain?.length === 0) {
         const splitUser = user.split(':');
         if (splitUser.length === 2) {
           user = splitUser[0].slice(1);
@@ -115,9 +115,10 @@ class AuthService {
       const domainToCheck = domain.includes('https://') ? domain.slice(8) : domain;
       const homeserverData = await matrix.getHomeserverData(domainToCheck);
 
-      debug('Logging in as %s on %s', user, domain);
-      const client = await matrix.createClient(homeserverData.baseUrl || domain);
+      debug('Logging in as %s on %s', user, homeserverData.baseUrl || domain, password);
+      await matrix.createClient(homeserverData.baseUrl || domain);
       const response = await matrix.getClient().loginWithPassword(user, password);
+      debug('Logging in again with device ID... ', response);
       await matrix.createClient(
         homeserverData.baseUrl || domain,
         response.access_token,
@@ -178,7 +179,7 @@ class AuthService {
         };
       }
       debug('Logging in as %s on %s with deviceId %s', userId, homeserver, deviceId);
-      await matrix.createClient(homeserver, userId, accessToken, deviceId);
+      await matrix.createClient(homeserver, accessToken, userId, deviceId);
 
       this._isLoggedIn$.next(true);
 
