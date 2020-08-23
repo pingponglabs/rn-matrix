@@ -31,7 +31,7 @@
     "start": "react-native start",
     "test": "echo 'No tests'",
     "lint": "eslint .",
-    "pub": "yarn publish --access public"
+    "pub": "yarn publish --access public --version-tag-prefix 'core@'"
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.12.0",
