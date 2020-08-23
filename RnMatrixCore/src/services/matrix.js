@@ -76,7 +76,7 @@ class MatrixService {
   // Actions
   // ********************************************************************************
   async createClient(baseUrl, accessToken = null, userId = null, deviceId = null) {
-    debug('createClient', baseUrl, accessToken.slice(0, 10), userId, deviceId);
+    debug('createClient', baseUrl, accessToken?.slice(0, 10), userId, deviceId);
     if (this._client && !deviceId) {
       if (this._client.baseUrl === baseUrl && this._client.getAccessToken() === accessToken) {
         debug('Client exists already, ignoring…');

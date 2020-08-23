@@ -46,6 +46,7 @@ export default function AppNavigator() {
             title: 'Chats',
             headerLeft: () => (
               <Pressable
+                onPress={matrix.logout}
                 style={({pressed}) => ({
                   marginLeft: 6,
                   padding: 12,

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   SafeAreaView,
   TextInput,
@@ -13,6 +13,7 @@ export default function LoginScreen() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [homeserver, setHomeserver] = useState('');
+  const [error, setError] = useState(null);
 
   const handleUsernameChange = (text) => {
     if (text.charAt(0) === '@') {
@@ -29,15 +30,25 @@ export default function LoginScreen() {
       homeserver,
       true,
     );
-    console.log(result);
+    if (result.error) {
+      setError(result.message);
+    }
   };
+
+  useEffect(() => {
+    if (error) {
+      setError(null);
+    }
+  }, [username, password, homeserver, error]);
 
   return (
     <SafeAreaView style={{flex: 1}}>
       <Text style={{alignSelf: 'center', marginTop: 24}}>
         the most vanilla basic matrix client you ever did see
       </Text>
-      <ScrollView contentContainerStyle={{flex: 1, alignItems: 'center'}}>
+      <ScrollView
+        contentContainerStyle={{flex: 1, alignItems: 'center'}}
+        keyboardShouldPersistTaps="handled">
         <Text style={styles.label}>Username or MXID</Text>
         <TextInput
           autoFocus
@@ -66,7 +77,19 @@ export default function LoginScreen() {
           placeholder="Homeserver"
           value={homeserver}
           onChangeText={setHomeserver}
+          onSubmitEditing={login}
         />
+        {error && (
+          <Text
+            style={{
+              marginTop: 24,
+              color: 'red',
+              textAlign: 'center',
+              width: '70%',
+            }}>
+            {error}
+          </Text>
+        )}
         <Pressable
           onPress={login}
           style={({pressed}) => [

@@ -115,10 +115,11 @@ class AuthService {
       const domainToCheck = domain.includes('https://') ? domain.slice(8) : domain;
       const homeserverData = await matrix.getHomeserverData(domainToCheck);
 
-      debug('Logging in as %s on %s', user, homeserverData.baseUrl || domain, password);
-      await matrix.createClient(homeserverData.baseUrl || domain);
-      const response = await matrix.getClient().loginWithPassword(user, password);
-      debug('Logging in again with device ID... ', response);
+      debug('Logging in as %s on %s', user, homeserverData.baseUrl || domain);
+      const client = await matrix.createClient(homeserverData.baseUrl || domain);
+      debug('Logging in to created client...', client);
+      const response = await client.loginWithPassword(user, password);
+      debug('Logging in again with device ID... ', JSON.stringify(response));
       await matrix.createClient(
         homeserverData.baseUrl || domain,
         response.access_token,
@@ -217,6 +218,7 @@ class AuthService {
       await matrix.stop();
       // TODO: Maybe keep some settings
       await storage.clear();
+      this._isLoggedIn$.next(false);
     } catch (e) {
       debug('Error logging out', e);
     }
