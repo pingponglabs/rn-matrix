@@ -1,7 +1,7 @@
 import React from 'react';
-import {View, FlatList, ActivityIndicator} from 'react-native';
-import {matrix} from '@rn-matrix/core';
-import {useObservableState} from 'observable-hooks';
+import { View, FlatList, ActivityIndicator } from 'react-native';
+import { matrix } from '@rn-matrix/core';
+import { useObservableState } from 'observable-hooks';
 import RoomListItem from './components/RoomListItem';
 import RoomInviteItem from './components/RoomInviteItem';
 
@@ -19,20 +19,19 @@ export default function RoomList({
   const inviteList = useObservableState(matrix.getRoomsByType$('invites'));
   const chatList = useObservableState(matrix.getRooms$());
   const isReady = useObservableState(matrix.isReady$());
-  // const isSynced = useObservableState(matrix.isSynced$());
-  const isSynced = true;
+  const isSynced = useObservableState(matrix.isSynced$());
 
-  const renderRow = ({item}) => {
+  const renderRow = ({ item }) => {
     return <RoomListItem key={item.id} room={item} onPress={onRowPress} />;
   };
 
-  const renderInviteRow = ({item}) => {
+  const renderInviteRow = ({ item }) => {
     return <RoomInviteItem key={item.id} room={item} />;
   };
 
   if (!isReady || !isSynced) {
     return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <ActivityIndicator size="large" />
       </View>
     );
@@ -41,7 +40,7 @@ export default function RoomList({
   const InviteList = () => (
     <>
       {inviteList.map((item) =>
-        renderInvite ? renderInvite({item}) : renderInviteRow({item}),
+        renderInvite ? renderInvite({ item }) : renderInviteRow({ item })
       )}
     </>
   );
