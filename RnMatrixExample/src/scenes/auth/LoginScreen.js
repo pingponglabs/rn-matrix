@@ -17,7 +17,7 @@ export default function LoginScreen() {
 
   const handleUsernameChange = (text) => {
     if (text.charAt(0) === '@') {
-      const domain = `https://${text.slice(text.lastIndexOf(':') + 1)}`;
+      const domain = `https://matrix.${text.slice(text.lastIndexOf(':') + 1)}`;
       setHomeserver(domain);
     }
     setUsername(text);

@@ -1,14 +1,11 @@
 import {createStackNavigator} from '@react-navigation/stack';
 import {useObservableState} from 'observable-hooks';
 import React from 'react';
-import {View, Text, Pressable} from 'react-native';
+import {View, Text, Pressable, ActivityIndicator} from 'react-native';
 
 import ChatListScreen from './scenes/chatList/ChatListScreen';
 import ChatScreen from './scenes/chat/ChatScreen';
 import LoginScreen from './scenes/auth/LoginScreen';
-
-// import auth from '../../scenes/auth/authService'
-// import matrix from '../matrix/matrixService'
 
 import {matrix} from '@rn-matrix/core';
 
@@ -33,7 +30,7 @@ export default function AppNavigator() {
   if (!authLoaded || (authLoggedIn && !matrixReady)) {
     return (
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <Text>splash</Text>
+        <ActivityIndicator size="large" />
       </View>
     );
   } else if (authLoggedIn) {

@@ -112,7 +112,10 @@ class AuthService {
         } else domain = 'matrix.org';
       }
 
-      const domainToCheck = domain.includes('https://') ? domain.slice(8) : domain;
+      domain = domain.includes('https://') ? domain : `https://${domain}`;
+      debug('hey domain ', domain);
+
+      const domainToCheck = domain.slice(8);
       const homeserverData = await matrix.getHomeserverData(domainToCheck);
 
       debug('Logging in as %s on %s', user, homeserverData.baseUrl || domain);
