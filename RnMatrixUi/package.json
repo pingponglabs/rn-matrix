@@ -1,7 +1,7 @@
 {
   "name": "@rn-matrix/ui",
   "description": "UI components to be used alongside the data in rn-matrix",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "private": false,
   "repository": {
     "type": "git",
@@ -30,7 +30,7 @@
     "start": "react-native start",
     "test": "echo 'No tests'",
     "lint": "eslint .",
-    "pub": "yarn publish --access public"
+    "pub": "yarn publish --access public --version-tag-prefix 'ui@'"
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.12.0",
