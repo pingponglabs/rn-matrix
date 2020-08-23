@@ -84,6 +84,7 @@ class MatrixService {
       }
       this.stop();
     } else {
+      matrixSdk.request(request);
       this._client = matrixSdk.createClient({
         baseUrl,
         accessToken,

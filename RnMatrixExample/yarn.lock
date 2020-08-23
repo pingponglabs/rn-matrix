@@ -1254,10 +1254,42 @@
     vm-browserify "0.0.4"
     xmlhttp-request "^0.4.1"
 
-"@rn-matrix/ui@^0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@rn-matrix/ui/-/ui-0.0.2.tgz#26ed747ade8a2a6b55dd23e5471a22d7a00974b7"
-  integrity sha512-lHqJQk3HAMTNRBfvpFtLTHpG6OM90tVKP34vhaIFMxb3iIi+rfQEmhCDjVmtB1EhbTPHKnTGX969orQmxcOR9w==
+"@rn-matrix/core@^0.0.9":
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/@rn-matrix/core/-/core-0.0.9.tgz#8b77501ff4deebc4057c342774e0f645ebf8c71c"
+  integrity sha512-mOYVk7TfSH+NielFwnM8HSc10yg3QFDOEXntvfKdUak7aAKGhlm5VbYaZF+mjtNplKccwGgaWwddRpCORy96Ng==
+  dependencies:
+    "@react-native-community/async-storage" "^1.12.0"
+    asyncstorage-down "^4.2.0"
+    buffer "^4.9.1"
+    events "^1.0.0"
+    fbemitter "^2.1.1"
+    i18next "^19.7.0"
+    lodash "^4.17.20"
+    matrix-js-sdk "^8.1.0"
+    observable-hooks "^3.1.0"
+    olm "https://packages.matrix.org/npm/olm/olm-3.1.4.tgz"
+    path-browserify "0.0.0"
+    process "^0.11.0"
+    react-i18next "^11.7.0"
+    react-native-crypto "^2.1.0"
+    react-native-level-fs "^3.0.0"
+    react-native-localize "^1.4.1"
+    react-native-randombytes "^3.5.3"
+    readable-stream "1.0.33"
+    rn-nodeify "^10.2.0"
+    rxjs "^6.6.2"
+    showdown "^1.9.1"
+    stream-browserify "^1.0.0"
+    url "~0.10.1"
+    util "~0.10.3"
+    vm-browserify "0.0.4"
+    xmlhttp-request "^0.4.1"
+
+"@rn-matrix/ui@^0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@rn-matrix/ui/-/ui-0.0.3.tgz#2a80a2845fb2352446ad9a7e439045cc51ae3d1c"
+  integrity sha512-uzoIEaf1cP7OzLcZoGubAYKjLnehzpZxISEVMwb8A968uwtwJHD6xso1SCtf+mwpwJCXwa4I9oQe23m4ZGvI5g==
   dependencies:
     "@react-native-community/async-storage" "^1.12.0"
     "@rn-matrix/core" "^0.0.7"

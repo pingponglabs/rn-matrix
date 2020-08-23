@@ -96,10 +96,11 @@ class AuthService {
   // Actions
   // ********************************************************************************
   async loginWithPassword(username, password, homeserver, initCrypto = false) {
+    console.log('hi');
     try {
       let user = username;
       let domain = homeserver;
-      if (domain?.length === 0) {
+      if (!domain || domain.length === 0) {
         const splitUser = user.split(':');
         if (splitUser.length === 2) {
           user = splitUser[0].slice(1);

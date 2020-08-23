@@ -31,7 +31,7 @@
     "start": "react-native start",
     "test": "echo 'No tests'",
     "lint": "eslint .",
-    "pub": "yarn publish --access public --version-tag-prefix 'core@'"
+    "pub": "yarn publish --access public --no-git-tag-version"
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.12.0",
@@ -59,6 +59,7 @@
     "url": "~0.10.1",
     "util": "~0.10.3",
     "vm-browserify": "0.0.4",
+    "whatwg-url": "^8.1.0",
     "xmlhttp-request": "^0.4.1"
   },
   "peerDependencies": {

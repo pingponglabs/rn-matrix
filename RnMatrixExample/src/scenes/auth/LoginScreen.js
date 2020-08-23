@@ -16,10 +16,10 @@ export default function LoginScreen() {
   const [error, setError] = useState(null);
 
   const handleUsernameChange = (text) => {
-    if (text.charAt(0) === '@') {
-      const domain = `https://matrix.${text.slice(text.lastIndexOf(':') + 1)}`;
-      setHomeserver(domain);
-    }
+    // if (text.charAt(0) === '@') {
+    //   const domain = `https://matrix.${text.slice(text.lastIndexOf(':') + 1)}`;
+    //   setHomeserver(domain);
+    // }
     setUsername(text);
   };
 
@@ -27,7 +27,7 @@ export default function LoginScreen() {
     const result = await matrix.loginWithPassword(
       username,
       password,
-      homeserver,
+      null,
       true,
     );
     if (result.error) {
