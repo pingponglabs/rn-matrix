@@ -23,6 +23,10 @@ class ExternalService {
     return matrix.getHomeserverData(domain);
   }
 
+  getClient() {
+    return matrix.getClient();
+  }
+
   /*************************************************
    * AUTH METHODS
    *************************************************/

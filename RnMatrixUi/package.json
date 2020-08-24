@@ -1,7 +1,7 @@
 {
   "name": "@rn-matrix/ui",
   "description": "UI components to be used alongside the data in rn-matrix",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "private": false,
   "repository": {
     "type": "git",
@@ -34,7 +34,6 @@
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.12.0",
-    "@rn-matrix/core": "^0.0.7",
     "moment": "^2.27.0",
     "observable-hooks": "^3.1.0",
     "react-native-document-picker": "^3.5.4",
@@ -55,6 +54,7 @@
     "striptags": "^3.1.1"
   },
   "peerDependencies": {
+    "@rn-matrix/core": "^0.0.11",
     "react": "16.13.1",
     "react-native": "0.63.2"
   },
