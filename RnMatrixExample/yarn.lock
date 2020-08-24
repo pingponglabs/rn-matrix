@@ -1222,6 +1222,39 @@
     color "^3.1.2"
     react-native-iphone-x-helper "^1.2.1"
 
+"@rn-matrix/core@^0.0.10":
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/@rn-matrix/core/-/core-0.0.10.tgz#6e7e77c010a3b31a72f37540fb2b9ba59a5d7fea"
+  integrity sha512-BueNCalPDz0snfclABQeV4xcsm2qcxtGKxh47aaGl/I8QjIzZ2lnl/CmBXBztQzeEe11jYP8YmTiZxGMeYXleQ==
+  dependencies:
+    "@react-native-community/async-storage" "^1.12.0"
+    asyncstorage-down "^4.2.0"
+    buffer "^4.9.1"
+    events "^1.0.0"
+    fbemitter "^2.1.1"
+    i18next "^19.7.0"
+    lodash "^4.17.20"
+    matrix-js-sdk "^8.1.0"
+    observable-hooks "^3.1.0"
+    olm "https://packages.matrix.org/npm/olm/olm-3.1.4.tgz"
+    path-browserify "0.0.0"
+    process "^0.11.0"
+    react-i18next "^11.7.0"
+    react-native-crypto "^2.1.0"
+    react-native-level-fs "^3.0.0"
+    react-native-localize "^1.4.1"
+    react-native-randombytes "^3.5.3"
+    readable-stream "1.0.33"
+    rn-nodeify "^10.2.0"
+    rxjs "^6.6.2"
+    showdown "^1.9.1"
+    stream-browserify "^1.0.0"
+    url "~0.10.1"
+    util "~0.10.3"
+    vm-browserify "0.0.4"
+    whatwg-url "^8.1.0"
+    xmlhttp-request "^0.4.1"
+
 "@rn-matrix/core@^0.0.7":
   version "0.0.7"
   resolved "https://registry.yarnpkg.com/@rn-matrix/core/-/core-0.0.7.tgz#5ef6182c285315bb5cad516521becc03e2c9f616"
@@ -1254,42 +1287,10 @@
     vm-browserify "0.0.4"
     xmlhttp-request "^0.4.1"
 
-"@rn-matrix/core@^0.0.9":
-  version "0.0.9"
-  resolved "https://registry.yarnpkg.com/@rn-matrix/core/-/core-0.0.9.tgz#8b77501ff4deebc4057c342774e0f645ebf8c71c"
-  integrity sha512-mOYVk7TfSH+NielFwnM8HSc10yg3QFDOEXntvfKdUak7aAKGhlm5VbYaZF+mjtNplKccwGgaWwddRpCORy96Ng==
-  dependencies:
-    "@react-native-community/async-storage" "^1.12.0"
-    asyncstorage-down "^4.2.0"
-    buffer "^4.9.1"
-    events "^1.0.0"
-    fbemitter "^2.1.1"
-    i18next "^19.7.0"
-    lodash "^4.17.20"
-    matrix-js-sdk "^8.1.0"
-    observable-hooks "^3.1.0"
-    olm "https://packages.matrix.org/npm/olm/olm-3.1.4.tgz"
-    path-browserify "0.0.0"
-    process "^0.11.0"
-    react-i18next "^11.7.0"
-    react-native-crypto "^2.1.0"
-    react-native-level-fs "^3.0.0"
-    react-native-localize "^1.4.1"
-    react-native-randombytes "^3.5.3"
-    readable-stream "1.0.33"
-    rn-nodeify "^10.2.0"
-    rxjs "^6.6.2"
-    showdown "^1.9.1"
-    stream-browserify "^1.0.0"
-    url "~0.10.1"
-    util "~0.10.3"
-    vm-browserify "0.0.4"
-    xmlhttp-request "^0.4.1"
-
-"@rn-matrix/ui@^0.0.3":
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/@rn-matrix/ui/-/ui-0.0.3.tgz#2a80a2845fb2352446ad9a7e439045cc51ae3d1c"
-  integrity sha512-uzoIEaf1cP7OzLcZoGubAYKjLnehzpZxISEVMwb8A968uwtwJHD6xso1SCtf+mwpwJCXwa4I9oQe23m4ZGvI5g==
+"@rn-matrix/ui@^0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@rn-matrix/ui/-/ui-0.0.4.tgz#3ef02e45e131da2a88ccc48f68a8718672324e9c"
+  integrity sha512-jq2JC1q4Sd/bJHzUqrTzAAZsiKzZonagfVTD7Zt9oFIWGs+lW7OBNECGl/kIBjwcW55QBMBCyGB7prOrIBJsFg==
   dependencies:
     "@react-native-community/async-storage" "^1.12.0"
     "@rn-matrix/core" "^0.0.7"
@@ -8434,7 +8435,7 @@ whatwg-mimetype@^2.3.0:
   resolved "https://registry.yarnpkg.com/whatwg-mimetype/-/whatwg-mimetype-2.3.0.tgz#3d4b1e0312d2079879f826aff18dbeeca5960fbf"
   integrity sha512-M4yMwr6mAnQz76TbJm914+gPpB/nCwvZbJU28cUD6dR004SAxDLOOSUaB1JDRqLtaOV/vi0IC5lEAGFgrjGv/g==
 
-whatwg-url@^8.0.0:
+whatwg-url@^8.0.0, whatwg-url@^8.1.0:
   version "8.1.0"
   resolved "https://registry.yarnpkg.com/whatwg-url/-/whatwg-url-8.1.0.tgz#c628acdcf45b82274ce7281ee31dd3c839791771"
   integrity sha512-vEIkwNi9Hqt4TV9RdnaBPNt+E2Sgmo3gePebCRgZ1R7g6d23+53zCTnuB0amKI4AXq6VM8jj2DUAa0S1vjJxkw==
