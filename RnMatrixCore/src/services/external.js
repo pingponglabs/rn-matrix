@@ -92,27 +92,27 @@ class ExternalService {
     return chats.getChats();
   }
 
-  getRoomsByType$(type: 'direct' | 'invites' | 'groups') {
+  getRoomsByType$(type) {
     return chats.getListByType$(type);
   }
 
-  getRoomById(roomId: string) {
+  getRoomById(roomId) {
     return chats.getChatById(roomId);
   }
 
-  joinRoom(roomIdOrAlias: string) {
+  joinRoom(roomIdOrAlias) {
     chats.joinRoom(roomIdOrAlias);
   }
 
-  leaveRoom(roomId: string) {
+  leaveRoom(roomId) {
     chats.leaveRoom(roomId);
   }
 
-  rejectInvite(roomId: string) {
+  rejectInvite(roomId) {
     chats.leaveRoom(roomId);
   }
 
-  getDirectChat(userId: string) {
+  getDirectChat(userId) {
     let directMessage = null;
     const joinedChats = chats.getChats().getValue();
     for (let i = 0; i < joinedChats.length && !directMessage; i++) {
@@ -126,7 +126,7 @@ class ExternalService {
     return directMessage;
   }
 
-  setRoomName(roomId: string, name: string) {
+  setRoomName(roomId, name) {
     const chat = chats.getChatById(roomId);
     chat.setName(name);
   }

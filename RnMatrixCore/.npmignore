@@ -4,3 +4,8 @@ android/
 __tests__/
 
 shim.js
+babel.config.js
+metro.config.js
+.watchmanconfig
+.prettierrc
+.eslintrc
