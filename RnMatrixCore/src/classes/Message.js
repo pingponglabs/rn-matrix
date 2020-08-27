@@ -129,17 +129,32 @@ export default class Message {
       }
 
       const newContent = this._getContent();
-      if (!isEqual(this.content$.getValue(), newContent)) {
+      try {
+        if (!isEqual(this.content$.getValue(), newContent)) {
+          this.content$.next(newContent);
+        }
+      } catch (e) {
+        console.log('Callstack exceeded.');
         this.content$.next(newContent);
       }
 
       const newReactions = this._getReactions();
-      if (!isEqual(this.reactions$.getValue(), newReactions)) {
+      try {
+        if (!isEqual(this.reactions$.getValue(), newReactions)) {
+          this.reactions$.next(newReactions);
+        }
+      } catch (e) {
+        console.log('Callstack exceeded.');
         this.reactions$.next(newReactions);
       }
 
       const newReceipts = this._getReceipts();
-      if (!isEqual(this.receipts$.getValue(), newReceipts)) {
+      try {
+        if (!isEqual(this.receipts$.getValue(), newReceipts)) {
+          this.receipts$.next(newReceipts);
+        }
+      } catch (e) {
+        console.log('Callstack exceeded.');
         this.receipts$.next(newReceipts);
       }
     } else {

@@ -96,7 +96,6 @@ class AuthService {
   // Actions
   // ********************************************************************************
   async loginWithPassword(username, password, homeserver, initCrypto = false) {
-    console.log('hi');
     try {
       let user = username;
       let domain = homeserver;
