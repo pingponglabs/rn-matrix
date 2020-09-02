@@ -1,7 +1,7 @@
 {
   "name": "@rn-matrix/ui",
   "description": "UI components to be used alongside the data in rn-matrix",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "private": false,
   "repository": {
     "type": "git",
@@ -50,7 +50,6 @@
     "react-native-typing-animation": "^0.1.7",
     "react-native-video": "^5.1.0-alpha8",
     "react-native-webview": "^10.7.0",
-    "rn-nodeify": "^10.2.0",
     "rxjs": "^6.6.2",
     "striptags": "^3.1.1"
   },
@@ -71,30 +70,6 @@
   },
   "jest": {
     "preset": "react-native"
-  },
-  "react-native": {
-    "crypto": "react-native-crypto",
-    "path": "path-browserify",
-    "fs": "react-native-level-fs",
-    "_stream_transform": "readable-stream/transform",
-    "_stream_readable": "readable-stream/readable",
-    "_stream_writable": "readable-stream/writable",
-    "_stream_duplex": "readable-stream/duplex",
-    "_stream_passthrough": "readable-stream/passthrough",
-    "stream": "stream-browserify",
-    "vm": "vm-browserify"
-  },
-  "browser": {
-    "crypto": "react-native-crypto",
-    "path": "path-browserify",
-    "fs": "react-native-level-fs",
-    "_stream_transform": "readable-stream/transform",
-    "_stream_readable": "readable-stream/readable",
-    "_stream_writable": "readable-stream/writable",
-    "_stream_duplex": "readable-stream/duplex",
-    "_stream_passthrough": "readable-stream/passthrough",
-    "stream": "stream-browserify",
-    "vm": "vm-browserify"
   },
   "publishConfig": {
     "access": "public",

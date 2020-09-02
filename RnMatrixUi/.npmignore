@@ -2,4 +2,4 @@ ios/
 android/
 __tests__/
 
-shim.js
+App.js
