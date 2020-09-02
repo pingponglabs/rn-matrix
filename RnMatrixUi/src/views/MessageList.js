@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import {useObservableState} from 'observable-hooks';
+import React, { useState, useEffect } from 'react';
+import { useObservableState } from 'observable-hooks';
 import {
   FlatList,
   FlatListProps,
@@ -9,8 +9,9 @@ import {
   SafeAreaView,
 } from 'react-native';
 import MessageItem from './components/MessageItem';
-import {Chat, Message} from '@rn-matrix/core';
+import { Chat, Message } from '@rn-matrix/core';
 import Composer from './Composer';
+import { colors } from '../constants';
 
 type Props = {
   room: Chat,
@@ -46,12 +47,26 @@ export default function MessageList({
   onSwipe = null,
   renderTypingIndicator = null,
   flatListProps = null,
+  composerStyle = {},
+  myBubbleStyle = () => {},
+  otherBubbleStyle = () => {},
+  myTextColor = colors.white,
+  otherTextColor = colors.gray400,
+  accentColor = 'dodgerblue',
+  textColor = colors.gray500,
 }: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const messageList = useObservableState(room.messages$);
   const typing = useObservableState(room.typing$);
   const atStart = useObservableState(room.atStart$);
   const [timeline, setTimeline] = useState(messageList);
+
+  const styles = {
+    myTextColor,
+    otherTextColor,
+    accentColor,
+    textColor,
+  };
 
   const handleEndReached = async () => {
     if (!atStart && !isLoading) {
@@ -61,7 +76,7 @@ export default function MessageList({
     }
   };
 
-  const renderMessageItem = ({item: messageId, index}) => {
+  const renderMessageItem = ({ item: messageId, index }) => {
     return (
       <MessageItem
         roomId={room.id}
@@ -73,6 +88,10 @@ export default function MessageList({
         onSwipe={onSwipe}
         renderTypingIndicator={renderTypingIndicator}
         showReactions={showReactions}
+        styles={styles}
+        myBubbleStyle={myBubbleStyle}
+        otherBubbleStyle={otherBubbleStyle}
+        accentColor={accentColor}
       />
     );
   };
@@ -102,7 +121,8 @@ export default function MessageList({
         onEndReached={handleEndReached}
         onEndReachedThreshold={0.5}
         keyExtractor={(item) => item}
-        style={{paddingTop: 6}}
+        style={{ paddingTop: 6 }}
+        styles={styles}
         {...flatListProps}
       />
       {enableComposer && (
@@ -114,22 +134,21 @@ export default function MessageList({
           onEndEdit={onEndEdit}
           onCancelReply={onCancelReply}
           enableReplies={enableReplies}
+          composerStyle={composerStyle}
+          accentColor={accentColor}
         />
       )}
     </Wrapper>
   );
 }
 
-const Wrapper = ({offset, children}) => {
+const Wrapper = ({ offset, children }) => {
   const style = {
     flex: 1,
   };
   return Platform.OS === 'ios' ? (
     <SafeAreaView style={style}>
-      <KeyboardAvoidingView
-        style={style}
-        behavior="padding"
-        keyboardVerticalOffset={offset}>
+      <KeyboardAvoidingView style={style} behavior="padding" keyboardVerticalOffset={offset}>
         {children}
       </KeyboardAvoidingView>
     </SafeAreaView>

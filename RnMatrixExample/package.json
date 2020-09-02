@@ -8,18 +8,19 @@
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint .",
-    "postinstall": "../postinstall.sh",
-    "wml": "watchman watch-del-all && wml rm all && wml add ../RnMatrixCore/src ./node_modules/@rn-matrix/core/src && wml add ../RnMatrixUi ./node_modules/@rn-matrix/ui && wml start"
+    "postinstall": "sed -i '' '$s/}/,\"browser\":{\"fs\":\"react-native-level-fs\"}}/' node_modules/olm/package.json",
+    "wml": "watchman watch-del-all && wml rm all && wml add ../RnMatrixCore/src ./node_modules/@rn-matrix/core/src && wml add ../RnMatrixUi/src ./node_modules/@rn-matrix/ui/src && wml start"
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.12.0",
     "@react-native-community/masked-view": "^0.1.10",
     "@react-navigation/native": "^5.7.3",
     "@react-navigation/stack": "^5.9.0",
-    "@rn-matrix/core": "^0.0.10",
+    "@rn-matrix/core": "^0.0.14",
     "@rn-matrix/ui": "^0.0.4",
-    "asyncstorage-down": "^4.2.0",
+    "color": "^3.1.2",
     "debug": "^4.1.1",
+    "node-libs-react-native": "^1.2.0",
     "observable-hooks": "^3.1.0",
     "react": "16.13.1",
     "react-native": "0.63.2",
@@ -29,6 +30,7 @@
     "react-native-fs": "^2.16.6",
     "react-native-gesture-handler": "^1.7.0",
     "react-native-image-picker": "^2.3.3",
+    "react-native-level-fs": "^3.0.1",
     "react-native-localize": "^1.4.1",
     "react-native-randombytes": "^3.5.3",
     "react-native-reanimated": "^1.13.0",
@@ -37,8 +39,7 @@
     "react-native-svg": "^12.1.0",
     "react-native-svg-transformer": "^0.14.3",
     "react-native-video": "^5.1.0-alpha8",
-    "react-native-webview": "^10.7.0",
-    "rn-nodeify": "^10.2.0"
+    "react-native-webview": "^10.7.0"
   },
   "devDependencies": {
     "@babel/core": "^7.11.1",
@@ -53,28 +54,10 @@
   "jest": {
     "preset": "react-native"
   },
-  "react-native": {
-    "crypto": "react-native-crypto",
-    "path": "path-browserify",
-    "fs": "react-native-level-fs",
-    "_stream_transform": "readable-stream/transform",
-    "_stream_readable": "readable-stream/readable",
-    "_stream_writable": "readable-stream/writable",
-    "_stream_duplex": "readable-stream/duplex",
-    "_stream_passthrough": "readable-stream/passthrough",
-    "stream": "stream-browserify",
-    "vm": "vm-browserify"
-  },
   "browser": {
-    "crypto": "react-native-crypto",
-    "path": "path-browserify",
-    "fs": "react-native-level-fs",
-    "_stream_transform": "readable-stream/transform",
-    "_stream_readable": "readable-stream/readable",
-    "_stream_writable": "readable-stream/writable",
-    "_stream_duplex": "readable-stream/duplex",
-    "_stream_passthrough": "readable-stream/passthrough",
-    "stream": "stream-browserify",
-    "vm": "vm-browserify"
+    "fs": "react-native-fs"
+  },
+  "react-native": {
+    "fs": "react-native-fs"
   }
 }

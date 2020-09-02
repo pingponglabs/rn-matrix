@@ -1,13 +1,13 @@
 import React from 'react';
-import {matrix, Message} from '@rn-matrix/core';
+import { matrix, Message } from '@rn-matrix/core';
 import EventMessage from './messageTypes/EventMessage';
 import NoticeMessage from './messageTypes/NoticeMessage';
-import {View, Text, Image, ActivityIndicator} from 'react-native';
+import { View, Text, Image, ActivityIndicator } from 'react-native';
 import ImageMessage from './messageTypes/ImageMessage';
 import VideoMessage from './messageTypes/VideoMessage';
 import TextMessage from './messageTypes/TextMessage';
-import {TypingAnimation} from 'react-native-typing-animation';
-import {useObservableState} from 'observable-hooks';
+import { TypingAnimation } from 'react-native-typing-animation';
+import { useObservableState } from 'observable-hooks';
 import Swipeable from 'react-native-swipeable';
 import Icon from './Icon';
 import ReadReceipts from './ReadReceipts';
@@ -44,13 +44,8 @@ export default function MessageItem({
       return otherProps.renderTypingIndicator();
     }
     return (
-      <View style={{marginLeft: 24, marginTop: 10, marginBottom: 30}}>
-        <TypingAnimation
-          dotColor="#ccc"
-          dotAmplitude={2}
-          dotRadius={4}
-          dotMargin={8}
-        />
+      <View style={{ marginLeft: 24, marginTop: 10, marginBottom: 30 }}>
+        <TypingAnimation dotColor="#ccc" dotAmplitude={2} dotRadius={4} dotMargin={8} />
       </View>
     );
   }
@@ -69,7 +64,7 @@ export default function MessageItem({
       : null;
   const prevSame = isSameSender(message, prevMessage);
   const nextSame = isSameSender(message, nextMessage);
-  const props = {...otherProps, message, prevSame, nextSame};
+  const props = { ...otherProps, message, prevSame, nextSame };
 
   const messageType = useObservableState(message.type$);
 
@@ -113,12 +108,12 @@ export function BubbleWrapper({
   };
 
   const rightButtons = [
-    <View style={{height: '100%', justifyContent: 'center'}}>
+    <View style={{ height: '100%', justifyContent: 'center' }}>
       <Icon name="reply" size={30} color="#666" />
     </View>,
   ];
 
-  const Wrapper = ({children}) =>
+  const Wrapper = ({ children }) =>
     !onSwipe ? (
       children
     ) : (
@@ -133,14 +128,14 @@ export function BubbleWrapper({
 
   return (
     <Wrapper>
-      <View style={{marginHorizontal: 12}}>
+      <View style={{ marginHorizontal: 12 }}>
         <View
           style={{
             flexDirection: isMe ? 'row-reverse' : 'row',
             alignItems: 'center',
           }}>
           {children}
-          {receipts && <ReadReceipts isMe={isMe} receipts={receipts} />}
+          {receipts && isMe && <ReadReceipts isMe={isMe} receipts={receipts} />}
         </View>
         {reactions && showReactions && (
           <Reactions
@@ -155,7 +150,7 @@ export function BubbleWrapper({
   );
 }
 
-export function SenderText({isMe, children}) {
+export function SenderText({ isMe, children }) {
   return (
     <Text
       style={{
@@ -164,7 +159,7 @@ export function SenderText({isMe, children}) {
         marginHorizontal: 22,
         marginTop: 8,
         opacity: 0.6,
-        ...(isMe ? {textAlign: 'right'} : {}),
+        ...(isMe ? { textAlign: 'right' } : {}),
       }}>
       {children}
     </Text>

@@ -1,11 +1,14 @@
 import React, {useState} from 'react';
-import {View, Text, Pressable} from 'react-native';
+import {View, Text, Pressable, StatusBar} from 'react-native';
 import {MessageList} from '@rn-matrix/ui';
 import ActionSheet from '../../components/ActionSheet';
+import {useHeaderHeight} from '@react-navigation/stack';
 
 export default function ChatScreen({navigation, route}) {
   const {room} = route.params;
   if (!room) navigation.goBack();
+
+  const headerHeight = useHeaderHeight();
 
   const [actionSheetVisible, setActionSheetVisible] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState(null);
@@ -42,6 +45,7 @@ export default function ChatScreen({navigation, route}) {
       <View style={{flex: 1, backgroundColor: '#fff'}}>
         <MessageList
           room={room}
+          keyboardOffset={headerHeight + StatusBar.currentHeight}
           enableComposer
           enableReplies
           showReactions
@@ -52,6 +56,14 @@ export default function ChatScreen({navigation, route}) {
           onLongPress={onLongPress}
           onEndEdit={onEndEdit}
           onCancelReply={onCancelReply}
+          myBubbleStyle={(pressed) => ({
+            backgroundColor: pressed ? 'darkred' : 'red',
+          })}
+          otherBubbleStyle={(pressed) => ({
+            backgroundColor: 'yellow',
+          })}
+          accentColor="orange"
+          textColor="green"
         />
       </View>
       <ActionSheet

@@ -7,13 +7,13 @@ import { htmlLinks } from '../../utilities/misc';
 
 // const debug = require('debug')('rnm:scene:chat:message:components:Html')
 
-const parseHtml = html => {
+const parseHtml = (html) => {
   return htmlEmojis(html?.includes('href') ? html : htmlLinks(html));
 };
 
-export default function Html({ html, isMe = false }) {
+export default function Html({ html, isMe = false, accentColor }) {
   // const styles = getHtmlStyles(theme)
-  const styles = getHtmlStyles({ isMe });
+  const styles = getHtmlStyles({ isMe, accentColor });
   const [parsedHtml, setParsedHtml] = useState(parseHtml(html));
 
   //* *******************************************************************************
@@ -68,7 +68,7 @@ const unorderedListRenderer = (htmlAttribs, children, convertedCSSStyles, { rend
   ));
 };
 
-const getHtmlStyles = ({ isMe }) => ({
+const getHtmlStyles = ({ isMe, accentColor }) => ({
   baseFontStyle: {
     color: isMe ? '#fff' : '#222',
     fontSize: 16,
@@ -77,7 +77,7 @@ const getHtmlStyles = ({ isMe }) => ({
   },
   tagsStyles: {
     blockquote: {
-      borderLeftColor: 'crimson',
+      borderLeftColor: accentColor,
       borderLeftWidth: 3,
       paddingLeft: 10,
       marginVertical: 10,

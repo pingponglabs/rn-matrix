@@ -1,13 +1,14 @@
-import {useObservableState} from 'observable-hooks';
+import { useObservableState } from 'observable-hooks';
 import React from 'react';
-import {EventStatus} from 'matrix-js-sdk';
-import {Text, TouchableHighlight, View, Pressable} from 'react-native';
-import {SenderText, BubbleWrapper} from '../MessageItem';
-import {colors} from '../../../constants';
+import { EventStatus } from 'matrix-js-sdk';
+import { Text, TouchableHighlight, View, Pressable } from 'react-native';
+import { SenderText, BubbleWrapper } from '../MessageItem';
+import { colors } from '../../../constants';
 import Icon from '../Icon';
 import RNFS from 'react-native-fs';
 import FileViewer from 'react-native-file-viewer';
-import {matrix} from '@rn-matrix/core';
+import { matrix } from '@rn-matrix/core';
+import Color from 'color';
 
 const debug = require('debug')('rnm:views:components:messageTypes:TextMessage');
 
@@ -19,13 +20,15 @@ export default function FileMessage({
   onLongPress,
   onSwipe,
   showReactions,
+  myBubbleStyle,
+  otherBubbleStyle,
 }) {
   const myUser = matrix.getMyUser();
   const content = useObservableState(message.content$);
   const senderName = useObservableState(message.sender.name$);
   const status = useObservableState(message.status$);
   const reactions = useObservableState(message.reactions$);
-  const props = {prevSame, nextSame};
+  const props = { prevSame, nextSame };
   const isMe = myUser?.id === message.sender.id;
 
   if (!content) return null;
@@ -45,9 +48,7 @@ export default function FileMessage({
       toFile: localFile,
     };
     RNFS.downloadFile(options)
-      .promise.then(() =>
-        FileViewer.open(localFile, {showOpenWithDialog: true}),
-      )
+      .promise.then(() => FileViewer.open(localFile, { showOpenWithDialog: true }))
       .then(() => {
         // success
       })
@@ -56,23 +57,37 @@ export default function FileMessage({
       });
   };
 
+  const getDefaultBackgroundColor = (me, pressed) => {
+    return me
+      ? pressed
+        ? colors.blue500
+        : colors.blue400
+      : pressed
+      ? colors.gray400
+      : colors.gray300;
+  };
+
   const downloadIcon = (
     <Pressable
       onPress={openFile}
-      style={({pressed}) => ({
+      style={({ pressed }) => ({
         justifyContent: 'center',
         alignItems: 'center',
         padding: 12,
         borderRadius: 60,
         width: 60,
         height: 60,
-        backgroundColor: pressed
-          ? isMe
-            ? colors.blue200
-            : colors.gray500
-          : isMe
-          ? colors.blue300
-          : colors.gray400,
+        backgroundColor: isMe
+          ? Color(
+              myBubbleStyle(pressed)?.backgroundColor || getDefaultBackgroundColor(isMe, pressed)
+            )
+              .darken(0.2)
+              .hex()
+          : Color(
+              otherBubbleStyle(pressed)?.backgroundColor || getDefaultBackgroundColor(isMe, pressed)
+            )
+              .darken(0.2)
+              .hex(),
       })}>
       <Icon name="file" color={isMe ? colors.white : '#222'} size={32} />
     </Pressable>
@@ -87,21 +102,20 @@ export default function FileMessage({
         message={message}
         showReactions={showReactions}>
         <View style={viewStyle(nextSame)}>
-          <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
-            <TouchableHighlight
+          <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
+            <Pressable
               {...props}
-              underlayColor={isMe ? colors.blue600 : colors.gray400}
               onPress={onPress ? _onPress : null}
               onLongPress={onLongPress ? _onLongPress : null}
-              delayPressIn={0}
               delayLongPress={200}
-              style={[
+              style={({ pressed }) => [
                 bubbleStyles(isMe, prevSame, nextSame),
-                {backgroundColor: isMe ? colors.blue400 : colors.gray300},
-                reactions ? {alignSelf: isMe ? 'flex-end' : 'flex-start'} : {},
+                { backgroundColor: isMe ? colors.blue400 : colors.gray300 },
+                reactions ? { alignSelf: isMe ? 'flex-end' : 'flex-start' } : {},
+                isMe ? myBubbleStyle(pressed) : otherBubbleStyle(pressed),
               ]}>
-              <View style={{alignItems: 'flex-end'}}>
-                <View style={{flexDirection: 'row'}}>
+              <View style={{ alignItems: 'flex-end' }}>
+                <View style={{ flexDirection: 'row' }}>
                   {downloadIcon}
                   <Text
                     onPress={openFile}
@@ -117,20 +131,20 @@ export default function FileMessage({
                   </Text>
                 </View>
                 {isMe && (
-                  <View style={{marginLeft: 12, marginRight: -6}}>
+                  <View style={{ marginLeft: 12, marginRight: -6 }}>
                     <Icon
-                      name={
-                        status === EventStatus.SENDING
-                          ? 'circle'
-                          : 'check-circle'
-                      }
+                      name={status === EventStatus.SENDING ? 'circle' : 'check-circle'}
                       size={16}
-                      color="#0f5499"
+                      color={
+                        myBubbleStyle(false)?.backgroundColor
+                          ? Color(myBubbleStyle(false).backgroundColor).darken(0.3).hex()
+                          : Color(getDefaultBackgroundColor(isMe, false)).darken(0.3).hex()
+                      }
                     />
                   </View>
                 )}
               </View>
-            </TouchableHighlight>
+            </Pressable>
           </View>
         </View>
       </BubbleWrapper>
@@ -147,12 +161,12 @@ const bubbleStyles = (isMe, prevSame, nextSame) => ({
   borderRadius: 18,
   ...(isMe
     ? {
-        ...(prevSame ? {borderTopRightRadius: sharpBorderRadius} : {}),
-        ...(nextSame ? {borderBottomRightRadius: sharpBorderRadius} : {}),
+        ...(prevSame ? { borderTopRightRadius: sharpBorderRadius } : {}),
+        ...(nextSame ? { borderBottomRightRadius: sharpBorderRadius } : {}),
       }
     : {
-        ...(prevSame ? {borderTopLeftRadius: sharpBorderRadius} : {}),
-        ...(nextSame ? {borderBottomLeftRadius: sharpBorderRadius} : {}),
+        ...(prevSame ? { borderTopLeftRadius: sharpBorderRadius } : {}),
+        ...(nextSame ? { borderBottomLeftRadius: sharpBorderRadius } : {}),
       }),
 });
 

@@ -3,7 +3,7 @@ import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import Html from '../Html';
 
-export default function NoticeMessage({ message }) {
+export default function NoticeMessage({ message, textColor }) {
   const content = useObservableState(message.content$);
   const senderName = useObservableState(message.sender.name$);
 

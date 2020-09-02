@@ -15,6 +15,8 @@ export default function Composer({
   selectedMessage = null,
   enableReplies = false,
   onCancelReply = () => {},
+  composerStyle = {},
+  accentColor = 'crimson',
 }) {
   const [value, setValue] = useState('');
   const [actionButtonsShowing, setActionButtonsShowing] = useState(false);
@@ -88,12 +90,12 @@ export default function Composer({
   }
 
   return (
-    <View style={styles.wrapper}>
+    <View style={[styles.wrapper, composerStyle]}>
       {selectedMessage &&
         ((isEditing && !isReplying) || (!isEditing && isReplying && enableReplies)) && (
-          <View style={styles.activeMessageBar}>
+          <View style={[styles.activeMessageBar, { borderLeftColor: accentColor }]}>
             <View>
-              <Text style={{ color: 'dodgerblue', fontWeight: 'bold' }}>
+              <Text style={{ color: accentColor, fontWeight: 'bold' }}>
                 {isEditing ? 'Editing' : `Replying to ${selectedMessage.sender.name$.getValue()}`}
               </Text>
               <Text numberOfLines={1} style={{ color: 'gray' }}>
@@ -161,14 +163,18 @@ export default function Composer({
           placeholder={`Message ${roomName}...`}
           value={value}
           onChangeText={setValue}
-          // onFocus={() => setActionButtonsShowing(false)}
+          onFocus={() => setActionButtonsShowing(false)}
         />
         <TouchableHighlight
           disabled={value.length === 0}
           onPress={isEditing ? confirmEdit : handleSend}
           underlayColor="#ddd"
           style={styles.sendButton}>
-          <Text style={[styles.sendText, value.length === 0 ? { color: '#888' } : {}]}>
+          <Text
+            style={[
+              styles.sendText,
+              value.length === 0 ? { color: '#888' } : { color: accentColor },
+            ]}>
             {isEditing ? 'Save' : 'Send'}
           </Text>
         </TouchableHighlight>
@@ -189,7 +195,6 @@ const styles = StyleSheet.create({
     margin: 6,
     padding: 6,
     borderLeftWidth: 4,
-    borderLeftColor: 'dodgerblue',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -214,7 +219,6 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   sendText: {
-    color: '#2d5bc4',
     fontWeight: 'bold',
     fontSize: 16,
   },

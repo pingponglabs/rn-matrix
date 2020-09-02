@@ -1,14 +1,15 @@
-import {useObservableState} from 'observable-hooks';
+import { useObservableState } from 'observable-hooks';
 import React from 'react';
-import {EventStatus} from 'matrix-js-sdk';
-import {Text, TouchableHighlight, View} from 'react-native';
-import {SenderText, BubbleWrapper} from '../MessageItem';
-import {isIos} from '../../../utilities/misc';
-import {isEmoji} from '../../../utilities/emojis';
+import { EventStatus } from 'matrix-js-sdk';
+import { Text, TouchableHighlight, View, Pressable } from 'react-native';
+import { SenderText, BubbleWrapper } from '../MessageItem';
+import { isIos } from '../../../utilities/misc';
+import { isEmoji } from '../../../utilities/emojis';
 import Html from '../Html';
-import {colors} from '../../../constants';
+import { colors } from '../../../constants';
 import Icon from '../Icon';
-import {matrix} from '@rn-matrix/core';
+import { matrix } from '@rn-matrix/core';
+import Color from 'color';
 
 const debug = require('debug')('rnm:views:components:messageTypes:TextMessage');
 
@@ -20,13 +21,16 @@ export default function TextMessage({
   onLongPress,
   onSwipe,
   showReactions,
+  myBubbleStyle,
+  otherBubbleStyle,
+  accentColor,
 }) {
   const myUser = matrix.getMyUser();
   const content = useObservableState(message.content$);
   const senderName = useObservableState(message.sender.name$);
   const status = useObservableState(message.status$);
   const reactions = useObservableState(message.reactions$);
-  const props = {prevSame, nextSame};
+  const props = { prevSame, nextSame };
   const isMe = myUser?.id === message.sender.id;
 
   //* *******************************************************************************
@@ -36,6 +40,16 @@ export default function TextMessage({
   const _onLongPress = () => onLongPress(message);
   const _onPress = () => onPress(message);
   const _onSwipe = () => onSwipe(message);
+
+  const getDefaultBackgroundColor = (me, pressed) => {
+    return me
+      ? pressed
+        ? colors.blue500
+        : colors.blue400
+      : pressed
+      ? colors.gray400
+      : colors.gray300;
+  };
 
   if (!content?.html) return null;
   return (
@@ -47,28 +61,23 @@ export default function TextMessage({
         message={message}
         showReactions={showReactions}>
         {isEmoji(content?.text) ? (
-          <Emoji
-            style={!isIos() ? {fontFamily: 'NotoColorEmoji'} : {}}
-            isMe={isMe}
-            {...props}>
+          <Emoji style={!isIos() ? { fontFamily: 'NotoColorEmoji' } : {}} isMe={isMe} {...props}>
             {content.text}
           </Emoji>
         ) : (
           <View style={viewStyle(nextSame)}>
-            <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
-              <TouchableHighlight
+            <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
+              <Pressable
                 {...props}
-                underlayColor={isMe ? colors.blue600 : colors.gray400}
+                // underlayColor={isMe ? colors.blue600 : colors.gray400}
                 onPress={onPress ? _onPress : null}
                 onLongPress={onLongPress ? _onLongPress : null}
-                delayPressIn={0}
                 delayLongPress={200}
-                style={[
+                style={({ pressed }) => [
                   bubbleStyles(isMe, prevSame, nextSame),
-                  {backgroundColor: isMe ? colors.blue400 : colors.gray300},
-                  reactions
-                    ? {alignSelf: isMe ? 'flex-end' : 'flex-start'}
-                    : {},
+                  { backgroundColor: getDefaultBackgroundColor(isMe, pressed) },
+                  reactions ? { alignSelf: isMe ? 'flex-end' : 'flex-start' } : {},
+                  isMe ? myBubbleStyle(pressed) : otherBubbleStyle(pressed),
                 ]}>
                 <View
                   style={{
@@ -77,22 +86,22 @@ export default function TextMessage({
                     alignItems: 'flex-end',
                     flexWrap: 'wrap',
                   }}>
-                  <Html html={content?.html} isMe={isMe} />
+                  <Html html={content?.html} isMe={isMe} accentColor={accentColor} />
                   {isMe && (
-                    <View style={{marginLeft: 12, marginRight: -6}}>
+                    <View style={{ marginLeft: 12, marginRight: -6 }}>
                       <Icon
-                        name={
-                          status === EventStatus.SENDING
-                            ? 'circle'
-                            : 'check-circle'
-                        }
+                        name={status === EventStatus.SENDING ? 'circle' : 'check-circle'}
                         size={16}
-                        color="#0f5499"
+                        color={
+                          myBubbleStyle(false)?.backgroundColor
+                            ? Color(myBubbleStyle(false).backgroundColor).darken(0.3).hex()
+                            : Color(getDefaultBackgroundColor(isMe, false)).darken(0.3).hex()
+                        }
                       />
                     </View>
                   )}
                 </View>
-              </TouchableHighlight>
+              </Pressable>
             </View>
           </View>
         )}
@@ -103,7 +112,7 @@ export default function TextMessage({
   );
 }
 
-const Emoji = ({style, isMe, children}) => (
+const Emoji = ({ style, isMe, children }) => (
   <Text
     style={{
       ...style,
@@ -123,12 +132,12 @@ const bubbleStyles = (isMe, prevSame, nextSame) => ({
   borderRadius: 18,
   ...(isMe
     ? {
-        ...(prevSame ? {borderTopRightRadius: sharpBorderRadius} : {}),
-        ...(nextSame ? {borderBottomRightRadius: sharpBorderRadius} : {}),
+        ...(prevSame ? { borderTopRightRadius: sharpBorderRadius } : {}),
+        ...(nextSame ? { borderBottomRightRadius: sharpBorderRadius } : {}),
       }
     : {
-        ...(prevSame ? {borderTopLeftRadius: sharpBorderRadius} : {}),
-        ...(nextSame ? {borderBottomLeftRadius: sharpBorderRadius} : {}),
+        ...(prevSame ? { borderTopLeftRadius: sharpBorderRadius } : {}),
+        ...(nextSame ? { borderBottomLeftRadius: sharpBorderRadius } : {}),
       }),
 });
 
