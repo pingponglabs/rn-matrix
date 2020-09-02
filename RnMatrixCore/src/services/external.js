@@ -158,6 +158,14 @@ class ExternalService {
   editMessage(roomId, messageId, newMessageContent) {
     messages.send(newMessageContent, 'm.edit', roomId, messageId);
   }
+
+  /*************************************************
+   * HELPERS
+   *************************************************/
+
+  getHttpUrl(mxcUrl, width = null, height = null, resizeMethod = 'scale') {
+    return matrix.getHttpUrl(mxcUrl, width, height, resizeMethod);
+  }
 }
 
 const external = new ExternalService();
