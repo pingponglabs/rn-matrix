@@ -14,6 +14,7 @@ export default function LoginScreen() {
   const [password, setPassword] = useState('');
   const [homeserver, setHomeserver] = useState('');
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleUsernameChange = (text) => {
     // if (text.charAt(0) === '@') {
@@ -24,13 +25,15 @@ export default function LoginScreen() {
   };
 
   const login = async () => {
+    setLoading(true);
     const result = await matrix.loginWithPassword(
       username,
       password,
-      null,
+      homeserver,
       true,
     );
     if (result.error) {
+      setLoading(false);
       setError(result.message);
     }
   };
@@ -92,12 +95,15 @@ export default function LoginScreen() {
         )}
         <Pressable
           onPress={login}
+          disabled={loading}
           style={({pressed}) => [
             styles.input,
             styles.button,
-            {opacity: pressed ? 0.5 : 1},
+            {opacity: pressed || loading ? 0.5 : 1},
           ]}>
-          <Text style={styles.buttonText}>LOGIN</Text>
+          <Text style={styles.buttonText}>
+            {loading ? 'LOADING...' : 'LOGIN'}
+          </Text>
         </Pressable>
       </ScrollView>
     </SafeAreaView>
