@@ -1,7 +1,7 @@
 {
   "name": "@rn-matrix/ui",
   "description": "UI components to be used alongside the data in rn-matrix",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "private": false,
   "repository": {
     "type": "git",
