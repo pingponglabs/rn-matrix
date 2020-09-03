@@ -13,6 +13,7 @@ import Icon from './Icon';
 import ReadReceipts from './ReadReceipts';
 import FileMessage from './messageTypes/FileMessage';
 import Reactions from './Reactions';
+import { BehaviorSubject } from 'rxjs';
 
 // const debug = require('debug')('rnm:scenes:chat:message:MessageItem')
 
@@ -98,8 +99,8 @@ export function BubbleWrapper({
   message,
   showReactions = false,
 }) {
-  const reactions = message ? useObservableState(message.reactions$) : null;
-  const receipts = message ? useObservableState(message.receipts$) : null;
+  const reactions = useObservableState(message.reactions$);
+  const receipts = useObservableState(message.receipts$);
 
   const myUser = matrix.getMyUser();
 
