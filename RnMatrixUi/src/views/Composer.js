@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableHighlight, Pressable } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableHighlight } from 'react-native';
 import { useObservableState } from 'observable-hooks';
 import { colors } from '../constants';
 import Icon from './components/Icon';
@@ -116,12 +116,10 @@ export default function Composer({
         {room.isEncrypted() && (
           <Icon name="lock" color="#888" style={{ marginVertical: 10, marginHorizontal: 4 }} />
         )}
-        <Pressable
+        <TouchableHighlight
           onPress={toggleActionButtons}
-          style={({ pressed }) => [
-            styles.actionButton,
-            { backgroundColor: pressed ? '#ddd' : 'transparent' },
-          ]}>
+          underlayColor="#ddd"
+          style={styles.actionButton}>
           <Icon
             name={'add'}
             color="#888"
@@ -130,30 +128,26 @@ export default function Composer({
               transform: [{ rotate: actionButtonsShowing ? '45deg' : '0deg' }],
             }}
           />
-        </Pressable>
+        </TouchableHighlight>
         {actionButtonsShowing && (
           <>
-            <Pressable
+            <TouchableHighlight
               onPress={openImagePicker}
-              style={({ pressed }) => [
-                styles.sendButton,
-                { backgroundColor: pressed ? '#ddd' : 'transparent' },
-              ]}>
+              underlayColor="#ddd"
+              style={styles.sendButton}>
               <Icon name="image" color="#888" size={20} />
-            </Pressable>
-            <Pressable
+            </TouchableHighlight>
+            <TouchableHighlight
               onPress={openDocPicker}
-              style={({ pressed }) => [
-                styles.sendButton,
-                { backgroundColor: pressed ? '#ddd' : 'transparent' },
-              ]}>
+              underlayColor="#ddd"
+              style={styles.sendButton}>
               <Icon
                 name="attach"
                 color="#888"
                 size={20}
                 style={{ transform: [{ rotate: '38deg' }] }}
               />
-            </Pressable>
+            </TouchableHighlight>
           </>
         )}
         <TextInput

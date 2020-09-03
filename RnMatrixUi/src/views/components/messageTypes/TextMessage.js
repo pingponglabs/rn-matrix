@@ -1,7 +1,7 @@
 import { useObservableState } from 'observable-hooks';
 import React from 'react';
 import { EventStatus } from 'matrix-js-sdk';
-import { Text, TouchableHighlight, View, Pressable } from 'react-native';
+import { Text, TouchableHighlight, View } from 'react-native';
 import { SenderText, BubbleWrapper } from '../MessageItem';
 import { isIos } from '../../../utilities/misc';
 import { isEmoji } from '../../../utilities/emojis';
@@ -67,18 +67,18 @@ export default function TextMessage({
         ) : (
           <View style={viewStyle(nextSame)}>
             <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
-              <Pressable
-                {...props}
-                // underlayColor={isMe ? colors.blue600 : colors.gray400}
+              <TouchableHighlight
+                underlayColor={getDefaultBackgroundColor(isMe, true)}
                 onPress={onPress ? _onPress : null}
                 onLongPress={onLongPress ? _onLongPress : null}
                 delayLongPress={200}
-                style={({ pressed }) => [
+                style={[
                   bubbleStyles(isMe, prevSame, nextSame),
-                  { backgroundColor: getDefaultBackgroundColor(isMe, pressed) },
+                  { backgroundColor: getDefaultBackgroundColor(isMe, false) },
                   reactions ? { alignSelf: isMe ? 'flex-end' : 'flex-start' } : {},
-                  isMe ? myBubbleStyle(pressed) : otherBubbleStyle(pressed),
-                ]}>
+                  isMe ? myBubbleStyle() : otherBubbleStyle(),
+                ]}
+                {...props}>
                 <View
                   style={{
                     flexDirection: 'row',
@@ -101,7 +101,7 @@ export default function TextMessage({
                     </View>
                   )}
                 </View>
-              </Pressable>
+              </TouchableHighlight>
             </View>
           </View>
         )}

@@ -117,6 +117,7 @@ class AuthService {
 
       const domainToCheck = domain.slice(8);
       const homeserverData = await matrix.getHomeserverData(domainToCheck);
+      debug('homeserver data ', homeserverData);
 
       debug('Logging in as %s on %s', user, homeserverData.baseUrl || domain);
       const client = await matrix.createClient(homeserverData.baseUrl || domain);

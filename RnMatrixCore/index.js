@@ -11,7 +11,4 @@ import Chat from './src/classes/Chat';
 import Message from './src/classes/Message';
 import matrixSdk from 'matrix-js-sdk';
 
-// import { polyfillGlobal } from 'react-native/Libraries/Utilities/PolyfillFunctions';
-// polyfillGlobal('URL', () => require('whatwg-url').URL);
-
 export { matrix, matrixSdk, Chat, Message };

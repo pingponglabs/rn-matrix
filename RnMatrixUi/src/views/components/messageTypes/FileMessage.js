@@ -1,7 +1,7 @@
 import { useObservableState } from 'observable-hooks';
 import React from 'react';
 import { EventStatus } from 'matrix-js-sdk';
-import { Text, TouchableHighlight, View, Pressable } from 'react-native';
+import { Text, TouchableHighlight, View } from 'react-native';
 import { SenderText, BubbleWrapper } from '../MessageItem';
 import { colors } from '../../../constants';
 import Icon from '../Icon';
@@ -67,30 +67,31 @@ export default function FileMessage({
       : colors.gray300;
   };
 
+  const downloadIconBackgroundColor = (me, pressed) => {
+    return me
+      ? Color(myBubbleStyle(pressed)?.backgroundColor || getDefaultBackgroundColor(me, pressed))
+          .darken(0.2)
+          .hex()
+      : Color(otherBubbleStyle(pressed)?.backgroundColor || getDefaultBackgroundColor(me, pressed))
+          .darken(0.2)
+          .hex();
+  };
+
   const downloadIcon = (
-    <Pressable
+    <TouchableHighlight
       onPress={openFile}
-      style={({ pressed }) => ({
+      underlayColor={downloadIconBackgroundColor(isMe, true)}
+      style={{
         justifyContent: 'center',
         alignItems: 'center',
         padding: 12,
         borderRadius: 60,
         width: 60,
         height: 60,
-        backgroundColor: isMe
-          ? Color(
-              myBubbleStyle(pressed)?.backgroundColor || getDefaultBackgroundColor(isMe, pressed)
-            )
-              .darken(0.2)
-              .hex()
-          : Color(
-              otherBubbleStyle(pressed)?.backgroundColor || getDefaultBackgroundColor(isMe, pressed)
-            )
-              .darken(0.2)
-              .hex(),
-      })}>
+        backgroundColor: downloadIconBackgroundColor(isMe, false),
+      }}>
       <Icon name="file" color={isMe ? colors.white : '#222'} size={32} />
-    </Pressable>
+    </TouchableHighlight>
   );
 
   return (
@@ -103,16 +104,16 @@ export default function FileMessage({
         showReactions={showReactions}>
         <View style={viewStyle(nextSame)}>
           <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
-            <Pressable
+            <TouchableHighlight
               {...props}
               onPress={onPress ? _onPress : null}
               onLongPress={onLongPress ? _onLongPress : null}
               delayLongPress={200}
-              style={({ pressed }) => [
+              style={[
                 bubbleStyles(isMe, prevSame, nextSame),
                 { backgroundColor: isMe ? colors.blue400 : colors.gray300 },
                 reactions ? { alignSelf: isMe ? 'flex-end' : 'flex-start' } : {},
-                isMe ? myBubbleStyle(pressed) : otherBubbleStyle(pressed),
+                isMe ? myBubbleStyle() : otherBubbleStyle(),
               ]}>
               <View style={{ alignItems: 'flex-end' }}>
                 <View style={{ flexDirection: 'row' }}>
@@ -144,7 +145,7 @@ export default function FileMessage({
                   </View>
                 )}
               </View>
-            </Pressable>
+            </TouchableHighlight>
           </View>
         </View>
       </BubbleWrapper>

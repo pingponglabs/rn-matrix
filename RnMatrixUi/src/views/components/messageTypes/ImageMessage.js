@@ -1,9 +1,9 @@
-import {useObservableState} from 'observable-hooks';
+import { useObservableState } from 'observable-hooks';
 import React from 'react';
 
-import {View, Image, Pressable} from 'react-native';
-import {BubbleWrapper, SenderText} from '../MessageItem';
-import {matrix} from '@rn-matrix/core';
+import { View, Image, TouchableOpacity } from 'react-native';
+import { BubbleWrapper, SenderText } from '../MessageItem';
+import { matrix } from '@rn-matrix/core';
 
 // const debug = require('debug')('rnm:scene:chat:message:components:ImageMessage')
 
@@ -20,9 +20,8 @@ export default function ImageMessage({
   const myUser = matrix.getMyUser();
   const content = useObservableState(message.content$);
   const senderName = useObservableState(message.sender.name$);
-  const receipts = message.receipts$
-    ? useObservableState(message.receipts$)
-    : [];
+  const reactions = useObservableState(message.reactions$);
+  const receipts = message.receipts$ ? useObservableState(message.receipts$) : [];
   const status = useObservableState(message.status$);
   const isMe = myUser.id === message.sender.id;
 
@@ -40,12 +39,12 @@ export default function ImageMessage({
     borderRadius: 20,
     ...(isMe
       ? {
-          ...(prevSame ? {borderTopRightRadius: sharpBorderRadius} : {}),
-          ...(nextSame ? {borderBottomRightRadius: sharpBorderRadius} : {}),
+          ...(prevSame ? { borderTopRightRadius: sharpBorderRadius } : {}),
+          ...(nextSame ? { borderBottomRightRadius: sharpBorderRadius } : {}),
         }
       : {
-          ...(prevSame ? {borderTopLeftRadius: sharpBorderRadius} : {}),
-          ...(nextSame ? {borderBottomLeftRadius: sharpBorderRadius} : {}),
+          ...(prevSame ? { borderTopLeftRadius: sharpBorderRadius } : {}),
+          ...(nextSame ? { borderBottomLeftRadius: sharpBorderRadius } : {}),
         }),
   };
 
@@ -60,20 +59,11 @@ export default function ImageMessage({
         status={status}
         onSwipe={onSwipe ? _onSwipe : null}
         receipts={receipts}>
-        <Pressable
-          // {...props}
-          // underlayColor={isMe ? colors.blue600 : colors.gray400}
+        <TouchableOpacity
           onPress={onPress ? _onPress : null}
           onLongPress={onLongPress ? _onLongPress : null}
           delayLongPress={200}
-          //       style={[
-          //         bubbleStyles(isMe, prevSame, nextSame),
-          //         { backgroundColor: isMe ? colors.blue400 : colors.gray300 },
-          //         reactions ? { alignSelf: isMe ? 'flex-end' : 'flex-start' } : {},
-          // ]}
-          style={({pressed}) => ({
-            opacity: pressed ? 0.75 : 1,
-          })}>
+          style={[reactions ? { alignSelf: isMe ? 'flex-end' : 'flex-start' } : {}]}>
           <View style={imageWrapperStyles}>
             <Image
               source={{
@@ -83,7 +73,7 @@ export default function ImageMessage({
               // defaultSource={PlaceholderImage}
             />
           </View>
-        </Pressable>
+        </TouchableOpacity>
       </BubbleWrapper>
 
       {!prevSame && <SenderText isMe={isMe}>{senderName}</SenderText>}

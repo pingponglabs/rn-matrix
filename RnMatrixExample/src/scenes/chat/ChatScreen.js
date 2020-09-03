@@ -56,14 +56,14 @@ export default function ChatScreen({navigation, route}) {
           onLongPress={onLongPress}
           onEndEdit={onEndEdit}
           onCancelReply={onCancelReply}
-          myBubbleStyle={(pressed) => ({
-            backgroundColor: pressed ? 'darkred' : 'red',
-          })}
-          otherBubbleStyle={(pressed) => ({
-            backgroundColor: 'yellow',
-          })}
-          accentColor="orange"
-          textColor="green"
+          // myBubbleStyle={(pressed) => ({
+          //   backgroundColor: pressed ? 'darkred' : 'red',
+          // })}
+          // otherBubbleStyle={(pressed) => ({
+          //   backgroundColor: 'yellow',
+          // })}
+          // accentColor="orange"
+          // textColor="green"
         />
       </View>
       <ActionSheet

@@ -9,7 +9,7 @@
     "test": "jest",
     "lint": "eslint .",
     "postinstall": "sed -i '' '$s/}/,\"browser\":{\"fs\":\"react-native-level-fs\"}}/' node_modules/olm/package.json",
-    "wml": "watchman watch-del-all && wml rm all && wml add ../RnMatrixCore/src ./node_modules/@rn-matrix/core/src && wml add ../RnMatrixUi/src ./node_modules/@rn-matrix/ui/src && wml start"
+    "wml": "watchman watch-del-all && wml rm all && wml add ../RnMatrixCore/src ./node_modules/@rn-matrix/core/src && wml add ../RnMatrixUi/src ./node_modules/@rn-matrix/ui/src && wml add ../RnMatrixCore/index.js ./node_modules/@rn-matrix/core/index.js && wml start"
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.12.0",
