@@ -1,7 +1,7 @@
 import { useObservableState } from 'observable-hooks';
 import React from 'react';
 import { EventStatus } from 'matrix-js-sdk';
-import { Text, TouchableHighlight, View } from 'react-native';
+import { Text, TouchableHighlight, View, StyleSheet } from 'react-native';
 import { SenderText, BubbleWrapper } from '../MessageItem';
 import { colors } from '../../../constants';
 import Icon from '../Icon';
@@ -81,15 +81,7 @@ export default function FileMessage({
     <TouchableHighlight
       onPress={openFile}
       underlayColor={downloadIconBackgroundColor(isMe, true)}
-      style={{
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 12,
-        borderRadius: 60,
-        width: 60,
-        height: 60,
-        backgroundColor: downloadIconBackgroundColor(isMe, false),
-      }}>
+      style={[styles.downloadIcon, { backgroundColor: downloadIconBackgroundColor(isMe, false) }]}>
       <Icon name="file" color={isMe ? colors.white : '#222'} size={32} />
     </TouchableHighlight>
   );
@@ -120,14 +112,7 @@ export default function FileMessage({
                   {downloadIcon}
                   <Text
                     onPress={openFile}
-                    style={{
-                      fontSize: 18,
-                      flexDirection: 'column',
-                      color: isMe ? colors.white : '#222',
-                      alignSelf: 'center',
-                      textDecorationLine: 'underline',
-                      marginLeft: 12,
-                    }}>
+                    style={[styles.fileText, { color: isMe ? colors.white : '#222' }]}>
                     {content.name}
                   </Text>
                 </View>
@@ -175,4 +160,23 @@ const viewStyle = (nextSame) => ({
   marginTop: 2,
   marginBottom: nextSame ? 1 : 4,
   maxWidth: '85%',
+});
+
+const styles = StyleSheet.create({
+  downloadIcon: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 12,
+    borderRadius: 60,
+    width: 60,
+    height: 60,
+  },
+  fileText: {
+    alignSelf: 'center',
+    textDecorationLine: 'underline',
+    marginLeft: 12,
+    maxWidth: 200,
+    fontSize: 18,
+    flexDirection: 'column',
+  },
 });
