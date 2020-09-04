@@ -21,11 +21,11 @@ export default function ImageMessage({
   const content = useObservableState(message.content$);
   const senderName = useObservableState(message.sender.name$);
   const reactions = useObservableState(message.reactions$);
-  const receipts = message.receipts$ ? useObservableState(message.receipts$) : [];
+  // const receipts = message.receipts$ ? useObservableState(message.receipts$) : [];
   const status = useObservableState(message.status$);
   const isMe = myUser.id === message.sender.id;
 
-  if (!content || message.redacted$.getValue()) return null;
+  if (!content || !message || message.redacted$.getValue()) return null;
 
   const imageWrapperStyles = {
     marginTop: 2,
@@ -36,6 +36,7 @@ export default function ImageMessage({
   const imageStyles = {
     width: content.thumb.width,
     height: content.thumb.height,
+    backgroundColor: '#ccc',
     borderRadius: 20,
     ...(isMe
       ? {
@@ -58,7 +59,7 @@ export default function ImageMessage({
         isMe={isMe}
         status={status}
         onSwipe={onSwipe ? _onSwipe : null}
-        receipts={receipts}>
+        message={message}>
         <TouchableOpacity
           onPress={onPress ? _onPress : null}
           onLongPress={onLongPress ? _onLongPress : null}

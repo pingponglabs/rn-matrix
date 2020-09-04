@@ -100,7 +100,6 @@ export function BubbleWrapper({
   showReactions = false,
 }) {
   const reactions = useObservableState(message.reactions$);
-  // const receipts = useObservableState(message.receipts$);
 
   const myUser = matrix.getMyUser();
 
