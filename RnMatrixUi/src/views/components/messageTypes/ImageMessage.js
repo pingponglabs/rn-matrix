@@ -16,6 +16,7 @@ export default function ImageMessage({
   onPress,
   onLongPress,
   onSwipe,
+  showReactions,
 }) {
   const myUser = matrix.getMyUser();
   const content = useObservableState(message.content$);
@@ -59,7 +60,8 @@ export default function ImageMessage({
         isMe={isMe}
         status={status}
         onSwipe={onSwipe ? _onSwipe : null}
-        message={message}>
+        message={message}
+        showReactions={showReactions}>
         <TouchableOpacity
           onPress={onPress ? _onPress : null}
           onLongPress={onLongPress ? _onLongPress : null}

@@ -34,6 +34,7 @@ export default function LoginScreen() {
     );
     if (result.error) {
       setLoading(false);
+      console.log('Error logging in: ', result);
       setError(result.message);
     }
   };
@@ -82,7 +83,7 @@ export default function LoginScreen() {
           onChangeText={setHomeserver}
           onSubmitEditing={login}
         />
-        {error && (
+        {error && error.length > 0 && (
           <Text
             style={{
               marginTop: 24,

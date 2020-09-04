@@ -12,6 +12,7 @@ export default function VideoMessage({
   onPress,
   onLongPress,
   onSwipe,
+  showReactions,
 }) {
   const myUser = matrix.getMyUser();
   const content = useObservableState(message.content$);
@@ -36,7 +37,8 @@ export default function VideoMessage({
         isMe={isMe}
         status={status}
         onSwipe={onSwipe ? _onSwipe : null}
-        message={message}>
+        message={message}
+        showReactions={showReactions}>
         <View style={{ borderRadius: 20, overflow: 'hidden' }}>
           <Video
             controls

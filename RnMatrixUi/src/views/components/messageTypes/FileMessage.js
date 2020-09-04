@@ -1,7 +1,7 @@
 import { useObservableState } from 'observable-hooks';
-import React from 'react';
+import React, { useState } from 'react';
 import { EventStatus } from 'matrix-js-sdk';
-import { Text, TouchableHighlight, View, StyleSheet } from 'react-native';
+import { Text, TouchableHighlight, View, StyleSheet, ActivityIndicator } from 'react-native';
 import { SenderText, BubbleWrapper } from '../MessageItem';
 import { colors } from '../../../constants';
 import Icon from '../Icon';
@@ -31,6 +31,8 @@ export default function FileMessage({
   const props = { prevSame, nextSame };
   const isMe = myUser?.id === message.sender.id;
 
+  const [openingFile, setOpeningFile] = useState(false);
+
   if (!content) return null;
 
   const _onLongPress = () => onLongPress(message);
@@ -38,6 +40,8 @@ export default function FileMessage({
   const _onSwipe = () => onSwipe(message);
 
   const openFile = () => {
+    setOpeningFile(true);
+
     // IMPORTANT: A file extension is always required on iOS.
     // You might encounter issues if the file extension isn't included
     // or if the extension doesn't match the mime type of the file.
@@ -48,12 +52,16 @@ export default function FileMessage({
       toFile: localFile,
     };
     RNFS.downloadFile(options)
-      .promise.then(() => FileViewer.open(localFile, { showOpenWithDialog: true }))
+      .promise.then(() => {
+        FileViewer.open(localFile, { showOpenWithDialog: true });
+      })
       .then(() => {
         // success
+        setOpeningFile(false);
       })
       .catch((error) => {
         // error
+        setOpeningFile(false);
       });
   };
 
@@ -82,7 +90,11 @@ export default function FileMessage({
       onPress={openFile}
       underlayColor={downloadIconBackgroundColor(isMe, true)}
       style={[styles.downloadIcon, { backgroundColor: downloadIconBackgroundColor(isMe, false) }]}>
-      <Icon name="file" color={isMe ? colors.white : '#222'} size={32} />
+      {openingFile ? (
+        <ActivityIndicator color="#fff" />
+      ) : (
+        <Icon name="file" color={isMe ? colors.white : '#222'} size={32} />
+      )}
     </TouchableHighlight>
   );
 
@@ -98,6 +110,7 @@ export default function FileMessage({
           <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
             <TouchableHighlight
               {...props}
+              underlayColor={downloadIconBackgroundColor(isMe, false)}
               onPress={onPress ? _onPress : null}
               onLongPress={onLongPress ? _onLongPress : null}
               delayLongPress={200}

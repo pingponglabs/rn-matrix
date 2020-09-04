@@ -60,7 +60,10 @@ export default function AppNavigator() {
         <Stack.Screen
           name="Chat"
           component={ChatScreen}
-          options={{headerBackTitle: 'Back'}}
+          options={({route}) => ({
+            headerBackTitle: 'Back',
+            title: route?.params?.room?.name$?.getValue() || 'Chat',
+          })}
         />
         {/* <Stack.Screen name="Main" component={MainScreens} />
         <Stack.Screen name="Settings" component={SettingsScreen} />

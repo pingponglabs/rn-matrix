@@ -3,6 +3,7 @@ import {View, Text, Pressable, StatusBar} from 'react-native';
 import {MessageList} from '@rn-matrix/ui';
 import ActionSheet from '../../components/ActionSheet';
 import {useHeaderHeight} from '@react-navigation/stack';
+import EmojiButtons from './components/EmojiButtons';
 
 export default function ChatScreen({navigation, route}) {
   const {room} = route.params;
@@ -72,6 +73,11 @@ export default function ChatScreen({navigation, route}) {
         innerScrollEnabled={false}
         style={{minHeight: 100, padding: 24, paddingBottom: 48}}
         onClose={() => setActionSheetVisible(false)}>
+        <EmojiButtons
+          message={selectedMessage}
+          setActionSheetVisible={setActionSheetVisible}
+          setSelectedMessage={setSelectedMessage}
+        />
         <Pressable
           onPress={editMessage}
           style={({pressed}) => ({

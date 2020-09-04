@@ -1222,13 +1222,14 @@
     color "^3.1.2"
     react-native-iphone-x-helper "^1.2.1"
 
-"@rn-matrix/core@^0.0.14":
-  version "0.0.14"
-  resolved "https://registry.yarnpkg.com/@rn-matrix/core/-/core-0.0.14.tgz#c889887ca1612012f44af4512423b3b5cd17b177"
-  integrity sha512-A6Xm4V3ahtWXeveO21qYnEVb2egoXM1/FqCTOXklze0CWUd3PaQavVjZa2rlIRp/uEwavHc07kXNED/SR9MFqg==
+"@rn-matrix/core@^0.0.18":
+  version "0.0.18"
+  resolved "https://registry.yarnpkg.com/@rn-matrix/core/-/core-0.0.18.tgz#e44654f90c01a099169c067039c7c79cdb4ccfce"
+  integrity sha512-IVQpyUh3zn78PpCbUTY5C6Cyg2P7iLgLtcOVzcXqdPWJ8qaF7UAat5BEVB0gWX/x2HKYKAF1YaJp+Z7HXZPw8Q==
   dependencies:
     "@react-native-community/async-storage" "^1.12.0"
     asyncstorage-down "^4.2.0"
+    fbemitter "^2.1.1"
     i18next "^19.7.0"
     lodash "^4.17.20"
     matrix-js-sdk "^8.1.0"
@@ -1245,10 +1246,10 @@
     whatwg-url "^8.1.0"
     xmlhttp-request "^0.4.1"
 
-"@rn-matrix/ui@^0.0.10":
-  version "0.0.10"
-  resolved "https://registry.yarnpkg.com/@rn-matrix/ui/-/ui-0.0.10.tgz#7bd7b3f2914509d9c1e54c4ae17ee85210461330"
-  integrity sha512-R1xGhoTfpWcQUaIg3q6E9gh8VsxxaWNWUzORw8k1iEeIrRG/Bif2MjO2IkcbtudNRSJTSC/MBHup6Q91fszo9g==
+"@rn-matrix/ui@^0.0.11":
+  version "0.0.11"
+  resolved "https://registry.yarnpkg.com/@rn-matrix/ui/-/ui-0.0.11.tgz#b6c36ce83f59a4d27c921d41069c09fffc0bc4f6"
+  integrity sha512-7zCcxbwJqkG+mNA6aC9glnhBeQfnr2zxhnRBkbn3vCKdd/i4XJNCcxCdByyyUK8TQc1hEXnKSMlhRwbqfk5deg==
   dependencies:
     "@react-native-community/async-storage" "^1.12.0"
     color "^3.1.2"
