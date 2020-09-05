@@ -1,6 +1,6 @@
 import {createStackNavigator} from '@react-navigation/stack';
 import {useObservableState} from 'observable-hooks';
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, Text, Pressable, ActivityIndicator} from 'react-native';
 
 import ChatListScreen from './scenes/chatList/ChatListScreen';
@@ -18,6 +18,8 @@ export default function AppNavigator() {
   const authLoggedIn = useObservableState(matrix.isLoggedIn$());
   const matrixReady = useObservableState(matrix.isReady$());
 
+  const [loadingView, setLoadingView] = useState(false);
+
   console.log(
     'auth loaded',
     authLoaded,
@@ -27,10 +29,40 @@ export default function AppNavigator() {
     matrixReady,
   );
 
+  useEffect(() => {
+    if (authLoaded && authLoggedIn && !matrixReady) {
+      setTimeout(() => setLoadingView(true), 5000);
+    }
+  }, [authLoaded, authLoggedIn, matrixReady]);
+
   if (!authLoaded || (authLoggedIn && !matrixReady)) {
     return (
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
         <ActivityIndicator size="large" />
+        {loadingView && (
+          <>
+            <Text style={{textAlign: 'center', maxWidth: 250, marginTop: 24}}>
+              Logged in: {authLoggedIn ? 'YES\n' : 'NO\n'}
+              Matrix ready: {matrixReady ? 'YES\n\n\n' : 'NO\n\n\n'}
+              This seems to be taking a while... you can try logging out if you
+              want.
+            </Text>
+            <Pressable
+              onPress={() => {
+                setLoadingView(false);
+                matrix.logout();
+              }}
+              style={({pressed}) => ({
+                backgroundColor: 'dodgerblue',
+                marginTop: 24,
+                borderRadius: 8,
+                padding: 12,
+                opacity: pressed ? 0.5 : 1,
+              })}>
+              <Text style={{color: '#fff', fontWeight: 'bold'}}>LOGOUT</Text>
+            </Pressable>
+          </>
+        )}
       </View>
     );
   } else if (authLoggedIn) {

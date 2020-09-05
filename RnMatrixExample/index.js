@@ -1,18 +1,13 @@
 import 'react-native-gesture-handler';
 import 'node-libs-react-native/globals';
+import '@rn-matrix/core/shim.js';
 
-// Needed so that 'stream-http' chooses the right default protocol.
-global.location = {
-  protocol: 'file:',
-  href: '',
-};
+import {polyfillGlobal} from 'react-native/Libraries/Utilities/PolyfillFunctions';
+polyfillGlobal('URL', () => require('whatwg-url').URL);
 
 import {AppRegistry} from 'react-native';
 import {name as appName} from './app.json';
 import App from './App';
-
-import {polyfillGlobal} from 'react-native/Libraries/Utilities/PolyfillFunctions';
-polyfillGlobal('URL', () => require('whatwg-url').URL);
 
 console.disableYellowBox = true;
 

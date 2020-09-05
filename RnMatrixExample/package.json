@@ -8,6 +8,7 @@
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint .",
+    "bi": "npx react-native bundle --entry-file='index.js' --bundle-output='./ios/RnMatrixExample/main.jsbundle' --dev=false --platform='ios' --assets-dest='./ios'",
     "postinstall": "sed -i '' '$s/}/,\"browser\":{\"fs\":\"react-native-level-fs\"}}/' node_modules/olm/package.json",
     "wml": "watchman watch-del-all && wml rm all && wml add ../RnMatrixCore/src ./node_modules/@rn-matrix/core/src && wml add ../RnMatrixUi/src ./node_modules/@rn-matrix/ui/src && wml add ../RnMatrixCore/index.js ./node_modules/@rn-matrix/core/index.js && wml start"
   },
@@ -16,8 +17,8 @@
     "@react-native-community/masked-view": "^0.1.10",
     "@react-navigation/native": "^5.7.3",
     "@react-navigation/stack": "^5.9.0",
-    "@rn-matrix/core": "^0.0.18",
-    "@rn-matrix/ui": "^0.0.11",
+    "@rn-matrix/core": "^0.0.20",
+    "@rn-matrix/ui": "^0.0.12",
     "color": "^3.1.2",
     "debug": "^4.1.1",
     "fbemitter": "^2.1.1",
