@@ -1,9 +1,6 @@
-/**
- * @format
- */
+import matrix from './src/services/external';
+import Chat from './src/classes/Chat';
+import Message from './src/classes/Message';
+import matrixSdk from 'matrix-js-sdk';
 
-import {AppRegistry} from 'react-native';
-import App from './App';
-import {name as appName} from './app.json';
-
-AppRegistry.registerComponent(appName, () => App);
+export {matrix, matrixSdk, Chat, Message};

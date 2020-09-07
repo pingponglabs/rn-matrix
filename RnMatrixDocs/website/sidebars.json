@@ -1,0 +1,23 @@
+{
+  "docs": {
+    "Getting Started": [
+      "gettingStarted/installation",
+      "gettingStarted/installationCore",
+      "gettingStarted/installationUi",
+      "gettingStarted/installationExpo"
+    ],
+    "Guides": ["guides/encryption", "guides/authFlow", "guides/managingMessages"],
+    "API": [
+      {
+        "type": "subcategory",
+        "label": "Core",
+        "ids": ["api/matrix", "api/matrixSdk", "api/room", "api/message"]
+      },
+      {
+        "type": "subcategory",
+        "label": "UI",
+        "ids": ["api/roomList", "api/messageList"]
+      }
+    ]
+  }
+}
