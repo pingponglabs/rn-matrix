@@ -6,7 +6,6 @@ const THUMBNAIL_MAX_SIZE = 250;
 
 import matrix from '../services/matrix';
 import users from '../services/user';
-import messages from '../services/message';
 import i18n from '../utilities/i18n';
 
 const debug = require('debug')('rnm:classes:Message');
@@ -234,7 +233,7 @@ export default class Message {
         content.text = `${sender} has sent a video`;
         if (this.pending) {
           //
-        } else {
+        } else if (content.raw) {
           content.full = {
             height: content.raw.info.h,
             width: content.raw.info.w,
@@ -246,16 +245,18 @@ export default class Message {
               THUMBNAIL_MAX_SIZE
             ),
           };
-          content.type = content.raw.info.mimetype;
-          content.url = matrix.getHttpUrl(content.raw.url);
+          content.type = content.raw?.info?.mimetype;
+          content.url = matrix.getHttpUrl(content.raw.url || content.url);
         }
-        const { height, width } = content.full;
-        if (width > height) {
-          content.thumb.height = (height * THUMBNAIL_MAX_SIZE) / width;
-          content.thumb.width = THUMBNAIL_MAX_SIZE;
-        } else {
-          content.thumb.height = THUMBNAIL_MAX_SIZE;
-          content.thumb.width = (width * THUMBNAIL_MAX_SIZE) / height;
+        if (content.full) {
+          const { height, width } = content.full;
+          if (width > height) {
+            content.thumb.height = (height * THUMBNAIL_MAX_SIZE) / width;
+            content.thumb.width = THUMBNAIL_MAX_SIZE;
+          } else {
+            content.thumb.height = THUMBNAIL_MAX_SIZE;
+            content.thumb.width = (width * THUMBNAIL_MAX_SIZE) / height;
+          }
         }
         break;
       case 'm.file':

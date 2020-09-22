@@ -283,6 +283,7 @@ export default class Chat {
 
   async sendMessage(content, type) {
     switch (type) {
+      case 'm.video':
       case 'm.image': {
         // Add or get pending message
         const event = {
@@ -291,7 +292,8 @@ export default class Chat {
           status: MessageStatus.UPLOADING,
           content: content,
         };
-        const pendingMessage = messages.getMessageById(`~~${this.id}:image`, this.id, event, true);
+        const pendingMessageId = type === 'm.video' ? `~~${this.id}:video` : `~~${this.id}:image`;
+        const pendingMessage = messages.getMessageById(pendingMessageId, this.id, event, true);
         // If it's already pending, we update the status, otherwise we add it
         if (this._pending.includes(pendingMessage.id)) {
           debug('Pending message already existed');
@@ -303,7 +305,7 @@ export default class Chat {
         }
 
         // Upload image
-        const response = await matrix.uploadImage(content);
+        const response = await matrix.uploadContent(content);
         debug('uploadImage response', response);
 
         if (!response) {

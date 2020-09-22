@@ -1,6 +1,6 @@
-import { isEqual } from 'lodash';
-import { EventStatus } from 'matrix-js-sdk';
-import { BehaviorSubject } from 'rxjs';
+import {isEqual} from 'lodash';
+import {EventStatus} from 'matrix-js-sdk';
+import {BehaviorSubject} from 'rxjs';
 
 const THUMBNAIL_MAX_SIZE = 250;
 
@@ -30,12 +30,16 @@ export default class Message {
         if (roomId) {
           const matrixRoom = matrix.getClient().getRoom(roomId);
           const roomEvents = matrixRoom.getLiveTimeline().getEvents();
-          const roomEvent = roomEvents.find((event) => event.getId() === eventId);
+          const roomEvent = roomEvents.find(
+            (event) => event.getId() === eventId,
+          );
           if (roomEvent) {
             this._matrixEvent = roomEvent;
           } else if (matrixRoom.hasPendingEvent(eventId)) {
             const pendingEvents = matrixRoom.getPendingEvents();
-            this._matrixEvent = pendingEvents.find((event) => event.getId() === eventId);
+            this._matrixEvent = pendingEvents.find(
+              (event) => event.getId() === eventId,
+            );
           }
         }
         if (!this._matrixEvent) {
@@ -48,13 +52,16 @@ export default class Message {
       this.sender = users.getUserById(this._matrixEvent.getSender());
       this.timestamp = this._matrixEvent.getTs();
       this.type$ = new BehaviorSubject(Message.getType(this._matrixEvent));
-      this.status$ = new BehaviorSubject(this._matrixEvent.getAssociatedStatus());
+      this.status$ = new BehaviorSubject(
+        this._matrixEvent.getAssociatedStatus(),
+      );
       this.redacted$ = new BehaviorSubject(this._matrixEvent.isRedacted());
       this.content$ = new BehaviorSubject(this._getContent());
       this.reactions$ = new BehaviorSubject(this._getReactions());
       this.receipts$ = new BehaviorSubject(this._getReceipts());
     } else {
-      if (!event) throw Error(`All local messages should have an event (${this.id})`);
+      if (!event)
+        throw Error(`All local messages should have an event (${this.id})`);
 
       this.pending = true;
       this._localEvent = event;
@@ -84,7 +91,7 @@ export default class Message {
       await matrix.getClient().sendEvent(this.roomId, 'm.reaction', reaction);
       this.update();
     } catch (e) {
-      console.warn('Error sending reaction: ', { message: this, key }, e);
+      console.warn('Error sending reaction: ', {message: this, key}, e);
     }
   }
 
@@ -95,7 +102,7 @@ export default class Message {
       await matrix.getClient().redactEvent(this.roomId, eventId);
       this.update();
     } catch (e) {
-      console.warn('Error removing reaction: ', { message: this, key }, e);
+      console.warn('Error removing reaction: ', {message: this, key}, e);
     }
   }
 
@@ -121,7 +128,8 @@ export default class Message {
       }
 
       const newRedacted = this._matrixEvent.isRedacted();
-      if (this.redacted$.getValue() !== newRedacted) this.redacted$.next(newRedacted);
+      if (this.redacted$.getValue() !== newRedacted)
+        this.redacted$.next(newRedacted);
 
       const newStatus = this._matrixEvent.getAssociatedStatus();
       if (this.status$.getValue() !== newStatus) {
@@ -190,7 +198,7 @@ export default class Message {
         break;
       // ImageMessage
       case 'm.image': {
-        content.text = i18n.t('messages:content.imageSent', { sender });
+        content.text = i18n.t('messages:content.imageSent', {sender});
 
         if (this.pending) {
           // TODO: create thumb to free memory?
@@ -209,11 +217,15 @@ export default class Message {
             url: matrix.getImageUrl(content.raw.url),
           };
           content.thumb = {
-            url: matrix.getImageUrl(content.raw.url, THUMBNAIL_MAX_SIZE, THUMBNAIL_MAX_SIZE),
+            url: matrix.getImageUrl(
+              content.raw.url,
+              THUMBNAIL_MAX_SIZE,
+              THUMBNAIL_MAX_SIZE,
+            ),
           };
         }
         // TODO: different sizes in constants or something
-        const { height, width } = content.full;
+        const {height, width} = content.full;
         if (width > height) {
           content.thumb.height = (height * THUMBNAIL_MAX_SIZE) / width;
           content.thumb.width = THUMBNAIL_MAX_SIZE;
@@ -243,13 +255,13 @@ export default class Message {
             url: matrix.getHttpUrl(
               content.raw.info.thumbnail_url,
               THUMBNAIL_MAX_SIZE,
-              THUMBNAIL_MAX_SIZE
+              THUMBNAIL_MAX_SIZE,
             ),
           };
           content.type = content.raw.info.mimetype;
           content.url = matrix.getHttpUrl(content.raw.url);
         }
-        const { height, width } = content.full;
+        const {height, width} = content.full;
         if (width > height) {
           content.thumb.height = (height * THUMBNAIL_MAX_SIZE) / width;
           content.thumb.width = THUMBNAIL_MAX_SIZE;
@@ -288,10 +300,14 @@ export default class Message {
               });
               break;
             case 'join':
-              content.text = i18n.t('messages:content.memberJoined', { sender: sender });
+              content.text = i18n.t('messages:content.memberJoined', {
+                sender: sender,
+              });
               break;
             case 'leave':
-              content.text = i18n.t('messages:content.memberLeft', { sender: sender });
+              content.text = i18n.t('messages:content.memberLeft', {
+                sender: sender,
+              });
               break;
             default:
               content.text = i18n.t('messages:content.membershipNotSupport', {
@@ -301,9 +317,13 @@ export default class Message {
           }
         } else if (prevContent.avatar_url !== content.raw.avatar_url) {
           if (!content.raw.avatar_url) {
-            content.text = i18n.t('messages:content.memberAvatarRemoved', { sender: sender });
+            content.text = i18n.t('messages:content.memberAvatarRemoved', {
+              sender: sender,
+            });
           } else {
-            content.text = i18n.t('messages:content.memberAvatarChanged', { sender: sender });
+            content.text = i18n.t('messages:content.memberAvatarChanged', {
+              sender: sender,
+            });
           }
         } else if (prevContent.displayname !== content.raw.displayname) {
           const prevSender = prevContent.displayname || this.sender.id;
@@ -316,10 +336,12 @@ export default class Message {
         break;
       }
       case 'm.room.third_party_invite':
-        content.text = i18n.t('messages:content.thirdPartyInvite', { sender: sender });
+        content.text = i18n.t('messages:content.thirdPartyInvite', {
+          sender: sender,
+        });
         break;
       case 'm.room.create':
-        content.text = i18n.t('messages:content.chatCreated', { sender: sender });
+        content.text = i18n.t('messages:content.chatCreated', {sender: sender});
         break;
       case 'm.room.name':
         content.text = i18n.t('messages:content.chatNameChanged', {
@@ -328,20 +350,28 @@ export default class Message {
         });
         break;
       case 'm.room.avatar':
-        content.text = i18n.t('messages:content.chatAvatarChanged', { sender: sender });
+        content.text = i18n.t('messages:content.chatAvatarChanged', {
+          sender: sender,
+        });
         break;
       case 'm.room.topic':
-        content.text = i18n.t('messages:content.chatDescriptionChanged', { sender: sender });
+        content.text = i18n.t('messages:content.chatDescriptionChanged', {
+          sender: sender,
+        });
         break;
       case 'm.room.encryption':
       case 'm.room.guest_access':
       case 'm.room.history_visibility':
       case 'm.room.join_rules':
       case 'm.room.power_levels':
-        content.text = i18n.t('messages:content.chatSettingsChanged', { sender: sender });
+        content.text = i18n.t('messages:content.chatSettingsChanged', {
+          sender: sender,
+        });
         break;
       default:
-        content.text = i18n.t('messages:content.typeNotSupport', { type: this.type$.getValue() });
+        content.text = i18n.t('messages:content.typeNotSupport', {
+          type: this.type$.getValue(),
+        });
         break;
     }
     return content;
@@ -375,18 +405,18 @@ export default class Message {
   _getReceipts() {
     const matrixRoom = matrix.getClient().getRoom(this.roomId);
     const receipts = matrixRoom.getReceiptsForEvent(this._matrixEvent);
-    receipts.forEach((receipt) => {
-      const user = users.getUserById(receipt.userId);
-      const avatar = user.avatar$.getValue();
-      const avatarUrl = matrix.getImageUrl(avatar, 20, 20);
-      receipt.avatar = avatarUrl;
-      receipt.name = user.name$.getValue();
+    // receipts.forEach((receipt) => {
+    //   const user = users.getUserById(receipt.userId);
+    //   const avatar = user.avatar$.getValue();
+    //   const avatarUrl = matrix.getImageUrl(avatar, 20, 20);
+    //   receipt.avatar = avatarUrl;
+    //   receipt.name = user.name$.getValue();
 
-      // Update receipts on the previous message this user saw
-      const prevReceiptMessageId = messages.getReceiptMessageIdForUser(receipt.userId);
-      messages.updateMessage(prevReceiptMessageId, this.roomId);
-      messages.setReceiptMessageIdForUser(receipt.userId, this.id);
-    });
+    //   // Update receipts on the previous message this user saw
+    //   const prevReceiptMessageId = messages.getReceiptMessageIdForUser(receipt.userId);
+    //   messages.updateMessage(prevReceiptMessageId, this.roomId);
+    //   messages.setReceiptMessageIdForUser(receipt.userId, this.id);
+    // });
     return receipts;
   }
 
@@ -494,7 +524,10 @@ export default class Message {
 
     if (matrixEvent.getType() === 'm.room.message') {
       const content = matrixEvent.getContent();
-      if (content['m.relates_to'] && content['m.relates_to'].rel_type === 'm.replace') {
+      if (
+        content['m.relates_to'] &&
+        content['m.relates_to'].rel_type === 'm.replace'
+      ) {
         return true;
       }
     }

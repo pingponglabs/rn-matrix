@@ -7,6 +7,8 @@ import ImagePicker from 'react-native-image-picker';
 import DocumentPicker from 'react-native-document-picker';
 import { matrix } from '@rn-matrix/core';
 
+const debug = require('debug')('rnm:views:components:Composer');
+
 export default function Composer({
   room,
   isEditing = false,
@@ -57,12 +59,12 @@ export default function Composer({
 
   const openImagePicker = () => {
     const options = {
-      mediaType: 'photos',
-      allowsEditing: true,
+      mediaType: 'mixed',
     };
     ImagePicker.launchImageLibrary(options, async (response) => {
       if (response.didCancel) return;
-      room.sendMessage(response, 'm.image');
+      room.sendMessage(response, response.type ? 'm.image' : 'm.video');
+      setActionButtonsShowing(false);
     });
   };
 
@@ -70,6 +72,7 @@ export default function Composer({
     DocumentPicker.pick({}).then((res) => {
       if (res) {
         room.sendMessage(res, 'm.file');
+        setActionButtonsShowing(false);
       }
     });
   };

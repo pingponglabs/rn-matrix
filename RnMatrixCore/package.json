@@ -1,6 +1,6 @@
 {
   "name": "@rn-matrix/core",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "author": "Annie Elequin <annie@elequin.io>",
   "description": "The core data functionality of rn-matrix",
   "license": "Apache-2.0",

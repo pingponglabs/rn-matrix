@@ -170,15 +170,14 @@ class ChatService {
     const roomId = matrixRoom.roomId;
     if (!this._isChatDisplayed(roomId)) return;
 
-    // If this is an image or file message, we need to remove the associated pending message
-    if (
-      !oldEventId &&
-      event.getType() === 'm.room.message' &&
-      (event.getContent().msgtype === 'm.image' || event.getContent().msgtype === 'm.file') &&
-      this._chats.all[roomId]
-    ) {
-      debug('Remove pending image message', roomId, event.getContent());
-      const type = event.getContent().msgtype === 'm.image' ? 'image' : 'file';
+    // If this is an image, video, file message, we need to remove the associated pending message
+    const isMedia =
+      event.getContent().msgtype === 'm.image' ||
+      event.getContent().msgtype === 'm.file' ||
+      event.getContent().msgtype === 'm.video';
+    if (!oldEventId && event.getType() === 'm.room.message' && isMedia && this._chats.all[roomId]) {
+      debug('Remove pending media message', roomId, event.getContent());
+      const type = event.getContent().msgtype.slice(2);
       this._chats.all[roomId].removePendingMessage(`~~${roomId}:${type}`);
     }
 

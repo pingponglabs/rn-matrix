@@ -79,10 +79,10 @@ export default function MessageItem({
   if (Message.isImageMessage(messageType)) {
     return <ImageMessage {...props} />;
   }
-  if (Message.isVideoMessage(messageType)) {
-    return <VideoMessage {...props} />;
-  }
-  if (Message.isFileMessage(messageType)) {
+  // if (Message.isVideoMessage(messageType)) {
+  //   return <VideoMessage {...props} />;
+  // }
+  if (Message.isVideoMessage(messageType) || Message.isFileMessage(messageType)) {
     return <FileMessage {...props} />;
   }
   if (Message.isNoticeMessage(messageType)) {

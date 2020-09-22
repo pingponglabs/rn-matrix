@@ -103,6 +103,14 @@ class MessageService {
             content.fileName
           );
         }
+        case 'm.video': {
+          return matrix.getClient().sendMessage(roomId, {
+            msgtype: 'm.video',
+            body: content.fileName,
+            info: {},
+            url: content.url,
+          });
+        }
         case 'm.file': {
           return matrix.getClient().sendMessage(roomId, {
             msgtype: 'm.file',
