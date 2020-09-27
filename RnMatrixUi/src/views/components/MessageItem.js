@@ -100,6 +100,7 @@ export function BubbleWrapper({
   showReactions = false,
 }) {
   const reactions = useObservableState(message.reactions$);
+  const receipts = useObservableState(message.receipts$);
 
   const myUser = matrix.getMyUser();
 
@@ -135,7 +136,7 @@ export function BubbleWrapper({
             alignItems: 'center',
           }}>
           {children}
-          {/* {receipts && isMe && <ReadReceipts isMe={isMe} receipts={receipts} />} */}
+          {receipts && isMe && <ReadReceipts isMe={isMe} receipts={receipts} />}
         </View>
         {reactions && showReactions && (
           <Reactions

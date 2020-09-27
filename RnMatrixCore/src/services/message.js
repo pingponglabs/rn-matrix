@@ -4,7 +4,7 @@ import matrix from './matrix';
 import Message from '../classes/Message';
 
 const debug = require('debug')('rnm:scenes:chat:message:messageService');
-const mdConverter = new showdown.Converter();
+const mdConverter = new showdown.Converter({ simplifiedAutoLink: true });
 
 class MessageService {
   constructor() {

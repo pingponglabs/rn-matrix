@@ -218,6 +218,7 @@ class AuthService {
 
   async logout() {
     try {
+      await matrix.getClient().clearStores();
       await this._reset();
       await matrix.stop();
       // TODO: Maybe keep some settings

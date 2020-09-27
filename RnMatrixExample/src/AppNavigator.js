@@ -31,7 +31,7 @@ export default function AppNavigator() {
 
   useEffect(() => {
     if (authLoaded && authLoggedIn && !matrixReady) {
-      setTimeout(() => setLoadingView(true), 5000);
+      setTimeout(() => setLoadingView(true), 10000);
     }
   }, [authLoaded, authLoggedIn, matrixReady]);
 

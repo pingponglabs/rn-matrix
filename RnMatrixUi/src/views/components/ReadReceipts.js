@@ -1,15 +1,11 @@
 import React from 'react';
-import {View, Image, Text, StyleSheet} from 'react-native';
-import {matrix} from '@rn-matrix/core';
+import { View, Image, Text, StyleSheet } from 'react-native';
+import { matrix } from '@rn-matrix/core';
 
-export default function ReadReceipts({receipts, isMe = false}) {
+export default function ReadReceipts({ receipts, isMe = false }) {
   const user = matrix.getMyUser();
   return (
-    <View
-      style={[
-        styles.wrapper,
-        {justifyContent: isMe ? 'flex-end' : 'flex-start'},
-      ]}>
+    <View style={[styles.wrapper, { justifyContent: isMe ? 'flex-end' : 'flex-start' }]}>
       {receipts
         .slice(0, 5)
         .filter((r) => r.userId !== user.id)
@@ -18,14 +14,14 @@ export default function ReadReceipts({receipts, isMe = false}) {
             return (
               <Image
                 key={r.userId}
-                source={{uri: r.avatar}}
+                source={{ uri: r.avatar }}
                 style={[styles.circle, isMeStyle(isMe)]}
               />
             );
           } else {
             return (
               <View key={r.userId} style={[styles.circle, isMeStyle(isMe)]}>
-                <Text style={{color: '#fff', fontWeight: 'bold', fontSize: 12}}>
+                <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 12 }}>
                   {r.name?.charAt(0) === '@'
                     ? r.name?.charAt(1)?.toUpperCase()
                     : r.name?.charAt(0)?.toUpperCase()}
@@ -34,9 +30,7 @@ export default function ReadReceipts({receipts, isMe = false}) {
             );
           }
         })}
-      {receipts.length > 5 && (
-        <Text style={isMeStyle(isMe)}>+{receipts.length - 5}</Text>
-      )}
+      {receipts.length > 5 && <Text style={isMeStyle(isMe)}>+{receipts.length - 5}</Text>}
     </View>
   );
 }
