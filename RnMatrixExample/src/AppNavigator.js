@@ -8,6 +8,8 @@ import ChatScreen from './scenes/chat/ChatScreen';
 import LoginScreen from './scenes/auth/LoginScreen';
 
 import {matrix} from '@rn-matrix/core';
+import NewChatScreen from './scenes/newChat/NewChatScreen';
+import ChatMenuScreen from './scenes/chatMenu/ChatMenuScreen';
 
 // const debug = require('debug')('ditto:services:navigation:RootNavigator')
 
@@ -71,7 +73,7 @@ export default function AppNavigator() {
         <Stack.Screen
           name="ChatList"
           component={ChatListScreen}
-          options={{
+          options={({navigation}) => ({
             title: 'Chats',
             headerLeft: () => (
               <Pressable
@@ -87,14 +89,62 @@ export default function AppNavigator() {
                 </Text>
               </Pressable>
             ),
-          }}
+            headerRight: () => {
+              return (
+                <Pressable
+                  onPress={() => navigation.navigate('NewChat')}
+                  style={({pressed}) => ({
+                    marginRight: 6,
+                    padding: 12,
+                    borderRadius: 8,
+                    backgroundColor: pressed ? 'lightgray' : '#fff',
+                  })}>
+                  <Text style={{fontWeight: 'bold', color: 'dodgerblue'}}>
+                    NEW
+                  </Text>
+                </Pressable>
+              );
+            },
+          })}
         />
         <Stack.Screen
           name="Chat"
           component={ChatScreen}
-          options={({route}) => ({
+          options={({navigation, route}) => ({
             headerBackTitle: 'Back',
             title: route?.params?.room?.name$?.getValue() || 'Chat',
+            headerRight: () => {
+              return (
+                <Pressable
+                  onPress={() => navigation.navigate('ChatMenu')}
+                  style={({pressed}) => ({
+                    marginRight: 6,
+                    padding: 12,
+                    borderRadius: 8,
+                    backgroundColor: pressed ? 'lightgray' : '#fff',
+                  })}>
+                  <Text style={{fontWeight: 'bold', color: 'dodgerblue'}}>
+                    MENU
+                  </Text>
+                </Pressable>
+              );
+            },
+          })}
+        />
+        <Stack.Screen
+          name="NewChat"
+          component={NewChatScreen}
+          options={({route}) => ({
+            headerBackTitle: 'Back',
+            title: 'New Chat',
+          })}
+        />
+        <Stack.Screen
+          name="ChatMenu"
+          component={ChatMenuScreen}
+          options={({route}) => ({
+            headerBackTitle: 'Back',
+            title: 'Chat Settings',
           })}
         />
         {/* <Stack.Screen name="Main" component={MainScreens} />
