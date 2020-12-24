@@ -255,6 +255,14 @@ export default class Chat {
     return matrix.getClient().isRoomEncrypted(this.id);
   }
 
+  getSlim() {
+    // copy this current chat
+    const slimChat = Object.assign(Object.create(Object.getPrototypeOf(this)), this);
+    delete slimChat.members$;
+    delete slimChat.messages$;
+    return slimChat;
+  }
+
   //* *******************************************************************************
   // Actions
   //* *******************************************************************************

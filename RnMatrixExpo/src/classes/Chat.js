@@ -200,7 +200,9 @@ export default class Chat {
           others: typing.length - 1,
         });
       } else {
-        snippet.content = i18n.t('messages:content.typing', { name: user.name$.getValue() });
+        snippet.content = i18n.t('messages:content.typing', {
+          name: user.name$.getValue(),
+        });
       }
     } else {
       if (lastMessage) {
@@ -255,6 +257,14 @@ export default class Chat {
     return matrix.getClient().isRoomEncrypted(this.id);
   }
 
+  getSlim() {
+    // copy this current chat
+    const slimChat = Object.assign(Object.create(Object.getPrototypeOf(this)), this);
+    delete slimChat.members$;
+    delete slimChat.messages$;
+    return slimChat;
+  }
+
   //* *******************************************************************************
   // Actions
   //* *******************************************************************************
@@ -271,9 +281,9 @@ export default class Chat {
   async fetchPreviousMessages() {
     try {
       // TODO: Improve this and gaps detection
-      await matrix
-        .getClient()
-        .paginateEventTimeline(this._matrixRoom.getLiveTimeline(), { backwards: true });
+      await matrix.getClient().paginateEventTimeline(this._matrixRoom.getLiveTimeline(), {
+        backwards: true,
+      });
 
       this.update({ timeline: true });
     } catch (e) {

@@ -88,8 +88,8 @@ class ExternalService {
     return chats.createEncryptedChat(usersToInvite);
   }
 
-  getRooms$() {
-    return chats.getChats();
+  getRooms$(slim = true) {
+    return chats.getChats(slim);
   }
 
   getRoomsByType$(type) {

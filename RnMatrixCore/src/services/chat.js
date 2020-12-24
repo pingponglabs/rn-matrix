@@ -19,6 +19,7 @@ class ChatService {
     this._chats = {
       all: {},
       all$: new BehaviorSubject([]),
+      slim$: new BehaviorSubject([]),
       direct$: new BehaviorSubject([]),
       group$: new BehaviorSubject([]),
       invites$: new BehaviorSubject([]),
@@ -49,7 +50,8 @@ class ChatService {
     // });
   }
 
-  getChats() {
+  getChats(slim = true) {
+    if (slim) return this._chats.slim$;
     return this._chats.all$;
   }
 
@@ -82,6 +84,7 @@ class ChatService {
     return InteractionManager.runAfterInteractions(() => {
       let matrixRooms = [];
       let chats = [];
+      let slimChats = [];
       const directChats = [];
       const groupChats = [];
       const invites = [];
@@ -120,6 +123,11 @@ class ChatService {
         return b.snippet$.getValue()?.timestamp - a.snippet$.getValue()?.timestamp;
       });
       this._chats.all$.next(chats);
+
+      chats.forEach((chat) => {
+        slimChats.push(chat.getSlim());
+      });
+      this._chats.slim$.next(slimChats);
 
       this._chats.invites$.next(invites);
 
