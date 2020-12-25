@@ -88,7 +88,7 @@ class ExternalService {
     return chats.createEncryptedChat(usersToInvite);
   }
 
-  getRooms$(slim = true) {
+  getRooms$(slim = false) {
     return chats.getChats(slim);
   }
 
@@ -114,7 +114,7 @@ class ExternalService {
 
   getDirectChat(userId) {
     let directMessage = null;
-    const joinedChats = chats.getChats().getValue();
+    const joinedChats = chats.getChats(false).getValue();
     for (let i = 0; i < joinedChats.length && !directMessage; i++) {
       const chat = joinedChats[i];
       const members = chat.getMembers();
@@ -157,6 +157,18 @@ class ExternalService {
 
   editMessage(roomId, messageId, newMessageContent) {
     messages.send(newMessageContent, 'm.edit', roomId, messageId);
+  }
+
+  /*************************************************
+   * User Methods
+   *************************************************/
+
+  getKnownUsers() {
+    return users.getKnownUsers();
+  }
+
+  async searchUsers(searchTerm) {
+    return await users.searchUsers(searchTerm);
   }
 
   /*************************************************

@@ -1,6 +1,6 @@
 {
   "name": "@rn-matrix/expo",
-  "version": "0.0.8",
+  "version": "0.0.11",
   "author": "Annie Elequin <annie@elequin.io>",
   "description": "The core data functionality of rn-matrix, but compatible with Expo",
   "license": "Apache-2.0",

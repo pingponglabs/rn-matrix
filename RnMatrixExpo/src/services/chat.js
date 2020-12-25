@@ -50,7 +50,7 @@ class ChatService {
     // });
   }
 
-  getChats(slim = true) {
+  getChats(slim = false) {
     if (slim) return this._chats.slim$;
     return this._chats.all$;
   }
@@ -126,6 +126,9 @@ class ChatService {
 
       chats.forEach((chat) => {
         slimChats.push(chat.getSlim());
+      });
+      slimChats = slimChats.sort((a, b) => {
+        return b.snippet$.getValue()?.timestamp - a.snippet$.getValue()?.timestamp;
       });
       this._chats.slim$.next(slimChats);
 
