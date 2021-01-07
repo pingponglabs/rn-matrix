@@ -171,6 +171,10 @@ class ExternalService {
     return await users.searchUsers(searchTerm);
   }
 
+  getUserById(userId) {
+    return users.getUserById(userId);
+  }
+
   /*************************************************
    * HELPERS
    *************************************************/
