@@ -273,6 +273,7 @@ export default class Chat {
       debug('Error leaving room %s:', this.id, e);
     }
 
+    // provide support for "archiving", so people can go view historical rooms, and THEN delete
     await matrix.getClient().forget(this.id);
   }
 
@@ -286,6 +287,33 @@ export default class Chat {
       this.update({ timeline: true });
     } catch (e) {
       debug('Error fetching previous messages for chat %s', this.id, e);
+    }
+  }
+
+  async kick(userId, reason = '') {
+    try {
+      await matrix.getClient().kick(this.id, userId, reason);
+    } catch (e) {
+      debug('Error kicking user %s:', this.id, e);
+      return e;
+    }
+  }
+
+  async ban(userId, reason = '') {
+    try {
+      await matrix.getClient().ban(this.id, userId, reason);
+    } catch (e) {
+      debug('Error banning user %s:', this.id, e);
+      return e;
+    }
+  }
+
+  async unban(userId, reason = '') {
+    try {
+      await matrix.getClient().ban(this.id, userId, reason);
+    } catch (e) {
+      debug('Error unbanning user %s:', this.id, e);
+      return e;
     }
   }
 

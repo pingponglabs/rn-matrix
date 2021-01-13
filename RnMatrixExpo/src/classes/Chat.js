@@ -200,9 +200,7 @@ export default class Chat {
           others: typing.length - 1,
         });
       } else {
-        snippet.content = i18n.t('messages:content.typing', {
-          name: user.name$.getValue(),
-        });
+        snippet.content = i18n.t('messages:content.typing', { name: user.name$.getValue() });
       }
     } else {
       if (lastMessage) {
@@ -275,19 +273,47 @@ export default class Chat {
       debug('Error leaving room %s:', this.id, e);
     }
 
+    // provide support for "archiving", so people can go view historical rooms, and THEN delete
     await matrix.getClient().forget(this.id);
   }
 
   async fetchPreviousMessages() {
     try {
       // TODO: Improve this and gaps detection
-      await matrix.getClient().paginateEventTimeline(this._matrixRoom.getLiveTimeline(), {
-        backwards: true,
-      });
+      await matrix
+        .getClient()
+        .paginateEventTimeline(this._matrixRoom.getLiveTimeline(), { backwards: true });
 
       this.update({ timeline: true });
     } catch (e) {
       debug('Error fetching previous messages for chat %s', this.id, e);
+    }
+  }
+
+  async kick(userId, reason = '') {
+    try {
+      await matrix.getClient().kick(this.id, userId, reason);
+    } catch (e) {
+      debug('Error kicking user %s:', this.id, e);
+      return e;
+    }
+  }
+
+  async ban(userId, reason = '') {
+    try {
+      await matrix.getClient().ban(this.id, userId, reason);
+    } catch (e) {
+      debug('Error banning user %s:', this.id, e);
+      return e;
+    }
+  }
+
+  async unban(userId, reason = '') {
+    try {
+      await matrix.getClient().ban(this.id, userId, reason);
+    } catch (e) {
+      debug('Error unbanning user %s:', this.id, e);
+      return e;
     }
   }
 
