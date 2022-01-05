@@ -1,0 +1,71 @@
+{
+  "name": "RnMatrixExample",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "start": "react-native start",
+    "test": "jest",
+    "lint": "eslint .",
+    "bi": "npx react-native bundle --entry-file='index.js' --bundle-output='./ios/RnMatrixExample/main.jsbundle' --dev=false --platform='ios' --assets-dest='./ios'",
+    "postinstall": "sed -i '' '$s/}/,\"browser\":{\"fs\":\"react-native-level-fs\"}}/' node_modules/olm/package.json",
+    "wml": "watchman watch-del-all && wml rm all && wml add ../RnMatrixCore/src ./node_modules/@rn-matrix/core/src && wml add ../RnMatrixUi/src ./node_modules/@rn-matrix/ui/src && wml add ../RnMatrixCore/index.js ./node_modules/@rn-matrix/core/index.js && wml start"
+  },
+  "dependencies": {
+    "@react-native-community/async-storage": "^1.12.0",
+    "@react-native-community/masked-view": "^0.1.10",
+    "@react-navigation/native": "^5.7.3",
+    "@react-navigation/stack": "^5.9.0",
+    "@rn-matrix/core": "^0.0.20",
+    "@rn-matrix/ui": "^0.0.12",
+    "color": "^3.1.2",
+    "debug": "^4.1.1",
+    "fbemitter": "^2.1.1",
+    "node-libs-react-native": "^1.2.0",
+    "observable-hooks": "^3.1.0",
+    "react": "16.13.1",
+    "react-native": "0.63.2",
+    "react-native-actions-sheet": "^0.3.4",
+    "react-native-audio-recorder-player": "^3.3.0",
+    "react-native-device-info": "^8.4.8",
+    "react-native-document-picker": "^3.5.4",
+    "react-native-emoji-selector": "^0.2.0",
+    "react-native-file-viewer": "^2.1.1",
+    "react-native-fs": "^2.16.6",
+    "react-native-gesture-handler": "^1.7.0",
+    "react-native-image-picker": "^2.3.3",
+    "react-native-level-fs": "^3.0.1",
+    "react-native-localize": "^1.4.1",
+    "react-native-matrix": "^0.0.12",
+    "react-native-randombytes": "^3.5.3",
+    "react-native-reanimated": "^1.13.0",
+    "react-native-safe-area-context": "^3.1.6",
+    "react-native-screens": "^2.10.1",
+    "react-native-share": "^7.3.2",
+    "react-native-sound-recorder": "^1.5.0",
+    "react-native-svg": "^12.1.0",
+    "react-native-svg-transformer": "^0.14.3",
+    "react-native-video": "^5.1.0-alpha8",
+    "react-native-webview": "^10.7.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.11.1",
+    "@babel/runtime": "^7.11.2",
+    "@react-native-community/eslint-config": "^2.0.0",
+    "babel-jest": "^26.3.0",
+    "eslint": "^7.7.0",
+    "jest": "^26.4.0",
+    "metro-react-native-babel-preset": "^0.62.0",
+    "react-test-renderer": "16.13.1"
+  },
+  "jest": {
+    "preset": "react-native"
+  },
+  "browser": {
+    "fs": "react-native-fs"
+  },
+  "react-native": {
+    "fs": "react-native-fs"
+  }
+}

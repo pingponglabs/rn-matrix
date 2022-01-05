@@ -1,0 +1,12 @@
+ExampleApp/
+ios/
+android/
+__tests__/
+
+babel.config.js
+metro.config.js
+.watchmanconfig
+.prettierrc
+.eslintrc
+
+App.js
