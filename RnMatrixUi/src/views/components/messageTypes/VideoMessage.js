@@ -1,5 +1,5 @@
-import React from 'react';
-import { View } from 'react-native';
+import React, { useRef } from 'react';
+import { View, Image } from 'react-native';
 import { useObservableState } from 'observable-hooks';
 import { BubbleWrapper, SenderText } from '../MessageItem';
 import Video from 'react-native-video';
@@ -17,6 +17,7 @@ export default function VideoMessage({
   const myUser = matrix.getMyUser();
   const content = useObservableState(message.content$);
   const senderName = useObservableState(message.sender.name$);
+  const flatListRef = useRef();
   // const receipts = message.receipts$
   //   ? useObservableState(message.receipts$)
   //   : [];
@@ -24,12 +25,11 @@ export default function VideoMessage({
   const isMe = myUser.id === message.sender.id;
 
   if (!content) return null;
-
   const _onLongPress = () => onLongPress(message);
   const _onPress = () => onPress(message);
   const _onSwipe = () => onSwipe(message);
-
-  const { width, height } = content.thumb;
+  // const { width, height } = content?.thumb;
+  console.log('video UI content....', JSON.stringify(content))
 
   return (
     <>
@@ -39,13 +39,17 @@ export default function VideoMessage({
         onSwipe={onSwipe ? _onSwipe : null}
         message={message}
         showReactions={showReactions}>
-        <View style={{ borderRadius: 20, overflow: 'hidden' }}>
+        <View style={{ borderRadius: 20, overflow: 'hidden', marginBottom: 5 }}>
           <Video
+            paused={true}
+            ref={flatListRef}
             controls
-            source={{ uri: content.url, type: content.type }}
+            resizeMode="cover"  
+            source={{ uri: content.url , type: content.type}}
+            // onLoad={() => alert('hi')}
             style={{
-              width,
-              height,
+              width: 250,
+              height: 140,
               backgroundColor: '#ddd',
             }}
             onError={(e) =>

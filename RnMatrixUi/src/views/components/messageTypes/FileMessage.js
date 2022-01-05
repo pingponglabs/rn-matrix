@@ -7,10 +7,10 @@ import { colors } from '../../../constants';
 import Icon from '../Icon';
 import RNFS from 'react-native-fs';
 import FileViewer from 'react-native-file-viewer';
-import { matrix, Message } from '@rn-matrix/core';
+import { matrix } from '@rn-matrix/core';
 import Color from 'color';
 
-const debug = require('debug')('rnm:views:components:messageTypes:FileMessage');
+const debug = require('debug')('rnm:views:components:messageTypes:TextMessage');
 
 export default function FileMessage({
   message,
@@ -42,12 +42,10 @@ export default function FileMessage({
   const openFile = () => {
     setOpeningFile(true);
 
-    const name = Message.isVideoMessage(message.type$.getValue()) ? content.raw.body : content.name;
-
     // IMPORTANT: A file extension is always required on iOS.
     // You might encounter issues if the file extension isn't included
     // or if the extension doesn't match the mime type of the file.
-    const localFile = `${RNFS.DocumentDirectoryPath}/${name}`;
+    const localFile = `${RNFS.DocumentDirectoryPath}/${content.name}`;
 
     const options = {
       fromUrl: content.url,
@@ -128,7 +126,7 @@ export default function FileMessage({
                   <Text
                     onPress={openFile}
                     style={[styles.fileText, { color: isMe ? colors.white : '#222' }]}>
-                    {content.name || content.raw.body || 'Uploading...'}
+                    {content.name}
                   </Text>
                 </View>
                 {isMe && (

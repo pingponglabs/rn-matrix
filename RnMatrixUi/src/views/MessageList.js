@@ -9,7 +9,7 @@ import {
   SafeAreaView,
 } from 'react-native';
 import MessageItem from './components/MessageItem';
-import { Chat, Message } from '@rn-matrix/core';
+import { Chat, matrix, Message } from '@rn-matrix/core';
 import Composer from './Composer';
 import { colors } from '../constants';
 
@@ -24,6 +24,7 @@ type Props = {
   enableReplies?: Boolean,
   onCancelReply?: Function,
   selectedMessage?: Message,
+  onMorepress?:Function | null,
   onPress?: Function | null,
   onLongPress?: Function | null,
   onSwipe?: Function | null,
@@ -40,7 +41,7 @@ export default function MessageList({
   isReplying = false,
   onEndEdit = null,
   enableReplies = false,
-  onCancelReply = () => {},
+  onCancelReply = () => { },
   selectedMessage = null,
   onPress = null,
   onLongPress = null,
@@ -48,8 +49,9 @@ export default function MessageList({
   renderTypingIndicator = null,
   flatListProps = null,
   composerStyle = {},
-  myBubbleStyle = () => {},
-  otherBubbleStyle = () => {},
+  myBubbleStyle = () => { },
+  otherBubbleStyle = () => { },
+  onMorepress = () => {},
   myTextColor = colors.white,
   otherTextColor = colors.gray400,
   accentColor = 'dodgerblue',
@@ -60,6 +62,7 @@ export default function MessageList({
   const typing = useObservableState(room.typing$);
   const atStart = useObservableState(room.atStart$);
   const [timeline, setTimeline] = useState(messageList);
+  const [audioPlayid, setaudioPlayid] = useState(null);
 
   const styles = {
     myTextColor,
@@ -75,6 +78,12 @@ export default function MessageList({
       setIsLoading(false);
     }
   };
+
+  const onplayAudioPress = (id) => {
+    // alert(id)
+      setaudioPlayid(id)
+  }
+
 
   const renderMessageItem = ({ item: messageId, index }) => {
     return (
@@ -92,9 +101,32 @@ export default function MessageList({
         myBubbleStyle={myBubbleStyle}
         otherBubbleStyle={otherBubbleStyle}
         accentColor={accentColor}
+        onplayPress={(id) => onplayAudioPress(id)}
+        audioPlayid={audioPlayid}
       />
     );
   };
+
+  // const sendText = async (text, isQuote) => {
+  //   console.log('user id....', matrix.getClient().getUserId());
+  //   room.sendMessage(text, 'm.text')
+  // }
+  // const sendImage = async (res) => {
+  //   // console.log('uri...', uri);
+
+  //     room.sendMessage(res, 'm.image')
+   
+  // }
+  // const sendFile = async (msgtype, filename, uri, mimetype, base64, size, duration) => {
+  //   // console.log('uri...', uri);
+   
+  //     const eventObj = Event.getEventObjFile(matrix.getClient().getUserId(), msgtype, filename, uri, mimetype, base64, size, duration);
+
+  //     const event = new Event(null, eventObj);
+  //     console.log('rn matrix view UI event obj...', event);
+  //     room.sendMessage(event.matrixContentObj, msgtype)
+   
+  // }
 
   useEffect(() => {
     // mark as read
@@ -110,8 +142,13 @@ export default function MessageList({
     }
   }, [isLoading, messageList, room, typing]);
 
+  // const props = {
+  //   sendMessage: { text: (text, isquote) => sendText(text, isquote), file: (msgtype, filename, uri, mimetype, base64, size, duration) => sendFile(msgtype, filename, uri, mimetype, base64, size, duration), image: (res) => sendImage(res) },
+  // };
+
   return (
     <Wrapper offset={keyboardOffset}>
+      
       <FlatList
         keyboardDismissMode="on-drag"
         keyboardShouldPersistTaps="handled"
@@ -125,6 +162,7 @@ export default function MessageList({
         styles={styles}
         {...flatListProps}
       />
+
       {enableComposer && (
         <Composer
           room={room}
@@ -136,7 +174,9 @@ export default function MessageList({
           enableReplies={enableReplies}
           composerStyle={composerStyle}
           accentColor={accentColor}
+          onMorepress={onMorepress}
         />
+        // <InputToolbar showRecordAudio={true} {...props} resizeX={50} resizeY={50} />
       )}
     </Wrapper>
   );

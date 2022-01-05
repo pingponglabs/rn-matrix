@@ -43,7 +43,6 @@ class MatrixService {
     this._isSynced$ = new BehaviorSubject(false);
     this._error$ = new BehaviorSubject(null);
   }
-
   // ********************************************************************************
   // Data
   // ********************************************************************************
@@ -71,7 +70,6 @@ class MatrixService {
   isSynced$() {
     return this._isSynced$;
   }
-
   // ********************************************************************************
   // Actions
   // ********************************************************************************
@@ -119,6 +117,7 @@ class MatrixService {
     }
     this._started = true;
     debug('Matrix client started');
+
   }
 
   stop() {
@@ -168,6 +167,7 @@ class MatrixService {
   // ********************************************************************************
   // Helpers
   // ********************************************************************************
+
   async getHomeserverData(domain) {
     const clientConfig = await AutoDiscovery.findClientConfig(domain);
     const config = clientConfig['m.homeserver'];
@@ -223,7 +223,6 @@ class MatrixService {
     if (!this._client) {
       throw Error('isRoomDirect: No matrix client');
     }
-
     const directEvent = this._client.getAccountData('m.direct');
     const directRooms = directEvent ? Object.keys(directEvent.getContent()) : [];
     if (directRooms.includes(roomId)) return true;
@@ -234,6 +233,7 @@ class MatrixService {
   }
 
   async uploadImage(image) {
+    console.log('api upload file rnmatix services...', image)
     try {
       const url = await this._client.uploadContent(toImageBuffer(image.data), {
         onlyContentUri: true,
@@ -248,15 +248,35 @@ class MatrixService {
   }
 
   async uploadContent(file) {
+    console.log('api upload file rnmatix services...', file)
     try {
-      const url = await this._client.uploadContent(file);
+      const url = await this._client.uploadContent(file,{
+        onlyContentUri: true
+      });
       return url;
     } catch (e) {
       debug('Error uploading file:', e);
       return null;
     }
   }
+
+  // async uploadAudio(file) {
+  //   console.log('api upload file rnmatix services...', file)
+  //   try {
+  //     const url = await this._client.uploadContent(`file://${file.url}`, {
+  //       onlyContentUri: true,
+  //       name: file.body,
+  //       type: 'audio/mp4',
+  //     });
+  //     console.log('url...', url)
+  //     return url;
+  //   } catch (e) {
+  //     debug('Error uploading audio:', e);
+  //     return null;
+  //   }e
+  // }
 }
 
 const matrix = new MatrixService();
+
 export default matrix;

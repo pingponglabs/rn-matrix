@@ -14,6 +14,7 @@ import ReadReceipts from './ReadReceipts';
 import FileMessage from './messageTypes/FileMessage';
 import Reactions from './Reactions';
 import { BehaviorSubject } from 'rxjs';
+import AudioMessage from '@rn-matrix/ui/src/views/components/messageTypes/AudioMessage';
 
 // const debug = require('debug')('rnm:scenes:chat:message:MessageItem')
 
@@ -52,7 +53,9 @@ export default function MessageItem({
   }
 
   const message = matrix.getMessageById(messageId, roomId);
+  console.log('message....',message);
 
+  
   if (!message.type$) return null;
 
   const prevMessage =
@@ -65,7 +68,7 @@ export default function MessageItem({
       : null;
   const prevSame = isSameSender(message, prevMessage);
   const nextSame = isSameSender(message, nextMessage);
-  const props = { ...otherProps, message, prevSame, nextSame };
+  const props = { ...otherProps, message, prevSame, nextSame,messageId };
 
   const messageType = useObservableState(message.type$);
 
@@ -79,14 +82,20 @@ export default function MessageItem({
   if (Message.isImageMessage(messageType)) {
     return <ImageMessage {...props} />;
   }
-  // if (Message.isVideoMessage(messageType)) {
-  //   return <VideoMessage {...props} />;
-  // }
-  if (Message.isVideoMessage(messageType) || Message.isFileMessage(messageType)) {
+  if (Message.isVideoMessage(messageType)) {
+    return <VideoMessage {...props} />;
+  }
+  if (Message.isFileMessage(messageType)) {
     return <FileMessage {...props} />;
   }
   if (Message.isNoticeMessage(messageType)) {
     return <NoticeMessage {...props} />;
+  }
+  if (Message.isStickerMessage(messageType)) {
+    return <ImageMessage {...props} />;
+  }
+  if (Message.isAudioMessage(messageType)) {
+    return <AudioMessage {...props} />;
   }
   return <EventMessage {...props} />;
 }
@@ -100,10 +109,7 @@ export function BubbleWrapper({
   showReactions = false,
 }) {
   const reactions = useObservableState(message.reactions$);
-  const receipts = useObservableState(message.receipts$);
-
   const myUser = matrix.getMyUser();
-
   const toggleReaction = (key) => {
     message.toggleReaction(key);
   };
@@ -136,7 +142,7 @@ export function BubbleWrapper({
             alignItems: 'center',
           }}>
           {children}
-          {receipts && isMe && <ReadReceipts isMe={isMe} receipts={receipts} />}
+          {/* {receipts && isMe && <ReadReceipts isMe={isMe} receipts={receipts} />} */}
         </View>
         {reactions && showReactions && (
           <Reactions

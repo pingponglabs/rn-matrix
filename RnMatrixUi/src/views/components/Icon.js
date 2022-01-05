@@ -39,6 +39,10 @@ export default function Icon({ name, size = 24, color = '#000', style = {} }: Pr
       return <Icons.Lock {...props} />;
     case 'reply':
       return <Icons.Reply {...props} />;
+    case 'smile':
+      return <Icons.smile {...props} />;
+    case 'addfile':
+      return <Icons.addfiles {...props} />;
     default:
       return <Icons.Check {...props} />;
   }
@@ -55,4 +59,6 @@ type IconNames =
   | 'file'
   | 'image'
   | 'lock'
-  | 'reply';
+  | 'reply'
+  | 'smile'
+  | 'addfile';

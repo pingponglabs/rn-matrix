@@ -22,6 +22,8 @@ export default function ImageMessage({
   const content = useObservableState(message.content$);
   const senderName = useObservableState(message.sender.name$);
   const reactions = useObservableState(message.reactions$);
+  const messageType = useObservableState(message.type$);
+  console.log('messageType....',messageType)
   // const receipts = message.receipts$ ? useObservableState(message.receipts$) : [];
   const status = useObservableState(message.status$);
   const isMe = myUser.id === message.sender.id;
@@ -35,9 +37,9 @@ export default function ImageMessage({
 
   const sharpBorderRadius = 5;
   const imageStyles = {
-    width: content.thumb.width,
-    height: content.thumb.height,
-    backgroundColor: '#ccc',
+    width: content?.thumb?.width || '50%',
+    height: content?.thumb?.height,
+    backgroundColor: messageType == 'm.sticker' ? 'transparent' : '#ccc',
     borderRadius: 20,
     ...(isMe
       ? {

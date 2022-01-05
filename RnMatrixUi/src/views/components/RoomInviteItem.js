@@ -3,7 +3,6 @@ import {useObservableState} from 'observable-hooks';
 import {StyleSheet, TouchableHighlight, Image, View, Text} from 'react-native';
 import Icon from './Icon';
 import {matrix} from '@rn-matrix/core';
-
 const avatarSize = 50;
 
 export default function RoomInviteItem({room}) {
