@@ -9,12 +9,13 @@ type Props = {
   style?: ViewStyle,
 };
 
-export default function Icon({ name, size = 24, color = '#000', style = {} }: Props) {
+export default function Icon({ name, size = 24, color = '#000', style = {}, stroke}: Props) {
   const props = {
     width: size,
     height: size,
     fill: color,
     style,
+    stroke
   };
   switch (name) {
     case 'add':
@@ -39,6 +40,31 @@ export default function Icon({ name, size = 24, color = '#000', style = {} }: Pr
       return <Icons.Lock {...props} />;
     case 'reply':
       return <Icons.Reply {...props} />;
+    case 'smile':
+      return <Icons.smile {...props} />;
+    case 'addfile':
+      return <Icons.addfiles {...props} />;
+    case 'expand':
+      return <Icons.expand {...props} />;
+    case 'send':
+      return <Icons.send {...props} />;
+    case 'audio':
+      return <Icons.audio {...props} />;
+    case 'camera':
+      return <Icons.camera {...props} />;
+    case 'gif':
+      return <Icons.gif {...props} />;
+    case 'horizontaldots':
+      return <Icons.horizontaldots {...props} />;
+    case 'phone':
+      return <Icons.phone {...props} />;
+    case 'backWhite':
+      return <Icons.backWhite {...props} />;
+    case 'Invite':
+      return <Icons.Invite {...props} />;
+      case 'Invited':
+      return <Icons.Invited {...props} />;
+
     default:
       return <Icons.Check {...props} />;
   }
@@ -55,4 +81,14 @@ type IconNames =
   | 'file'
   | 'image'
   | 'lock'
-  | 'reply';
+  | 'reply'
+  | 'smile'
+  | 'addfile'
+  | 'camera'
+  | 'expand'
+  | 'send'
+  | 'audio'
+  | 'gif'
+  | 'phone'
+  | 'backWhite'
+  | 'horizontaldots';

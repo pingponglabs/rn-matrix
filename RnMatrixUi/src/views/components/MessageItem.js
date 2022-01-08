@@ -14,6 +14,7 @@ import ReadReceipts from './ReadReceipts';
 import FileMessage from './messageTypes/FileMessage';
 import Reactions from './Reactions';
 import { BehaviorSubject } from 'rxjs';
+import AudioMessage from '@rn-matrix/ui/src/views/components/messageTypes/AudioMessage';
 
 // const debug = require('debug')('rnm:scenes:chat:message:MessageItem')
 
@@ -52,7 +53,9 @@ export default function MessageItem({
   }
 
   const message = matrix.getMessageById(messageId, roomId);
+  console.log('message....',message);
 
+  
   if (!message.type$) return null;
 
   const prevMessage =
@@ -65,13 +68,13 @@ export default function MessageItem({
       : null;
   const prevSame = isSameSender(message, prevMessage);
   const nextSame = isSameSender(message, nextMessage);
-  const props = { ...otherProps, message, prevSame, nextSame };
+  const props = { ...otherProps, message, prevSame, nextSame,messageId };
 
   const messageType = useObservableState(message.type$);
 
-  if (message.redacted$.getValue()) {
-    return <EventMessage {...props} />;
-  }
+  // if (message.redacted$.getValue()) {
+  //   return <EventMessage {...props} />;
+  // }
 
   if (Message.isTextMessage(messageType)) {
     return <TextMessage {...props} />;
@@ -79,16 +82,22 @@ export default function MessageItem({
   if (Message.isImageMessage(messageType)) {
     return <ImageMessage {...props} />;
   }
-  // if (Message.isVideoMessage(messageType)) {
-  //   return <VideoMessage {...props} />;
-  // }
-  if (Message.isVideoMessage(messageType) || Message.isFileMessage(messageType)) {
+  if (Message.isVideoMessage(messageType)) {
+    return <VideoMessage {...props} />;
+  }
+  if (Message.isFileMessage(messageType)) {
     return <FileMessage {...props} />;
   }
   if (Message.isNoticeMessage(messageType)) {
     return <NoticeMessage {...props} />;
   }
-  return <EventMessage {...props} />;
+  if (Message.isStickerMessage(messageType)) {
+    return <ImageMessage {...props} />;
+  }
+  if (Message.isAudioMessage(messageType)) {
+    return <AudioMessage {...props} />;
+  }
+  return null;//<EventMessage {...props} />;
 }
 
 export function BubbleWrapper({
@@ -100,10 +109,7 @@ export function BubbleWrapper({
   showReactions = false,
 }) {
   const reactions = useObservableState(message.reactions$);
-  const receipts = useObservableState(message.receipts$);
-
   const myUser = matrix.getMyUser();
-
   const toggleReaction = (key) => {
     message.toggleReaction(key);
   };
@@ -136,7 +142,7 @@ export function BubbleWrapper({
             alignItems: 'center',
           }}>
           {children}
-          {receipts && isMe && <ReadReceipts isMe={isMe} receipts={receipts} />}
+          {/* {receipts && isMe && <ReadReceipts isMe={isMe} receipts={receipts} />} */}
         </View>
         {reactions && showReactions && (
           <Reactions
@@ -151,16 +157,18 @@ export function BubbleWrapper({
   );
 }
 
-export function SenderText({ isMe, children }) {
+export function SenderText({ isMe, children ,color }) {
   return (
     <Text
       style={{
-        fontSize: 14,
-        fontWeight: '400',
+        fontSize: 11,
+        fontWeight: '700',
         marginHorizontal: 22,
-        marginTop: 8,
-        opacity: 0.6,
-        ...(isMe ? { textAlign: 'right' } : {}),
+        marginTop: 20,
+        // opacity: 0.6,
+        color: color,
+        alignSelf:'center'
+        // ...(isMe ? { textAlign: 'right' } : {}),
       }}>
       {children}
     </Text>

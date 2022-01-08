@@ -1,7 +1,7 @@
 import { useObservableState } from 'observable-hooks';
 import React from 'react';
 import { EventStatus } from 'matrix-js-sdk';
-import { Text, TouchableHighlight, View } from 'react-native';
+import { Text, TouchableHighlight, View,useColorScheme } from 'react-native';
 import { SenderText, BubbleWrapper } from '../MessageItem';
 import { isIos } from '../../../utilities/misc';
 import { isEmoji } from '../../../utilities/emojis';
@@ -10,6 +10,8 @@ import { colors } from '../../../constants';
 import Icon from '../Icon';
 import { matrix } from '@rn-matrix/core';
 import Color from 'color';
+import LinearGradient from 'react-native-linear-gradient';
+import Moment from 'moment';
 
 const debug = require('debug')('rnm:views:components:messageTypes:TextMessage');
 
@@ -24,7 +26,10 @@ export default function TextMessage({
   myBubbleStyle,
   otherBubbleStyle,
   accentColor,
+  textColor,
+  fontWeight
 }) {
+  const theme = useColorScheme();
   const myUser = matrix.getMyUser();
   const content = useObservableState(message.content$);
   const senderName = useObservableState(message.sender.name$);
@@ -41,17 +46,27 @@ export default function TextMessage({
   const _onPress = () => onPress(message);
   const _onSwipe = () => onSwipe(message);
 
-  const getDefaultBackgroundColor = (me, pressed) => {
+  // const getDefaultBackgroundColor = (me, pressed) => {
+  //   return me
+  //     ? pressed
+  //       ? colors.blue500
+  //       : colors.blue400
+  //     : pressed
+  //       ? colors.gray400
+  //       : colors.gray300;
+  // };
+
+  console.log('timeobj..',message.timestamp);
+  const getDefaultGradientBackgroundColor = (me, pressed) => {
     return me
-      ? pressed
-        ? colors.blue500
-        : colors.blue400
-      : pressed
-      ? colors.gray400
-      : colors.gray300;
+      ? myBubbleStyle().gradientColor
+      : otherBubbleStyle().gradientColor
   };
 
   if (!content?.html) return null;
+  
+  var dateTime = new Date(parseInt(message?.timestamp, 10));
+
   return (
     <>
       <BubbleWrapper
@@ -67,47 +82,64 @@ export default function TextMessage({
         ) : (
           <View style={viewStyle(nextSame)}>
             <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
+
               <TouchableHighlight
-                underlayColor={getDefaultBackgroundColor(isMe, true)}
+                underlayColor='transparent' //{getDefaultBackgroundColor(isMe, true)}
                 onPress={onPress ? _onPress : null}
                 onLongPress={onLongPress ? _onLongPress : null}
                 delayLongPress={200}
                 style={[
-                  bubbleStyles(isMe, prevSame, nextSame),
-                  { backgroundColor: getDefaultBackgroundColor(isMe, false) },
+                  // bubbleStyles(isMe, prevSame, nextSame),
+                  // { backgroundColor: getDefaultBackgroundColor(isMe, false) }
+                  (!isMe && theme == 'dark' ? { borderColor: '#00FFA3', backgroundColor: '#000'} : {}),
+                  (!isMe && theme == 'dark' ? {borderRadius: 16,borderWidth: 4} : {}),
+                    // (isMe
+                    //   ? {
+                    //       ...(prevSame ? { borderTopRightRadius: 5 } : {}),
+                    //       ...(nextSame ? { borderBottomRightRadius: 5 } : {}),
+                    //     }
+                    //   : {
+                    //       ...(prevSame ? { borderTopLeftRadius: 5 } : {}),
+                    //       ...(nextSame ? { borderBottomLeftRadius: 5 } : {}),
+                    //     }),
+                    (isMe ? {borderTopRightRadius: 5} : {borderTopLeftRadius: 5 }),
                   reactions ? { alignSelf: isMe ? 'flex-end' : 'flex-start' } : {},
                   isMe ? myBubbleStyle() : otherBubbleStyle(),
                 ]}
                 {...props}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'flex-end',
-                    alignItems: 'flex-end',
-                    flexWrap: 'wrap',
-                  }}>
-                  <Html html={content?.html} isMe={isMe} accentColor={accentColor} />
-                  {isMe && (
-                    <View style={{ marginLeft: 12, marginRight: -6 }}>
-                      <Icon
-                        name={status === EventStatus.SENDING ? 'circle' : 'check-circle'}
-                        size={16}
-                        color={
-                          myBubbleStyle(false)?.backgroundColor
-                            ? Color(myBubbleStyle(false).backgroundColor).darken(0.3).hex()
-                            : Color(getDefaultBackgroundColor(isMe, false)).darken(0.3).hex()
-                        }
-                      />
-                    </View>
-                  )}
-                </View>
+                <LinearGradient colors={getDefaultGradientBackgroundColor(isMe, true)} style={{...bubbleStyles(isMe, prevSame, nextSame),padding: 10}}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'flex-end',
+                      alignItems: 'flex-end',
+                      flexWrap: 'wrap',
+                    }}>
+                    <Html html={content?.html} isMe={isMe} accentColor={accentColor} color={textColor} fontWeight={fontWeight}/>
+                    {/* <Text style={{color: isMe ? colors.white : colors.greyDark2, fontSize: 11, fontWeight: '700', marginLeft: 10}}>{Moment(dateTime).format('HH:mm a')}</Text> */}
+                    {/* {isMe && (
+                      <View style={{ marginLeft: 12, marginRight: -6 }}>
+                        <Icon
+                          name={status === EventStatus.SENDING ? 'circle' : 'check-circle'}
+                          size={16}
+                          color={
+                            myBubbleStyle(false)?.backgroundColor
+                              ? Color(myBubbleStyle(false).backgroundColor).darken(0.3).hex()
+                              : Color(getDefaultBackgroundColor(isMe, false)).darken(0.3).hex()
+                          }
+                        />
+                      </View>
+                    )} */}
+                  </View>
+                </LinearGradient>
               </TouchableHighlight>
+
             </View>
           </View>
         )}
       </BubbleWrapper>
 
-      {!prevSame && <SenderText isMe={isMe}>{senderName}</SenderText>}
+      {!prevSame && <SenderText isMe={isMe} color={textColor}>{Moment(dateTime).format('d MMM HH:mm').toLocaleUpperCase()}</SenderText>}
     </>
   );
 }
@@ -118,7 +150,7 @@ const Emoji = ({ style, isMe, children }) => (
       ...style,
       fontSize: 45,
       marginHorizontal: 8,
-      marginTop: isIos() ? 4 : -7,
+      marginTop: isIos() ? 20 : -7,
       marginBottom: 4,
     }}>
     {children}
@@ -127,22 +159,24 @@ const Emoji = ({ style, isMe, children }) => (
 
 const sharpBorderRadius = 5;
 const bubbleStyles = (isMe, prevSame, nextSame) => ({
-  paddingHorizontal: 14,
-  paddingVertical: 8,
-  borderRadius: 18,
-  ...(isMe
-    ? {
-        ...(prevSame ? { borderTopRightRadius: sharpBorderRadius } : {}),
-        ...(nextSame ? { borderBottomRightRadius: sharpBorderRadius } : {}),
-      }
-    : {
-        ...(prevSame ? { borderTopLeftRadius: sharpBorderRadius } : {}),
-        ...(nextSame ? { borderBottomLeftRadius: sharpBorderRadius } : {}),
-      }),
+  paddingHorizontal: 16,
+  paddingVertical: isMe ? 10 : 8,
+  borderRadius: 16,
+  ...(isMe ? {borderTopRightRadius: 5} : {borderTopLeftRadius: 5 }),
+  // ...(isMe
+  //   ? {
+  //     ...(prevSame ? { borderTopRightRadius: sharpBorderRadius } : {}),
+  //     ...(nextSame ? { borderBottomRightRadius: sharpBorderRadius } : {}),
+  //   }
+  //   : {
+  //     ...(prevSame ? { borderTopLeftRadius: sharpBorderRadius} : {}),
+  //     ...(nextSame ? { borderBottomLeftRadius: sharpBorderRadius} : {}),
+  //   }),
+    
 });
 
 const viewStyle = (nextSame) => ({
-  marginTop: 2,
+  marginTop: 20,
   marginBottom: nextSame ? 1 : 4,
   maxWidth: '85%',
 });

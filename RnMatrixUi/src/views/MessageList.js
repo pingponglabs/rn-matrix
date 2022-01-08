@@ -7,11 +7,13 @@ import {
   View,
   Platform,
   SafeAreaView,
+  useColorScheme
 } from 'react-native';
 import MessageItem from './components/MessageItem';
-import { Chat, Message } from '@rn-matrix/core';
+import { Chat, matrix, Message } from '@rn-matrix/core';
 import Composer from './Composer';
 import { colors } from '../constants';
+import ChatHeader from '@rn-matrix/ui/src/views/components/ChatHeader';
 
 type Props = {
   room: Chat,
@@ -24,6 +26,7 @@ type Props = {
   enableReplies?: Boolean,
   onCancelReply?: Function,
   selectedMessage?: Message,
+  onMorepress?:Function | null,
   onPress?: Function | null,
   onLongPress?: Function | null,
   onSwipe?: Function | null,
@@ -40,7 +43,7 @@ export default function MessageList({
   isReplying = false,
   onEndEdit = null,
   enableReplies = false,
-  onCancelReply = () => {},
+  onCancelReply = () => { },
   selectedMessage = null,
   onPress = null,
   onLongPress = null,
@@ -48,18 +51,24 @@ export default function MessageList({
   renderTypingIndicator = null,
   flatListProps = null,
   composerStyle = {},
-  myBubbleStyle = () => {},
-  otherBubbleStyle = () => {},
+  myBubbleStyle = () => { },
+  otherBubbleStyle = () => { },
+  onMorepress = () => {},
   myTextColor = colors.white,
   otherTextColor = colors.gray400,
   accentColor = 'dodgerblue',
   textColor = colors.gray500,
+  fontWeight,
+  onBackPress,
+  backgroundHeaderColor,
 }: Props) {
+  const theme = useColorScheme();
   const [isLoading, setIsLoading] = useState(false);
   const messageList = useObservableState(room.messages$);
   const typing = useObservableState(room.typing$);
   const atStart = useObservableState(room.atStart$);
   const [timeline, setTimeline] = useState(messageList);
+  const [audioPlayid, setaudioPlayid] = useState(null);
 
   const styles = {
     myTextColor,
@@ -75,6 +84,12 @@ export default function MessageList({
       setIsLoading(false);
     }
   };
+
+  const onplayAudioPress = (id) => {
+    // alert(id)
+      setaudioPlayid(id)
+  }
+
 
   const renderMessageItem = ({ item: messageId, index }) => {
     return (
@@ -92,9 +107,30 @@ export default function MessageList({
         myBubbleStyle={myBubbleStyle}
         otherBubbleStyle={otherBubbleStyle}
         accentColor={accentColor}
+        textColor={textColor}
+        onplayPress={(id) => onplayAudioPress(id)}
+        audioPlayid={audioPlayid}
+        fontWeight={fontWeight}
+        
       />
     );
   };
+
+  // const sendText = async (text, isQuote) => {
+  //   console.log('user id....', matrix.getClient().getUserId());
+  //   room.sendMessage(text, 'm.text')
+  // }
+  // const sendImage = async (res) => {
+  //   // console.log('uri...', uri);
+  //     room.sendMessage(res, 'm.image')
+  // }
+  // const sendFile = async (msgtype, filename, uri, mimetype, base64, size, duration) => {
+  //   // console.log('uri...', uri);   
+  //     const eventObj = Event.getEventObjFile(matrix.getClient().getUserId(), msgtype, filename, uri, mimetype, base64, size, duration);
+  //     const event = new Event(null, eventObj);
+  //     console.log('rn matrix view UI event obj...', event);
+  //     room.sendMessage(event.matrixContentObj, msgtype)
+  // }
 
   useEffect(() => {
     // mark as read
@@ -110,8 +146,18 @@ export default function MessageList({
     }
   }, [isLoading, messageList, room, typing]);
 
+  // const props = {
+  //   sendMessage: { text: (text, isquote) => sendText(text, isquote), file: (msgtype, filename, uri, mimetype, base64, size, duration) => sendFile(msgtype, filename, uri, mimetype, base64, size, duration), image: (res) => sendImage(res) },
+  // };
+
   return (
     <Wrapper offset={keyboardOffset}>
+      <ChatHeader 
+       room={room} 
+       textColor={textColor}
+       onBackPress={onBackPress}
+       backgroundHeaderColor={backgroundHeaderColor}
+      />
       <FlatList
         keyboardDismissMode="on-drag"
         keyboardShouldPersistTaps="handled"
@@ -125,6 +171,7 @@ export default function MessageList({
         styles={styles}
         {...flatListProps}
       />
+
       {enableComposer && (
         <Composer
           room={room}
@@ -136,22 +183,28 @@ export default function MessageList({
           enableReplies={enableReplies}
           composerStyle={composerStyle}
           accentColor={accentColor}
+          onMorepress={onMorepress}
+          textColor={textColor}
         />
+        // <InputToolbar showRecordAudio={true} {...props} resizeX={50} resizeY={50} />
       )}
     </Wrapper>
   );
 }
 
 const Wrapper = ({ offset, children }) => {
+  const theme = useColorScheme();
+
   const style = {
     flex: 1,
+    backgroundColor: theme == 'dark' ? colors.darkbackground : colors.lightbackground
   };
   return Platform.OS === 'ios' ? (
-    <SafeAreaView style={style}>
+    // <SafeAreaView style={style}>
       <KeyboardAvoidingView style={style} behavior="padding" keyboardVerticalOffset={offset}>
         {children}
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    // </SafeAreaView>
   ) : (
     <View style={style}>{children}</View>
   );

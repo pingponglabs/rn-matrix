@@ -28,7 +28,7 @@ export default class User {
     const newName = this._matrixUser?.displayName || this.id;
     if (this.name$.getValue() !== newName) this.name$.next(newName);
 
-    const newAvatar = this._matrixUser?.avatarUrl || null;
+    const newAvatar = this._matrixUser.avatarUrl;
     if (this.avatar$.getValue() !== newAvatar) this.avatar$.next(newAvatar);
   }
 

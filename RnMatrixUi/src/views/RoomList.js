@@ -15,14 +15,22 @@ export default function RoomList({
   renderListItem = null,
   renderInvite = null,
   onRowPress = () => {},
+  onlineTextColor,
+  textColor
 }: Props) {
+
   const inviteList = useObservableState(matrix.getRoomsByType$('invites'));
   const chatList = useObservableState(matrix.getRooms$());
   const isReady = useObservableState(matrix.isReady$());
   const isSynced = useObservableState(matrix.isSynced$());
 
   const renderRow = ({ item }) => {
-    return <RoomListItem key={item.id} room={item} onPress={onRowPress} />;
+    return <RoomListItem 
+    key={item.id} 
+    room={item} 
+    onPress={onRowPress} 
+    textColor={textColor}
+    onlineTextColor={onlineTextColor}/>;
   };
 
   const renderInviteRow = ({ item }) => {

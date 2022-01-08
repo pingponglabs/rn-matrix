@@ -19,7 +19,6 @@ class ChatService {
     this._chats = {
       all: {},
       all$: new BehaviorSubject([]),
-      slim$: new BehaviorSubject([]),
       direct$: new BehaviorSubject([]),
       group$: new BehaviorSubject([]),
       invites$: new BehaviorSubject([]),
@@ -50,8 +49,7 @@ class ChatService {
     // });
   }
 
-  getChats(slim = false) {
-    if (slim) return this._chats.slim$;
+  getChats() {
     return this._chats.all$;
   }
 
@@ -84,7 +82,6 @@ class ChatService {
     return InteractionManager.runAfterInteractions(() => {
       let matrixRooms = [];
       let chats = [];
-      let slimChats = [];
       const directChats = [];
       const groupChats = [];
       const invites = [];
@@ -123,14 +120,6 @@ class ChatService {
         return b.snippet$.getValue()?.timestamp - a.snippet$.getValue()?.timestamp;
       });
       this._chats.all$.next(chats);
-
-      chats.forEach((chat) => {
-        slimChats.push(chat.getSlim());
-      });
-      slimChats = slimChats.sort((a, b) => {
-        return b.snippet$.getValue()?.timestamp - a.snippet$.getValue()?.timestamp;
-      });
-      this._chats.slim$.next(slimChats);
 
       this._chats.invites$.next(invites);
 
@@ -181,13 +170,14 @@ class ChatService {
     const roomId = matrixRoom.roomId;
     if (!this._isChatDisplayed(roomId)) return;
 
-    // If this is an image, video, file message, we need to remove the associated pending message
-    const isMedia =
-      event.getContent().msgtype === 'm.image' ||
-      event.getContent().msgtype === 'm.file' ||
-      event.getContent().msgtype === 'm.video';
-    if (!oldEventId && event.getType() === 'm.room.message' && isMedia && this._chats.all[roomId]) {
-      debug('Remove pending media message', roomId, event.getContent());
+    // If this is an image or file message, we need to remove the associated pending message
+    if (
+      !oldEventId &&
+      event.getType() === 'm.room.message' &&
+      (event.getContent().msgtype === 'm.image' || event.getContent().msgtype === 'm.file' || event.getContent().msgtype === 'm.audio' || event.getContent().msgtype === 'm.video') &&
+      this._chats.all[roomId]
+    ) {
+      debug('Remove pending image message', roomId, event.getContent());
       const type = event.getContent().msgtype.slice(2);
       this._chats.all[roomId].removePendingMessage(`~~${roomId}:${type}`);
     }
@@ -298,6 +288,24 @@ class ChatService {
       .on('Room.receipt', (event, room) => this._handleRoomReceiptEvent(event, room));
     matrix
       .getClient()
+      // .on('Room.timeline', async (message, room) => {
+      //   if (!isReady) return;
+      //   let body = '';
+      //   try {
+      //     if (message.event.type === 'm.room.encrypted') {
+      //       alert('hi')
+      //       const event = await matrix.getClient()._crypto.decryptEvent(message);
+      //       ({ body } = event.clearEvent.content);
+      //     } else {
+      //       ({ body } = message.event.content);
+      //     }
+      //     if (body) {
+      //       console.log('body.....',body)
+      //     }
+      //   } catch (error) {
+      //     console.error('#### ', error);
+      //   }
+      // });
       .on('Room.timeline', (event, room) => this._handleRoomTimelineEvent(event, room));
     matrix
       .getClient()

@@ -1,12 +1,19 @@
 import React from 'react';
 import { useObservableState } from 'observable-hooks';
-import { StyleSheet, TouchableHighlight, Image, View, Text } from 'react-native';
+import { StyleSheet, TouchableHighlight, Image, View, Text, TouchableOpacity } from 'react-native';
 import moment from 'moment';
 import Icon from './Icon';
+import { hp, isX, normalize, wp } from '@rn-matrix/ui/src/Helper/responsiveScreen';
+import { colors } from '@rn-matrix/ui/src/constants';
 
-const avatarSize = 50;
+const avatarSize = wp(10);
 
-export default function RoomListItem({ room, onPress }) {
+export default function RoomListItem({
+  room,
+  onPress,
+  textColor,
+  onlineTextColor,
+}) {
   const name = useObservableState(room.name$);
   const avatar = useObservableState(room.avatar$);
   const snippet = useObservableState(room.snippet$);
@@ -28,7 +35,7 @@ export default function RoomListItem({ room, onPress }) {
           <DefaultImage letter={name?.charAt(0)} />
         )}
 
-        <View style={{ flex: 1, marginRight: 12 }}>
+        {/* <View style={{ flex: 1, marginRight: 12 }}>
           <View style={styles.textWrapper}>
             <Text style={styles.title} numberOfLines={1}>
               {room.isEncrypted() && (
@@ -46,6 +53,28 @@ export default function RoomListItem({ room, onPress }) {
               {snippet?.content}
             </Text>
             {readState === 'unread' && <UnreadIndicator />}
+          </View>
+        </View> */}
+        <View style={{ flex: 1, marginLeft: wp(4), justifyContent: 'space-between', flexDirection: 'row' }}>
+          <View style={styles.textWrapper}>
+            <Text style={{ ...styles.title, color: textColor }} numberOfLines={1}>
+              {name}
+            </Text>
+
+            <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', width: wp(50),paddingVertical: hp(0.5) }}>
+
+              <Text style={{...styles.snippet,color:onlineTextColor}} numberOfLines={2} ellipsizeMode="tail">
+                Online
+              </Text>
+
+              <Image source={require('../../assets/icons/whatsapp.png')} style={{ height: hp(3), width: wp(14), marginHorizontal: wp(5) }} resizeMode='cover'></Image>
+            </View>
+          </View>
+          <View style={{ justifyContent: 'center', alignItems: 'center', flexDirection: 'row' }}>
+            <TouchableOpacity style={styles.phoneBtnStyle}>
+              <Image source={require('../../assets/icons/Send.png')} style={{ height: wp(5), width: wp(5), marginHorizontal: wp(2), tintColor: textColor }} resizeMode='cover'></Image>
+            </TouchableOpacity>
+
           </View>
         </View>
       </View>
@@ -67,32 +96,40 @@ const UnreadIndicator = () => <View style={styles.unreadIndicator} />;
 
 const styles = StyleSheet.create({
   rowWrapper: {
+    justifyContent: 'center',
+    alignItems: 'center',
     flexDirection: 'row',
-    paddingVertical: 10,
-    borderBottomColor: '#ccc',
-    borderBottomWidth: 0.5,
+    paddingVertical: hp(2),
+    marginHorizontal: wp(4)
+    // paddingTop: isX? hp(6.5) : hp(5),
+    // paddingBottom: hp(2.5),
+    // borderBottomColor: '#ccc',
+    // borderBottomWidth: 0.5,
+
+
   },
   avatar: {
-    width: 50,
-    height: 50,
-    borderRadius: 50,
-    marginHorizontal: 12,
+    width: wp(13),
+    height: wp(13),
+    borderRadius: wp(7),
+    // marginHorizontal: wp(4),
     alignSelf: 'center',
   },
   textWrapper: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
   },
   title: {
     fontWeight: 'bold',
-    fontSize: 18,
-    color: '#222',
-    maxWidth: 200,
+    fontSize: normalize(14),
+    // width: wp(18),
+
   },
   snippet: {
-    maxWidth: 300,
-    color: '#444',
+    // maxWidth: 300,
+    fontWeight: '500',
+    fontSize: normalize(13),
+   
   },
   defaultAvatarLetter: {
     fontSize: 24,
@@ -107,4 +144,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     marginTop: 6,
   },
+  phoneBtnStyle: {
+    height: wp(12), width: wp(12), justifyContent: 'center', alignItems: 'center'
+  }
 });

@@ -1,30 +1,46 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableHighlight } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableHighlight, TouchableOpacity, Image, Modal, TouchableWithoutFeedback, Platform, } from 'react-native';
 import { useObservableState } from 'observable-hooks';
 import { colors } from '../constants';
 import Icon from './components/Icon';
 import ImagePicker from 'react-native-image-picker';
 import DocumentPicker from 'react-native-document-picker';
+import EmojiSelector from 'react-native-emoji-selector';
 import { matrix } from '@rn-matrix/core';
+import { stat } from 'react-native-fs';
+import AudioRecorderPlayer, {
+  AVEncoderAudioQualityIOSType,
+  AVEncodingOption,
+  AudioEncoderAndroidType,
+  AudioSet,
+  AudioSourceAndroidType,
+} from 'react-native-audio-recorder-player';
+import getUid from 'get-uid';
+import { hp, wp } from '@rn-matrix/ui/src/Helper/responsiveScreen';
+var RNFS = require('react-native-fs');
 
-const debug = require('debug')('rnm:views:components:Composer');
+const audioRecorderPlayer = new AudioRecorderPlayer();
 
 export default function Composer({
   room,
   isEditing = false,
   isReplying = false,
-  onEndEdit = () => {},
+  onEndEdit = () => { },
   selectedMessage = null,
   enableReplies = false,
-  onCancelReply = () => {},
+  onCancelReply = () => { },
   composerStyle = {},
+  onMorepress = () => { },
   accentColor = 'crimson',
+  textColor,
 }) {
   const [value, setValue] = useState('');
   const [actionButtonsShowing, setActionButtonsShowing] = useState(false);
+  const [showEmojis, setShowEmojis] = useState(false);
+  const [recordTime, setRecordTime] = useState('00:00:00');
+  const [showRecordView, setShowRecordView] = useState(false)
 
   const textInputRef = useRef(null);
-
   const roomName = useObservableState(room.name$);
 
   const toggleActionButtons = () => {
@@ -40,6 +56,11 @@ export default function Composer({
     }
     setValue('');
   };
+
+  const addSmiles = (emoji) => {
+    room.sendMessage(emoji, 'm.text');
+    setShowEmojis(false)
+  }
 
   const cancel = () => {
     setValue('');
@@ -59,23 +80,47 @@ export default function Composer({
 
   const openImagePicker = () => {
     const options = {
-      mediaType: 'mixed',
+      mediaType: 'photos',// 'mixed',
+      allowsEditing: true,
     };
     ImagePicker.launchImageLibrary(options, async (response) => {
       if (response.didCancel) return;
-      room.sendMessage(response, response.type ? 'm.image' : 'm.video');
-      setActionButtonsShowing(false);
-    });
-  };
-
-  const openDocPicker = () => {
-    DocumentPicker.pick({}).then((res) => {
-      if (res) {
-        room.sendMessage(res, 'm.file');
-        setActionButtonsShowing(false);
+      console.log('response', response)
+      if (response.error) {
+        alert(response.error)
+      }
+      else {
+        room.sendMessage(response, 'm.image');
       }
     });
   };
+
+  const openCamera = () => {
+    const options = {
+      mediaType: 'photos',// 'mixed',
+      allowsEditing: true,
+    };
+    ImagePicker.launchCamera(options, async (response) => {
+      if (response.didCancel) return;
+      console.log('response', response)
+      if (response.error) {
+        alert(response.error)
+      }
+      else {
+        room.sendMessage(response, 'm.image');
+      }
+
+    });
+  };
+
+  // const openDocPicker = () => {
+  //   DocumentPicker.pick({}).then((res) => {
+  //     if (res) {
+  //       console.log('file response',res)
+  //       room.sendMessage(res, 'm.file');
+  //     }
+  //   });
+  // };
 
   useEffect(() => {
     if (isEditing && selectedMessage) {
@@ -88,6 +133,199 @@ export default function Composer({
     return (
       <View style={styles.wrapper}>
         <Text style={{ marginLeft: 12 }}>No room specified.</Text>
+      </View>
+    );
+  }
+
+  //start recording event
+  const onStartRecord = async () => {
+
+    setShowRecordView(true);
+
+    audioRecorderPlayer.setSubscriptionDuration(0.09);
+
+    const audioSet = {
+      AudioEncoderAndroid: AudioEncoderAndroidType.AAC,
+      AudioSourceAndroid: AudioSourceAndroidType.MIC,
+      AVEncoderAudioQualityKeyIOS: AVEncoderAudioQualityIOSType.high,
+      AVNumberOfChannelsKeyIOS: 2,
+      AVFormatIDKeyIOS: AVEncodingOption.aac,
+    };
+    const path = Platform.select({
+      ios: 'hello.m4a',
+      android: `${RNFS.CachesDirectoryPath}/hello.mp3`,
+    });
+    const uri = await audioRecorderPlayer.startRecorder(path, audioSet);
+
+    audioRecorderPlayer.addRecordBackListener((e) => {
+
+      console.log(e)
+      setRecordTime(audioRecorderPlayer.mmssss(
+        Math.floor(e.currentPosition),
+      ))
+
+      return;
+    });
+    console.log(`uri: ${uri}`);
+
+  };
+
+  const onStopAudio = async (obj) => {
+
+    const result = await audioRecorderPlayer.stopRecorder();
+    audioRecorderPlayer.removeRecordBackListener();
+
+    setShowRecordView(false)
+    setRecordTime('00:00:00')
+    // this.audioRecorderPlayer = null;
+    console.log('result///', result);
+
+    if (obj == 'send') {
+      const statResult = await stat(result);
+      // var base = RNFS.readFile(result, 'base64').then(res => { return res });;
+      // console.log('file size: ' + JSON.stringify(base));
+      const obj = {
+        fileSize: statResult.size,
+        uri: result,
+        type: `audio/${Platform.OS == 'android' ? 'mp3' : 'm4a'}`,
+        name: `${getUid()}${Platform.OS == 'android' ? '.mp3' : '.m4a'}`
+      }
+
+      console.log('file size: ' + JSON.stringify(obj));
+      // room.sendMessage(obj, 'm.audio');
+      room.sendMessage(obj, 'm.audio');
+    }
+
+  }
+
+  const renderRecordAudio = () => {
+
+    return (
+      <View style={styles.voiceContainer}>
+        <TouchableOpacity style={styles.actionContainer} onPress={() => onStopAudio('cancel')}>
+          <Text style={styles.voiceCancelText}>cancel</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.actionContainer} onPress={() => onStopAudio('send')}>
+          <Text style={styles.voiceSendText}>Send</Text>
+        </TouchableOpacity>
+        <View style={styles.voiceTimerContainer}>
+          <View style={styles.recordLabel} />
+          <Text style={styles.voiceTimeText}>{recordTime}</Text>
+        </View>
+      </View>
+    );
+  }
+
+
+  function renderSend() {
+    // if (!value) {
+    return (
+      <View style={[styles.containerAddActions]}>
+        <View style={{ flexDirection: 'row' }}>
+          <TouchableOpacity style={[styles.containerAddSmiles]} onPress={() => setShowEmojis(true)}>
+            <Icon
+              name={'smile'}
+              size={22}
+              color='transparent'
+            />
+          </TouchableOpacity>
+
+          <TouchableOpacity style={[styles.containerAddImage]} onPress={() => openCamera()}>
+            <Icon
+              name={'camera'}
+              size={22}
+              color='transparent'
+            />
+          </TouchableOpacity>
+
+          <TouchableOpacity style={[styles.containerAddImage]} onPress={() => openImagePicker()}>
+            <Icon
+              name={'image'}
+              size={22}
+              color='white'
+            />
+          </TouchableOpacity>
+
+          <TouchableOpacity style={[styles.containerAddAudio]} onPress={() =>{}}>
+            <Icon
+              name={'gif'}
+              size={22}
+              color='transparent'
+            />
+          </TouchableOpacity>
+
+          <TouchableOpacity style={[styles.containerAddAudio]} onPress={() => onStartRecord()}>
+            <Icon
+              name={'audio'}
+              size={22}
+              color='transparent'
+            />
+          </TouchableOpacity>
+        </View>
+        <TouchableOpacity style={[styles.containerSend]} onPress={isEditing ? confirmEdit : handleSend}>
+          <Icon
+            name={'send'}
+            size={22}
+            color='transparent'
+          />
+        </TouchableOpacity>
+      </View>
+    );
+    // }
+
+  }
+
+  function renderEmojis() {
+
+    return (
+      <Modal animationType="fade" transparent visible={showEmojis} onRequestClose={() => setShowEmojis(false)}>
+        <TouchableWithoutFeedback style={[styles.containerTouchEmojis,]} onPress={() => setShowEmojis(false)}>
+          <View style={[styles.containerTouchEmojisInner]}>
+            <View style={[styles.containerEmojis]}>
+              <EmojiSelector columns={10} showSectionTitles={false} showSearchBar={true} onEmojiSelected={emoji => addSmiles(emoji)} />
+            </View>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
+    );
+  }
+
+  function renderAddFiles() {
+
+    return (
+      <TouchableOpacity style={[styles.containerAddFiles]} onPress={onMorepress}>
+        <Icon
+          name={'addfile'}
+          size={22}
+          color='white'
+        />
+      </TouchableOpacity>
+    );
+  }
+
+  function renderInput() {
+
+    return (
+      <View style={[styles.containerTextInput]}>
+        <TextInput
+          accessible
+          enablesReturnKeyAutomatically
+          ref={textInputRef}
+          style={[styles.textInput, { color: textColor }]}
+          multiline
+          placeholder={'Type a message...'}//{`Message ${roomName}...`}
+          placeholderTextColor={'#696969'}
+          value={value}
+          onChangeText={setValue}
+          onFocus={() => setActionButtonsShowing(false)}
+        />
+        <TouchableOpacity style={[styles.containerAddSmiles]} onPress={() => { }}>
+          <Icon
+            name={'expand'}
+            size={22}
+            color='transparent'
+          />
+        </TouchableOpacity>
       </View>
     );
   }
@@ -115,66 +353,18 @@ export default function Composer({
             </TouchableHighlight>
           </View>
         )}
-      <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
-        {room.isEncrypted() && (
-          <Icon name="lock" color="#888" style={{ marginVertical: 10, marginHorizontal: 4 }} />
-        )}
-        <TouchableHighlight
-          onPress={toggleActionButtons}
-          underlayColor="#ddd"
-          style={styles.actionButton}>
-          <Icon
-            name={'add'}
-            color="#888"
-            size={30}
-            style={{
-              transform: [{ rotate: actionButtonsShowing ? '45deg' : '0deg' }],
-            }}
-          />
-        </TouchableHighlight>
-        {actionButtonsShowing && (
-          <>
-            <TouchableHighlight
-              onPress={openImagePicker}
-              underlayColor="#ddd"
-              style={styles.sendButton}>
-              <Icon name="image" color="#888" size={20} />
-            </TouchableHighlight>
-            <TouchableHighlight
-              onPress={openDocPicker}
-              underlayColor="#ddd"
-              style={styles.sendButton}>
-              <Icon
-                name="attach"
-                color="#888"
-                size={20}
-                style={{ transform: [{ rotate: '38deg' }] }}
-              />
-            </TouchableHighlight>
-          </>
-        )}
-        <TextInput
-          ref={textInputRef}
-          style={styles.input}
-          multiline
-          placeholder={`Message ${roomName}...`}
-          value={value}
-          onChangeText={setValue}
-          onFocus={() => setActionButtonsShowing(false)}
-        />
-        <TouchableHighlight
-          disabled={value.length === 0}
-          onPress={isEditing ? confirmEdit : handleSend}
-          underlayColor="#ddd"
-          style={styles.sendButton}>
-          <Text
-            style={[
-              styles.sendText,
-              value.length === 0 ? { color: '#888' } : { color: accentColor },
-            ]}>
-            {isEditing ? 'Save' : 'Send'}
-          </Text>
-        </TouchableHighlight>
+      {
+        showRecordView && renderRecordAudio()
+      }
+
+      <View style={styles.container}>
+        {renderInput()}
+        <View style={{ flexDirection: 'row', paddingVertical: 5 }}>
+          {renderAddFiles()}
+          {renderSend()}
+          {renderEmojis()}
+        </View>
+
       </View>
     </View>
   );
@@ -182,11 +372,10 @@ export default function Composer({
 
 const styles = StyleSheet.create({
   wrapper: {
-    minHeight: 45,
-    borderTopWidth: 1,
-    borderTopColor: colors.gray300,
-    backgroundColor: colors.white,
     padding: 6,
+    borderRadius: 24,
+    marginHorizontal: wp(2),
+    marginBottom: hp(1.5)
   },
   activeMessageBar: {
     margin: 6,
@@ -196,27 +385,27 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  input: {
-    padding: 12,
-    paddingLeft: 6,
-    maxHeight: 200,
-    flex: 1,
-    fontSize: 14,
+
+  container: {
+    width: '100%',
   },
-  sendButton: {
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-    borderRadius: 6,
-  },
-  actionButton: {
-    paddingVertical: 5,
-    paddingHorizontal: 6,
-    // marginVertical: 5,
-    // marginHorizontal: 6,
-    borderRadius: 6,
-  },
-  sendText: {
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
+  containerAddActions: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  containerAddFiles: { alignItems: 'center', justifyContent: 'center', width: wp(15), height: hp(5) },
+  containerAddSmiles: { alignItems: 'center', justifyContent: 'center', width: wp(12), height: hp(5) },
+  containerAddAudio: { alignItems: 'center', justifyContent: 'center', width: wp(12), height: hp(5) },
+  containerAddImage: { alignItems: 'center', justifyContent: 'center', width: wp(12), height: hp(5) },
+  containerSend: { alignItems: 'center', justifyContent: 'center', width: wp(12), height: hp(5) },
+  containerTextInput: { flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', padding: hp(1)},
+  textInput: { flex: 1, marginHorizontal: wp(4), maxHeight: 150, fontWeight: '400', fontSize: 14 },
+  containerTouchEmojis: { flex: 1 },
+  containerTouchEmojisInner: { flex: 1, backgroundColor: colors.blackTransparent, justifyContent: 'flex-end' },
+  containerEmojis: { width: '100%', backgroundColor: colors.white, height: hp(50) },
+  voiceContainer: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '100%', paddingLeft: 16, paddingRight: 16 },
+  actionContainer: { height: 36, alignItems: 'center', justifyContent: 'center' },
+  voiceCancelText: { color: colors.blueDark, fontSize: 14 },
+  voiceSendText: { color: colors.blue, fontSize: 14 },
+  voiceTimerContainer: { flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start' },
+  recordLabel: { width: 16, height: 16, borderRadius: 8, backgroundColor: colors.red },
+  voiceTimeText: { paddingLeft: 5, color: colors.black, fontSize: 12 },
+
 });

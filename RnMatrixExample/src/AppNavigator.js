@@ -110,26 +110,27 @@ export default function AppNavigator() {
         <Stack.Screen
           name="Chat"
           component={ChatScreen}
-          options={({navigation, route}) => ({
-            headerBackTitle: 'Back',
-            title: route?.params?.room?.name$?.getValue() || 'Chat',
-            headerRight: () => {
-              return (
-                <Pressable
-                  onPress={() => navigation.navigate('ChatMenu')}
-                  style={({pressed}) => ({
-                    marginRight: 6,
-                    padding: 12,
-                    borderRadius: 8,
-                    backgroundColor: pressed ? 'lightgray' : '#fff',
-                  })}>
-                  <Text style={{fontWeight: 'bold', color: 'dodgerblue'}}>
-                    MENU
-                  </Text>
-                </Pressable>
-              );
-            },
-          })}
+          options={{headerShown: false}}
+          // options={({navigation, route}) => ({
+          //   headerBackTitle: 'Back',
+          //   title: route?.params?.room?.name$?.getValue() || 'Chat',
+          //   headerRight: () => {
+          //     return (
+          //       <Pressable
+          //         onPress={() => navigation.navigate('ChatMenu')}
+          //         style={({pressed}) => ({
+          //           marginRight: 6,
+          //           padding: 12,
+          //           borderRadius: 8,
+          //           backgroundColor: pressed ? 'lightgray' : '#fff',
+          //         })}>
+          //         <Text style={{fontWeight: 'bold', color: 'dodgerblue'}}>
+          //           MENU
+          //         </Text>
+          //       </Pressable>
+          //     );
+          //   },
+          // })}
         />
         <Stack.Screen
           name="NewChat"

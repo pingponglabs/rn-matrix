@@ -104,7 +104,6 @@ export default class Chat {
           }
         }
         if (oldTyping.length !== newTyping.length) changed = true;
-
         if (changed) this.typing$.next(newTyping);
       }
 
@@ -255,14 +254,6 @@ export default class Chat {
     return matrix.getClient().isRoomEncrypted(this.id);
   }
 
-  getSlim() {
-    // copy this current chat
-    const slimChat = Object.assign(Object.create(Object.getPrototypeOf(this)), this);
-    delete slimChat.members$;
-    delete slimChat.messages$;
-    return slimChat;
-  }
-
   //* *******************************************************************************
   // Actions
   //* *******************************************************************************
@@ -273,7 +264,6 @@ export default class Chat {
       debug('Error leaving room %s:', this.id, e);
     }
 
-    // provide support for "archiving", so people can go view historical rooms, and THEN delete
     await matrix.getClient().forget(this.id);
   }
 
@@ -290,46 +280,19 @@ export default class Chat {
     }
   }
 
-  async kick(userId, reason = '') {
-    try {
-      await matrix.getClient().kick(this.id, userId, reason);
-    } catch (e) {
-      debug('Error kicking user %s:', this.id, e);
-      return e;
-    }
-  }
-
-  async ban(userId, reason = '') {
-    try {
-      await matrix.getClient().ban(this.id, userId, reason);
-    } catch (e) {
-      debug('Error banning user %s:', this.id, e);
-      return e;
-    }
-  }
-
-  async unban(userId, reason = '') {
-    try {
-      await matrix.getClient().ban(this.id, userId, reason);
-    } catch (e) {
-      debug('Error unbanning user %s:', this.id, e);
-      return e;
-    }
-  }
-
   async sendMessage(content, type) {
     switch (type) {
-      case 'm.video':
       case 'm.image': {
         // Add or get pending message
+        console.log('image content send msg..',content);
+
         const event = {
           type,
           timestamp: Date.now(),
           status: MessageStatus.UPLOADING,
           content: content,
         };
-        const pendingMessageId = type === 'm.video' ? `~~${this.id}:video` : `~~${this.id}:image`;
-        const pendingMessage = messages.getMessageById(pendingMessageId, this.id, event, true);
+        const pendingMessage = messages.getMessageById(`~~${this.id}:image`, this.id, event, true);
         // If it's already pending, we update the status, otherwise we add it
         if (this._pending.includes(pendingMessage.id)) {
           debug('Pending message already existed');
@@ -341,7 +304,7 @@ export default class Chat {
         }
 
         // Upload image
-        const response = await matrix.uploadContent(content);
+        const response = await matrix.uploadImage(content);
         debug('uploadImage response', response);
 
         if (!response) {
@@ -376,9 +339,84 @@ export default class Chat {
 
         // Upload image
         const mxcUrl = await matrix.uploadContent(content);
-
+         console.log("mxcUrl...",mxcUrl);
+         
         if (!mxcUrl) {
           // TODO: handle upload error
+          pendingMessage.update({ status: MessageStatus.NOT_UPLOADED });
+          const txt = i18n.t('messages:content.contentNotUploadedNotice');
+          return {
+            error: 'CONTENT_NOT_UPLOADED',
+            message: txt,
+          };
+        } else content.url = mxcUrl;
+
+        break;
+      }
+      case 'm.video': {
+        // Add or get pending message
+        console.log('content////',content);
+        const event = {
+          type,
+          timestamp: Date.now(),
+          status: MessageStatus.UPLOADING,
+          content: content,
+        };
+        const pendingMessage = messages.getMessageById(`~~${this.id}:video`, this.id, event, true);
+        // If it's already pending, we update the status, otherwise we add it
+        if (this._pending.includes(pendingMessage.id)) {
+          debug('Pending message already existed');
+          pendingMessage.update({ status: MessageStatus.UPLOADING });
+        } else {
+          debug('Pending message created');
+          this._pending.push(pendingMessage.id);
+          this.update({ timeline: true });
+        }
+
+        // Upload image
+        const mxcUrl = await matrix.uploadContent(content);
+        console.log("mxcUrl...",mxcUrl);
+         
+        if (!mxcUrl) {
+          // TODO: handle upload error
+          pendingMessage.update({ status: MessageStatus.NOT_UPLOADED });
+          const txt = i18n.t('messages:content.contentNotUploadedNotice');
+          return {
+            error: 'CONTENT_NOT_UPLOADED',
+            message: txt,
+          };
+        } else content.url = mxcUrl;
+
+        break;
+      }
+      case 'm.audio': {
+        // Add or get pending message
+        console.log('Chat classes Content....', content)
+
+        const event = {
+          type,
+          timestamp: Date.now(),
+          status: MessageStatus.UPLOADING,
+          content: content,
+        };
+        const pendingMessage = messages.getMessageById(`~~${this.id}:audio`, this.id, event, true);
+        // If it's already pending, we update the status, otherwise we add it
+        if (this._pending.includes(pendingMessage.id)) {
+          debug('Pending message already existed');
+          pendingMessage.update({ status: MessageStatus.UPLOADING });
+        } else {
+          debug('Pending message created');
+          this._pending.push(pendingMessage.id);
+          this.update({ timeline: true });
+        }
+
+        // Upload image
+        const mxcUrl = await matrix.uploadContent(content);
+        console.log("mxcUrl...",mxcUrl);
+        
+        if (!mxcUrl) {
+          // TODO: handle upload error
+        
           pendingMessage.update({ status: MessageStatus.NOT_UPLOADED });
           const txt = i18n.t('messages:content.contentNotUploadedNotice');
           return {
@@ -390,6 +428,7 @@ export default class Chat {
       }
       default:
     }
+    console.log('Chat classes Contentwer....', content)
     return messages.send(content, type, this.id);
   }
 
