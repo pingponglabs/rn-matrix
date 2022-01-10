@@ -2,9 +2,10 @@ import showdown from 'showdown';
 
 import matrix from './matrix';
 import Message from '../classes/Message';
+import ContentAudio from 'react-native-matrix/src/models/ContentAudio';
 
 const debug = require('debug')('rnm:scenes:chat:message:messageService');
-const mdConverter = new showdown.Converter({ simplifiedAutoLink: true });
+const mdConverter = new showdown.Converter();
 
 class MessageService {
   constructor() {
@@ -91,6 +92,7 @@ class MessageService {
           }
         }
         case 'm.image': {
+          console.log('image....',content)
           return matrix.getClient().sendImageMessage(
             roomId,
             content.url,
@@ -103,15 +105,8 @@ class MessageService {
             content.fileName
           );
         }
-        case 'm.video': {
-          return matrix.getClient().sendMessage(roomId, {
-            msgtype: 'm.video',
-            body: content.fileName,
-            info: {},
-            url: content.url,
-          });
-        }
         case 'm.file': {
+        console.log('file....',content)
           return matrix.getClient().sendMessage(roomId, {
             msgtype: 'm.file',
             body: content.name,
@@ -122,6 +117,35 @@ class MessageService {
             },
             url: content.url,
           });
+        }
+        case 'm.video': {
+          console.log('video send msg....',content)
+            return matrix.getClient().sendMessage(roomId, {
+              msgtype: 'm.video',
+              body: content.name,
+              info: {
+                mimetype: content.type,
+                size: content.size,
+                name: content.name,
+              },
+              url: content.url,
+            });
+          }
+        case 'm.audio': {
+                  // let contentobj = new ContentAudio(content)
+          console.log('rn matrix services message...',content);
+          // return matrix.getClient().sendMessage(roomId,content);
+          return matrix.getClient().sendMessage(roomId, {
+            msgtype: 'm.audio',
+            body: content.name,
+            info: {
+              mimetype: content.type,
+              size: content.size,
+              name: content.name,
+            },
+            url: content.url,
+          });
+
         }
         case 'm.edit': {
           return matrix.getClient().sendEvent(roomId, 'm.room.message', {
@@ -134,6 +158,7 @@ class MessageService {
             body: ` * ${content}`,
           });
         }
+
         case 'm.in_reply_to': {
           let htmlWithoutPreviousReply = content.relatedMessage.content$.getValue().html;
           const indexOf = htmlWithoutPreviousReply.lastIndexOf('</mx-reply>');
@@ -168,6 +193,10 @@ class MessageService {
   sendImageMessage(roomId, url, width, height, type, fileSize, fileName) {
     this.send({ width, height, type, fileSize, fileName, url }, 'm.image', roomId);
   }
+
+  // sendAudioMessage(roomId, url, type, fileSize, fileName) {
+  //   this.send({type, fileSize, fileName, url }, 'm.audio', roomId);
+  // }
 
   sortByLastSent(messages) {
     const sorted = [...messages];

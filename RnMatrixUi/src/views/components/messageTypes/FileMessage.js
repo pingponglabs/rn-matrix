@@ -1,16 +1,17 @@
 import { useObservableState } from 'observable-hooks';
 import React, { useState } from 'react';
 import { EventStatus } from 'matrix-js-sdk';
-import { Text, TouchableHighlight, View, StyleSheet, ActivityIndicator } from 'react-native';
+import { Text, TouchableHighlight, View, StyleSheet, ActivityIndicator, useColorScheme } from 'react-native';
 import { SenderText, BubbleWrapper } from '../MessageItem';
 import { colors } from '../../../constants';
 import Icon from '../Icon';
 import RNFS from 'react-native-fs';
 import FileViewer from 'react-native-file-viewer';
-import { matrix, Message } from '@rn-matrix/core';
+import { matrix } from '@rn-matrix/core';
 import Color from 'color';
-
-const debug = require('debug')('rnm:views:components:messageTypes:FileMessage');
+import Moment from 'moment';
+import LinearGradient from 'react-native-linear-gradient';
+const debug = require('debug')('rnm:views:components:messageTypes:TextMessage');
 
 export default function FileMessage({
   message,
@@ -21,8 +22,10 @@ export default function FileMessage({
   onSwipe,
   showReactions,
   myBubbleStyle,
+  textColor,
   otherBubbleStyle,
 }) {
+  const theme = useColorScheme();
   const myUser = matrix.getMyUser();
   const content = useObservableState(message.content$);
   const senderName = useObservableState(message.sender.name$);
@@ -42,17 +45,16 @@ export default function FileMessage({
   const openFile = () => {
     setOpeningFile(true);
 
-    const name = Message.isVideoMessage(message.type$.getValue()) ? content.raw.body : content.name;
-
     // IMPORTANT: A file extension is always required on iOS.
     // You might encounter issues if the file extension isn't included
     // or if the extension doesn't match the mime type of the file.
-    const localFile = `${RNFS.DocumentDirectoryPath}/${name}`;
-
+    const localFile = `${RNFS.DocumentDirectoryPath}/${content.name}`;
+    console.log('localFile....',localFile);
     const options = {
       fromUrl: content.url,
       toFile: localFile,
     };
+
     RNFS.downloadFile(options)
       .promise.then(() => {
         FileViewer.open(localFile, { showOpenWithDialog: true });
@@ -75,6 +77,12 @@ export default function FileMessage({
       : pressed
       ? colors.gray400
       : colors.gray300;
+  };
+
+  const getDefaultGradientBackgroundColor = (me, pressed) => {
+    return me
+      ? myBubbleStyle().gradientColor
+      : otherBubbleStyle().gradientColor
   };
 
   const downloadIconBackgroundColor = (me, pressed) => {
@@ -100,6 +108,8 @@ export default function FileMessage({
     </TouchableHighlight>
   );
 
+  var dateTime = new Date(parseInt(message?.timestamp, 10));
+
   return (
     <>
       <BubbleWrapper
@@ -112,26 +122,31 @@ export default function FileMessage({
           <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
             <TouchableHighlight
               {...props}
-              underlayColor={downloadIconBackgroundColor(isMe, false)}
+               underlayColor='transparent' //{getDefaultBackgroundColor(isMe, true)}
               onPress={onPress ? _onPress : null}
               onLongPress={onLongPress ? _onLongPress : null}
               delayLongPress={200}
               style={[
-                bubbleStyles(isMe, prevSame, nextSame),
-                { backgroundColor: isMe ? colors.blue400 : colors.gray300 },
+                // bubbleStyles(isMe, prevSame, nextSame),
+                // { backgroundColor: isMe ? colors.blue400 : colors.gray300 },
+                (!isMe && theme == 'dark' ? { borderColor: '#00FFA3', backgroundColor: '#000'} : {}),
+                (!isMe && theme == 'dark' ? {borderRadius: 16,borderWidth: 4} : {}),
+                (isMe ? {borderTopRightRadius: 5} : {borderTopLeftRadius: 5 }),
                 reactions ? { alignSelf: isMe ? 'flex-end' : 'flex-start' } : {},
                 isMe ? myBubbleStyle() : otherBubbleStyle(),
               ]}>
+                <LinearGradient colors={getDefaultGradientBackgroundColor(isMe, true)} style={{ ...bubbleStyles(isMe, prevSame, nextSame), padding: 10 }}>
+
               <View style={{ alignItems: 'flex-end' }}>
                 <View style={{ flexDirection: 'row' }}>
                   {downloadIcon}
                   <Text
                     onPress={openFile}
-                    style={[styles.fileText, { color: isMe ? colors.white : '#222' }]}>
-                    {content.name || content.raw.body || 'Uploading...'}
+                    style={[styles.fileText, { color: textColor}]}> 
+                    {content.name}
                   </Text>
                 </View>
-                {isMe && (
+                {/* {isMe && (
                   <View style={{ marginLeft: 12, marginRight: -6 }}>
                     <Icon
                       name={status === EventStatus.SENDING ? 'circle' : 'check-circle'}
@@ -143,14 +158,16 @@ export default function FileMessage({
                       }
                     />
                   </View>
-                )}
+                )} */}
               </View>
+              </LinearGradient>
             </TouchableHighlight>
           </View>
         </View>
       </BubbleWrapper>
 
-      {!prevSame && <SenderText isMe={isMe}>{senderName}</SenderText>}
+      {!prevSame && <SenderText isMe={isMe} color={textColor}>{Moment(dateTime).format('d MMM HH:mm').toLocaleUpperCase()}</SenderText>}
+   
     </>
   );
 }
@@ -159,20 +176,12 @@ const sharpBorderRadius = 5;
 const bubbleStyles = (isMe, prevSame, nextSame) => ({
   paddingHorizontal: 14,
   paddingVertical: 8,
-  borderRadius: 18,
-  ...(isMe
-    ? {
-        ...(prevSame ? { borderTopRightRadius: sharpBorderRadius } : {}),
-        ...(nextSame ? { borderBottomRightRadius: sharpBorderRadius } : {}),
-      }
-    : {
-        ...(prevSame ? { borderTopLeftRadius: sharpBorderRadius } : {}),
-        ...(nextSame ? { borderBottomLeftRadius: sharpBorderRadius } : {}),
-      }),
+  borderRadius: 16,
+  ...(isMe ? {borderTopRightRadius: 5} : {borderTopLeftRadius: 5 }),
 });
 
 const viewStyle = (nextSame) => ({
-  marginTop: 2,
+  marginTop:20,
   marginBottom: nextSame ? 1 : 4,
   maxWidth: '85%',
 });
@@ -191,7 +200,8 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
     marginLeft: 12,
     maxWidth: 200,
-    fontSize: 18,
+    fontSize: 16,
+    fontWeight:'400',
     flexDirection: 'column',
   },
 });

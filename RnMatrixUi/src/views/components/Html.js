@@ -1,20 +1,22 @@
 // import { useTheme } from '@ui-kitten/components'
 import React, { useEffect, useState } from 'react';
-import { Linking, Text, View } from 'react-native';
+import { Linking, Text, View} from 'react-native';
 import HtmlRenderer from 'react-native-render-html';
 import { htmlEmojis } from '../../utilities/emojis';
 import { htmlLinks } from '../../utilities/misc';
 
 // const debug = require('debug')('rnm:scene:chat:message:components:Html')
 
+
 const parseHtml = (html) => {
   return htmlEmojis(html?.includes('href') ? html : htmlLinks(html));
 };
 
-export default function Html({ html, isMe = false, accentColor }) {
+export default function Html({ html, isMe = false, accentColor,color,fontWeight }) {
   // const styles = getHtmlStyles(theme)
-  const styles = getHtmlStyles({ isMe, accentColor });
+  const styles = getHtmlStyles({ isMe, accentColor,color,fontWeight});
   const [parsedHtml, setParsedHtml] = useState(parseHtml(html));
+  
 
   //* *******************************************************************************
   // Methods
@@ -68,12 +70,13 @@ const unorderedListRenderer = (htmlAttribs, children, convertedCSSStyles, { rend
   ));
 };
 
-const getHtmlStyles = ({ isMe, accentColor }) => ({
+const getHtmlStyles = ({ isMe, accentColor,color,fontWeight }) => ({
+  
   baseFontStyle: {
-    color: isMe ? '#fff' : '#222',
+    color: color ,//isMe ? '#fff' : '#222',
     fontSize: 16,
     letterSpacing: 0.3,
-    fontWeight: '400',
+    fontWeight: fontWeight,
   },
   tagsStyles: {
     blockquote: {
@@ -84,7 +87,7 @@ const getHtmlStyles = ({ isMe, accentColor }) => ({
       opacity: 0.75,
     },
     a: {
-      color: isMe ? '#fff' : '#222',
+      color: color ,//isMe ? '#fff' : '#222',
       textDecorationLine: 'underline',
     },
     code: {
