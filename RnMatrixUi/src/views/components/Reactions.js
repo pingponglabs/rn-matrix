@@ -13,8 +13,7 @@ export default function Reactions({ reactions, toggleReaction, myUserId, isMyBub
           borderWidth: 1.8,
           borderColor: colors.blue600,
         };
-        const toggle = () => toggleReaction(key);
-        
+        const toggle = () => toggleReaction(key);        
         return (
           <TouchableHighlight key={key} onPress={toggle} style={styles.button}>
             <View style={[styles.buttonContent, isSelected ? selectedStyle : {}]}>
@@ -68,7 +67,6 @@ const styles = StyleSheet.create({
     width: 50,
     height: 30,
     paddingTop: 2,
-    borderRadius: 0,
     borderWidth: 0.6,
     borderColor: '#00000050',
     justifyContent: 'center',
