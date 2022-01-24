@@ -235,7 +235,7 @@ class MatrixService {
   async uploadImage(image) {
     console.log('api upload file rnmatix services...', image)
     try {
-      const url = await this._client.uploadContent(toImageBuffer(image.data), {
+      const url = await this._client.uploadContent(toImageBuffer(image?.data || image?.base64), {
         onlyContentUri: true,
         name: image.fileName,
         type: image.type,

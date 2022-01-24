@@ -233,18 +233,6 @@ const styles = StyleSheet.create({
   touchArea: { width: 36, height: 36, alignItems: 'center', justifyContent: 'center' },
 });
 
-const Emoji = ({ style, isMe, children }) => (
-  <Text
-    style={{
-      ...style,
-      fontSize: 45,
-      marginHorizontal: 8,
-      marginTop: isIos() ? 4 : -7,
-      marginBottom: 4,
-    }}>
-    {children}
-  </Text>
-);
 
 const sharpBorderRadius = 5;
 const bubbleStyles = (isMe, prevSame, nextSame) => ({

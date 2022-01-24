@@ -5,7 +5,7 @@ import { BubbleWrapper, SenderText } from '../MessageItem';
 import Video from 'react-native-video';
 import { matrix } from '@rn-matrix/core';
 import Moment from 'moment';
-import { Thumbnail } from 'react-native-thumbnail-video';
+// import { Thumbnail } from 'react-native-thumbnail-video';
 import LinearGradient from 'react-native-linear-gradient';
 
 export default function VideoMessage({

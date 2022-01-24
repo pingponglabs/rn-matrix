@@ -8,7 +8,6 @@ import matrix from '../services/matrix';
 import users from '../services/user';
 import messages from '../services/message';
 import i18n from '../utilities/i18n';
-import ContentAudio from 'react-native-matrix/src/models/ContentAudio';
 
 const debug = require('debug')('rnm:classes:Message');
 
@@ -61,6 +60,7 @@ export default class Message {
       this.content$ = new BehaviorSubject(this._getContent());
       this.reactions$ = new BehaviorSubject(this._getReactions());
       this.receipts$ = new BehaviorSubject(this._getReceipts());
+      
     } else {
 
       if (!event) throw Error(`All local messages should have an event (${this.id})`);
@@ -292,6 +292,7 @@ export default class Message {
         break;
         
       case 'm.file':
+        console.log('file content......', content);
         content.text = `${sender} has sent a file`;
         content.url = matrix.getHttpUrl(content.raw.url);
         content.name = content.raw.body;
