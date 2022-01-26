@@ -31,7 +31,7 @@ export default function RoomInviteItem({
     <View style={{ ...styles.rowWrapper, backgroundColor: backgroundColor }}>
       {room.avatar ? (
         <Image
-          source={room.avatar ? {uri: matrix.getHttpUrl(room.avatar)} : null}
+          source={{uri: matrix.getHttpUrl(room.avatar)}}
           style={styles.avatar}
         />
       ) : (
