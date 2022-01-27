@@ -24,7 +24,7 @@ export default function RoomListItem({
   };
 
   return (
-    <TouchableHighlight underlayColor="#ddd" onPress={handleOnPress}>
+    <TouchableOpacity underlayColor="#ddd" onPress={handleOnPress}>
       <View style={styles.rowWrapper}>
         {avatar ? (
           <Image
@@ -32,7 +32,7 @@ export default function RoomListItem({
             style={styles.avatar}
           />
         ) : (
-          <DefaultImage letter={name?.charAt(0)} />
+          <DefaultImage letter={name?.charAt(0)} textColor={textColor} />
         )}
 
         {/* <View style={{ flex: 1, marginRight: 12 }}>
@@ -60,13 +60,10 @@ export default function RoomListItem({
             <Text style={{ ...styles.title, color: textColor }} numberOfLines={1}>
               {name}
             </Text>
-
-            <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', width: wp(50),paddingVertical: hp(0.5) }}>
-
-              <Text style={{...styles.snippet,color:onlineTextColor}} numberOfLines={2} ellipsizeMode="tail">
+            <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', width: wp(50), paddingVertical: hp(0.5) }}>
+              <Text style={{ ...styles.snippet, color: onlineTextColor }} numberOfLines={2} ellipsizeMode="tail">
                 Online
               </Text>
-
               <Image source={require('../../assets/icons/whatsapp.png')} style={{ height: hp(3), width: wp(14), marginHorizontal: wp(5) }} resizeMode='cover'></Image>
             </View>
           </View>
@@ -74,25 +71,22 @@ export default function RoomListItem({
             <TouchableOpacity style={styles.phoneBtnStyle}>
               <Image source={require('../../assets/icons/Send.png')} style={{ height: wp(5), width: wp(5), marginHorizontal: wp(2), tintColor: textColor }} resizeMode='cover'></Image>
             </TouchableOpacity>
-
           </View>
         </View>
       </View>
-    </TouchableHighlight>
+    </TouchableOpacity>
   );
 }
 
-const DefaultImage = ({ letter }) => (
+const DefaultImage = ({ letter, textColor }) => (
   <View
     style={[
       styles.avatar,
-      { backgroundColor: '#666', justifyContent: 'center', alignItems: 'center' },
+      { backgroundColor: 'rgba(175, 175, 175, 0.6)', justifyContent: 'center', alignItems: 'center' },
     ]}>
-    <Text style={styles.defaultAvatarLetter}>{letter?.toUpperCase()}</Text>
+    <Text style={{ ...styles.defaultAvatarLetter, color: textColor }}>{letter?.toUpperCase()}</Text>
   </View>
 );
-
-const UnreadIndicator = () => <View style={styles.unreadIndicator} />;
 
 const styles = StyleSheet.create({
   rowWrapper: {
@@ -101,18 +95,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingVertical: hp(2),
     marginHorizontal: wp(4)
-    // paddingTop: isX? hp(6.5) : hp(5),
-    // paddingBottom: hp(2.5),
-    // borderBottomColor: '#ccc',
-    // borderBottomWidth: 0.5,
-
 
   },
   avatar: {
     width: wp(13),
     height: wp(13),
     borderRadius: wp(7),
-    // marginHorizontal: wp(4),
     alignSelf: 'center',
   },
   textWrapper: {
@@ -122,17 +110,14 @@ const styles = StyleSheet.create({
   title: {
     fontWeight: 'bold',
     fontSize: normalize(14),
-    // width: wp(18),
-
   },
   snippet: {
-    // maxWidth: 300,
     fontWeight: '500',
     fontSize: normalize(13),
-   
+
   },
   defaultAvatarLetter: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#ddd',
   },

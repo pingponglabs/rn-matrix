@@ -3,8 +3,7 @@ import { View, Text, TextInput, StyleSheet, TouchableHighlight, TouchableOpacity
 import { useObservableState } from 'observable-hooks';
 import { colors } from '../constants';
 import Icon from './components/Icon';
-import ImagePicker from 'react-native-image-picker';
-import DocumentPicker from 'react-native-document-picker';
+import * as ImagePicker from 'react-native-image-picker';
 import EmojiSelector from 'react-native-emoji-selector';
 import { matrix } from '@rn-matrix/core';
 import { stat } from 'react-native-fs';
@@ -15,11 +14,12 @@ import AudioRecorderPlayer, {
   AudioSet,
   AudioSourceAndroidType,
 } from 'react-native-audio-recorder-player';
-import getUid from 'get-uid';
+// import getUid from 'get-uid';
 import { hp, wp } from '@rn-matrix/ui/src/Helper/responsiveScreen';
 var RNFS = require('react-native-fs');
 
 const audioRecorderPlayer = new AudioRecorderPlayer();
+var counter = Date.now() % 1e9;
 
 export default function Composer({
   room,
@@ -82,15 +82,22 @@ export default function Composer({
     const options = {
       mediaType: 'photos',// 'mixed',
       allowsEditing: true,
+      includeBase64: true
     };
     ImagePicker.launchImageLibrary(options, async (response) => {
       if (response.didCancel) return;
       console.log('response', response)
-      if (response.error) {
-        alert(response.error)
+      if (response.errorCode || response.error) {
+        alert(response?.errorCode || response?.error)
       }
       else {
-        room.sendMessage(response, 'm.image');
+        if (response instanceof Array) {
+          room.sendMessage(response.assets[0], 'm.image');
+        }
+        else {
+          room.sendMessage(response, 'm.image');
+        }
+
       }
     });
   };
@@ -99,17 +106,22 @@ export default function Composer({
     const options = {
       mediaType: 'photos',// 'mixed',
       allowsEditing: true,
+      includeBase64: true
     };
     ImagePicker.launchCamera(options, async (response) => {
       if (response.didCancel) return;
       console.log('response', response)
-      if (response.error) {
-        alert(response.error)
+      if (response.errorCode || response.error) {
+        alert(response?.errorCode || response?.error)
       }
       else {
-        room.sendMessage(response, 'm.image');
+        if (response instanceof Array) {
+          room.sendMessage(response.assets[0], 'm.image');
+        }
+        else {
+          room.sendMessage(response, 'm.image');
+        }
       }
-
     });
   };
 
@@ -168,6 +180,10 @@ export default function Composer({
     });
     console.log(`uri: ${uri}`);
 
+  };
+
+  function getUid() {
+    return (Math.random() * 1e9 >>> 0) + (counter++);
   };
 
   const onStopAudio = async (obj) => {
@@ -246,7 +262,7 @@ export default function Composer({
             />
           </TouchableOpacity>
 
-          <TouchableOpacity style={[styles.containerAddAudio]} onPress={() =>{}}>
+          <TouchableOpacity style={[styles.containerAddAudio]} onPress={() => { }}>
             <Icon
               name={'gif'}
               size={22}
@@ -395,7 +411,7 @@ const styles = StyleSheet.create({
   containerAddAudio: { alignItems: 'center', justifyContent: 'center', width: wp(12), height: hp(5) },
   containerAddImage: { alignItems: 'center', justifyContent: 'center', width: wp(12), height: hp(5) },
   containerSend: { alignItems: 'center', justifyContent: 'center', width: wp(12), height: hp(5) },
-  containerTextInput: { flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', padding: hp(1)},
+  containerTextInput: { flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', padding: hp(1) },
   textInput: { flex: 1, marginHorizontal: wp(4), maxHeight: 150, fontWeight: '400', fontSize: 14 },
   containerTouchEmojis: { flex: 1 },
   containerTouchEmojisInner: { flex: 1, backgroundColor: colors.blackTransparent, justifyContent: 'flex-end' },

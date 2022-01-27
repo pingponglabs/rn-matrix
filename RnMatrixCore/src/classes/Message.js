@@ -8,7 +8,6 @@ import matrix from '../services/matrix';
 import users from '../services/user';
 import messages from '../services/message';
 import i18n from '../utilities/i18n';
-import ContentAudio from 'react-native-matrix/src/models/ContentAudio';
 
 const debug = require('debug')('rnm:classes:Message');
 
@@ -61,6 +60,7 @@ export default class Message {
       this.content$ = new BehaviorSubject(this._getContent());
       this.reactions$ = new BehaviorSubject(this._getReactions());
       this.receipts$ = new BehaviorSubject(this._getReceipts());
+      
     } else {
 
       if (!event) throw Error(`All local messages should have an event (${this.id})`);
@@ -241,7 +241,6 @@ export default class Message {
         // content.text = content.raw.body; //i18n.t('messages:content.audioNotSupport');
         content.text = `${sender} has sent a file`;
      
-         console.log('contentobj......', content);
         content.name = content.raw.body;
        content.url= matrix.getHttpUrl(content.raw.url)
      
@@ -250,7 +249,6 @@ export default class Message {
       // Video Message
       case 'm.video':
 
-        console.log('video content......', content);
         // todo: localize
         content.text = `${sender} has sent a video`;
         // if (this.pending) {
@@ -288,7 +286,6 @@ export default class Message {
         //   content.thumb.width = (width * THUMBNAIL_MAX_SIZE) / height;
         // }
 
-         console.log('video content......', content);
         break;
         
       case 'm.file':

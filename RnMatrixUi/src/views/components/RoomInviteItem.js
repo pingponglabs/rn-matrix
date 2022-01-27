@@ -15,8 +15,8 @@ export default function RoomInviteItem({
   selectedUsers,
   backgroundColor
 }) {
-  const name = useObservableState(room.name$);
-  const avatar = useObservableState(room.avatar$);
+  // const name = useObservableState(room.name$);
+  // const avatar = useObservableState(room.avatar$);
 
   const joinRoom = () => {
     matrix.joinRoom(room.id);
@@ -27,49 +27,21 @@ export default function RoomInviteItem({
   };
 
   return (
-    // <TouchableHighlight underlayColor="#ddd">
-    //   <View style={styles.rowWrapper}>
-    //     {avatar ? (
-    //       <Image
-    //         source={
-    //           room.getAvatarUrl(avatarSize)
-    //             ? {uri: room.getAvatarUrl(avatarSize)}
-    //             : {}
-    //         }
-    //         style={styles.avatar}
-    //       />
-    //     ) : (
-    //       <DefaultImage letter={name?.charAt(0)} />
-    //     )}
-    //     <View style={{flex: 1, marginRight: 12, justifyContent: 'center'}}>
-    //       <View style={styles.textWrapper}>
-    //         <Text style={styles.title} numberOfLines={1}>
-    //           {name}
-    //         </Text>
-    //         <View style={{flexDirection: 'row', alignItems: 'center'}}>
-    //           <ResponseButton onPress={rejectInvite} />
-    //           <ResponseButton accept onPress={joinRoom} />
-    //         </View>
-    //       </View>
-    //     </View>
-    //   </View>
-    // </TouchableHighlight>
-
-    // <TouchableHighlight underlayColor="#ddd" >
+  
     <View style={{ ...styles.rowWrapper, backgroundColor: backgroundColor }}>
-      {avatar ? (
+      {room.avatar ? (
         <Image
-          source={room.getAvatarUrl(avatarSize) ? { uri: room.getAvatarUrl(avatarSize) } : {}}
+          source={{uri: matrix.getHttpUrl(room.avatar)}}
           style={styles.avatar}
         />
       ) : (
-        <DefaultImage letter={name?.charAt(0)} />
+        <DefaultImage letter={room.name?.charAt(0)} textColor={textColor}/>
       )}
 
       <View style={{ flex: 1, marginLeft: wp(4), justifyContent: 'space-between', flexDirection: 'row' }}>
         <View style={styles.textWrapper}>
           <Text style={{ ...styles.title, color: textColor }} numberOfLines={1}>
-            {name}
+            {room.name}
           </Text>
 
           <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', width: wp(50), paddingVertical: hp(0.5) }}>
@@ -90,45 +62,20 @@ export default function RoomInviteItem({
             <TouchableOpacity style={styles.phoneBtnStyle} onPress={() => OnselectUser(room)}>
               <Icon name={'Invite'} size={22} color='transparent' />
             </TouchableOpacity>
-
         }
-
       </View>
     </View>
-    // </TouchableHighlight>
+    
   );
 }
 
-// const ResponseButton = ({ accept = false, onPress }) => (
-//   <TouchableHighlight
-//     onPress={onPress}
-//     style={{ borderRadius: 30, marginRight: accept ? 0 : 12 }}
-//     underlayColor="#222">
-//     <View
-//       style={{
-//         width: 40,
-//         height: 40,
-//         backgroundColor: accept ? 'darkseagreen' : 'indianred',
-//         justifyContent: 'center',
-//         alignItems: 'center',
-//         borderRadius: 30,
-//       }}>
-//       <Icon
-//         name={accept ? 'check' : 'close'}
-//         size={accept ? 28 : 22}
-//         color={accept ? 'darkgreen' : 'darkred'}
-//       />
-//     </View>
-//   </TouchableHighlight>
-// );
-
-const DefaultImage = ({ letter }) => (
+const DefaultImage = ({ letter,textColor }) => (
   <View
     style={[
       styles.avatar,
-      { backgroundColor: '#666', justifyContent: 'center', alignItems: 'center' },
+      { backgroundColor:'rgba(175, 175, 175, 0.6)', justifyContent: 'center', alignItems: 'center' },
     ]}>
-    <Text style={styles.defaultAvatarLetter}>{letter?.toUpperCase()}</Text>
+    <Text style={{...styles.defaultAvatarLetter,color: textColor }}>{letter?.toUpperCase()}</Text>
   </View>
 );
 
@@ -141,8 +88,8 @@ const styles = StyleSheet.create({
     marginHorizontal: wp(4)
   },
   avatar: {
-    width: wp(13),
-    height: wp(13),
+    width: wp(13.5),
+    height: wp(13.5),
     borderRadius: wp(7),
     alignSelf: 'center',
   },
@@ -160,7 +107,7 @@ const styles = StyleSheet.create({
     color: colors.gray3
   },
   defaultAvatarLetter: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#ddd',
   },
