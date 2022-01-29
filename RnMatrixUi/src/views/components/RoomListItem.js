@@ -23,6 +23,8 @@ export default function RoomListItem({
     onPress(room);
   };
 
+  console.log('name....', room);
+
   return (
     <TouchableOpacity underlayColor="#ddd" onPress={handleOnPress}>
       <View style={styles.rowWrapper}>
@@ -55,6 +57,7 @@ export default function RoomListItem({
             {readState === 'unread' && <UnreadIndicator />}
           </View>
         </View> */}
+
         <View style={{ flex: 1, marginLeft: wp(4), justifyContent: 'space-between', flexDirection: 'row' }}>
           <View style={styles.textWrapper}>
             <Text style={{ ...styles.title, color: textColor }} numberOfLines={1}>
@@ -87,6 +90,8 @@ const DefaultImage = ({ letter, textColor }) => (
     <Text style={{ ...styles.defaultAvatarLetter, color: textColor }}>{letter?.toUpperCase()}</Text>
   </View>
 );
+
+const UnreadIndicator = () => <View style={styles.unreadIndicator} />;
 
 const styles = StyleSheet.create({
   rowWrapper: {

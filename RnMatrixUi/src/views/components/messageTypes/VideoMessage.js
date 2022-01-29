@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { View, Image } from 'react-native';
+import { View, Image, Text } from 'react-native';
 import { useObservableState } from 'observable-hooks';
 import { BubbleWrapper, SenderText } from '../MessageItem';
 import Video from 'react-native-video';
@@ -7,6 +7,7 @@ import { matrix } from '@rn-matrix/core';
 import Moment from 'moment';
 // import { Thumbnail } from 'react-native-thumbnail-video';
 import LinearGradient from 'react-native-linear-gradient';
+import { DateFormate, TimeFormate } from '@rn-matrix/ui/src/Helper/constantString';
 
 export default function VideoMessage({
   message,
@@ -78,7 +79,6 @@ export default function VideoMessage({
             controls
             resizeMode="cover"  
             source={{ uri: content.url , type: content.type}}
-            // onLoad={() => alert('hi')}
             style={imageStyles}
             onError={(e) =>
               console.log('Error rendering video\nContent: ', content, '\nError: ', e)
@@ -86,6 +86,8 @@ export default function VideoMessage({
             fullscreen
             pictureInPicture
           />
+           <Text style={{color: 'white', fontSize: 11, fontWeight: '700', position:'absolute', right:20, bottom:15 ,paddingVertical:5}}>{Moment(dateTime).format(TimeFormate)}</Text>
+         
             {/* <Thumbnail url='https://www.youtube.com/watch?v=6yvs1No7t1c' blurRadius={1} style={imageStyles}/> */}
           </LinearGradient>
         {/* <View style={{ borderRadius: 20, overflow: 'hidden', marginTop: 20 }}>
@@ -110,7 +112,7 @@ export default function VideoMessage({
         </View> */}
       </BubbleWrapper>
 
-      {!prevSame && <SenderText isMe={isMe} color={textColor}>{Moment(dateTime).format('d MMM HH:mm').toLocaleUpperCase()}</SenderText>}
+      {!prevSame && <SenderText isMe={isMe} color={textColor}>{Moment(dateTime).format(DateFormate).toLocaleUpperCase()}</SenderText>}
    
     </>
   );

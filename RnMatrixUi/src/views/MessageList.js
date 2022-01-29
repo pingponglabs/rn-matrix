@@ -157,6 +157,7 @@ export default function MessageList({
        textColor={textColor}
        onBackPress={onBackPress}
        backgroundHeaderColor={backgroundHeaderColor}
+       groupHeader={false}
       />
       <FlatList
         keyboardDismissMode="on-drag"

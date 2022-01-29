@@ -1,11 +1,12 @@
 import { useObservableState } from 'observable-hooks';
 import React from 'react';
 
-import { View, Image, TouchableOpacity,useColorScheme } from 'react-native';
+import { View, Image, TouchableOpacity,useColorScheme, Text } from 'react-native';
 import { BubbleWrapper, SenderText } from '../MessageItem';
 import { matrix } from '@rn-matrix/core';
 import Moment from 'moment';
 import LinearGradient from 'react-native-linear-gradient';
+import { DateFormate, TimeFormate } from '@rn-matrix/ui/src/Helper/constantString';
 // const debug = require('debug')('rnm:scene:chat:message:components:ImageMessage')
 
 // const PlaceholderImage = require('../../../../assets/images/placeholder.png');
@@ -94,11 +95,13 @@ export default function ImageMessage({
               style={imageStyles}
               // defaultSource={PlaceholderImage}
             />
+            <Text style={{color: 'white', fontSize: 11, fontWeight: '700', position:'absolute', right:20, bottom:15 ,paddingVertical:5}}>{Moment(dateTime).format(TimeFormate)}</Text>
+         
           </LinearGradient>
         </TouchableOpacity>
       </BubbleWrapper>
 
-      {!prevSame && <SenderText isMe={isMe} color={textColor}>{Moment(dateTime).format('d MMM HH:mm').toLocaleUpperCase()}</SenderText>}
+      {!prevSame && <SenderText isMe={isMe} color={textColor}>{Moment(dateTime).format(DateFormate).toLocaleUpperCase()}</SenderText>}
    
     </>
   );

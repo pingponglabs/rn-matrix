@@ -11,6 +11,7 @@ import { matrix } from '@rn-matrix/core';
 import Color from 'color';
 import Moment from 'moment';
 import LinearGradient from 'react-native-linear-gradient';
+import { DateFormate, TimeFormate } from '@rn-matrix/ui/src/Helper/constantString';
 const debug = require('debug')('rnm:views:components:messageTypes:TextMessage');
 
 export default function FileMessage({
@@ -138,13 +139,14 @@ export default function FileMessage({
                 <LinearGradient colors={getDefaultGradientBackgroundColor(isMe, true)} style={{ ...bubbleStyles(isMe, prevSame, nextSame), padding: 10 }}>
 
               <View style={{ alignItems: 'flex-end' }}>
-                <View style={{ flexDirection: 'row' }}>
+                <View style={{ flexDirection: 'row'}}>
                   {downloadIcon}
                   <Text
                     onPress={openFile}
                     style={[styles.fileText, { color: textColor}]}> 
                     {content.name}
                   </Text>
+                  <Text style={{color: theme == 'dark' ? 'white' : '#696969', fontSize: 11, fontWeight: '700', marginLeft: 10, alignSelf:'flex-end',paddingVertical:5}}>{Moment(dateTime).format(TimeFormate)}</Text>
                 </View>
                 {/* {isMe && (
                   <View style={{ marginLeft: 12, marginRight: -6 }}>
@@ -166,7 +168,7 @@ export default function FileMessage({
         </View>
       </BubbleWrapper>
 
-      {!prevSame && <SenderText isMe={isMe} color={textColor}>{Moment(dateTime).format('d MMM HH:mm').toLocaleUpperCase()}</SenderText>}
+      {!prevSame && <SenderText isMe={isMe} color={textColor}>{Moment(dateTime).format(DateFormate).toLocaleUpperCase()}</SenderText>}
    
     </>
   );

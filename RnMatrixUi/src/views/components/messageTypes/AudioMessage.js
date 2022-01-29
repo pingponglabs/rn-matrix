@@ -19,6 +19,7 @@ import AudioRecorderPlayer, {
   AudioSourceAndroidType,
 } from 'react-native-audio-recorder-player';
 import LinearGradient from 'react-native-linear-gradient';
+import { DateFormate } from '@rn-matrix/ui/src/Helper/constantString';
 var RNFS = require('react-native-fs');
 const debug = require('debug')('rnm:views:components:messageTypes:AudioMessage');
 const audioRecorderPlayer = new AudioRecorderPlayer();
@@ -213,7 +214,7 @@ export default function AudioMessage({
         </View>
 
       </BubbleWrapper>
-      {!prevSame && <SenderText isMe={isMe} color={textColor}>{Moment(dateTime).format('d MMM HH:mm').toLocaleUpperCase()}</SenderText>}
+      {!prevSame && <SenderText isMe={isMe} color={textColor}>{Moment(dateTime).format(DateFormate).toLocaleUpperCase()}</SenderText>}
 
     </>
   );

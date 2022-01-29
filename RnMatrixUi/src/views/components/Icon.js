@@ -9,7 +9,7 @@ type Props = {
   style?: ViewStyle,
 };
 
-export default function Icon({ name, size = 24, color = '#000', style = {}, stroke}: Props) {
+export default function Icon({ name, size = 24, color = '#000', style = {}, stroke }: Props) {
   const props = {
     width: size,
     height: size,
@@ -62,8 +62,20 @@ export default function Icon({ name, size = 24, color = '#000', style = {}, stro
       return <Icons.backWhite {...props} />;
     case 'Invite':
       return <Icons.Invite {...props} />;
-      case 'Invited':
+    case 'Invited':
       return <Icons.Invited {...props} />;
+    case 'VerticalDots':
+      return <Icons.VerticalDots {...props} />;
+    case 'sendLater':
+      return <Icons.sendLater {...props} />;
+    case 'whoSee':
+      return <Icons.whoSee {...props} />;
+    case 'respondMsg':
+      return <Icons.respondMsg {...props} />;
+    case 'msgAnony':
+      return <Icons.msgAnony {...props} />;
+    case 'makePoll':
+      return <Icons.makePoll {...props} />;
 
     default:
       return <Icons.Check {...props} />;
@@ -91,4 +103,11 @@ type IconNames =
   | 'gif'
   | 'phone'
   | 'backWhite'
-  | 'horizontaldots';
+  | 'horizontaldots'
+  | 'VerticalDots'
+  | 'sendLater'
+  | 'whoSee'
+  | 'respondMsg'
+  | 'msgAnony'
+  | 'makePoll'
+  ;
