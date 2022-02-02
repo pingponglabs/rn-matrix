@@ -241,6 +241,7 @@ export default class Message {
         // content.text = content.raw.body; //i18n.t('messages:content.audioNotSupport');
         content.text = `${sender} has sent a file`;
      
+         console.log('contentobj......', content);
         content.name = content.raw.body;
        content.url= matrix.getHttpUrl(content.raw.url)
      
@@ -249,6 +250,7 @@ export default class Message {
       // Video Message
       case 'm.video':
 
+        console.log('video content......', content);
         // todo: localize
         content.text = `${sender} has sent a video`;
         // if (this.pending) {
@@ -286,9 +288,11 @@ export default class Message {
         //   content.thumb.width = (width * THUMBNAIL_MAX_SIZE) / height;
         // }
 
+         console.log('video content......', content);
         break;
         
       case 'm.file':
+        console.log('file content......', content);
         content.text = `${sender} has sent a file`;
         content.url = matrix.getHttpUrl(content.raw.url);
         content.name = content.raw.body;
