@@ -6,9 +6,9 @@
 // import App from './App';
 // AppRegistry.registerComponent(appName, () => App);
 
-import matrix from '@rn-matrix/core/src/services/external';
-import Chat from '@rn-matrix/core/src/classes/Chat';
-import Message from '@rn-matrix/core/src/classes/Message';
+import matrix from './src/services/external';
+import Chat from './src/classes/Chat';
+import Message from './src/classes/Message';
 import matrixSdk from 'matrix-js-sdk';
 
 export { matrix, matrixSdk, Chat, Message };
