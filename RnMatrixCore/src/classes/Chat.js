@@ -320,6 +320,7 @@ export default class Chat {
       }
       case 'm.file': {
         // Add or get pending message
+        console.log('file content////',content);
         const event = {
           type,
           timestamp: Date.now(),
