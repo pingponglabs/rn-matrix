@@ -1,15 +1,11 @@
 import { useObservableState } from 'observable-hooks';
 import React from 'react';
-
 import { View, Image, TouchableOpacity,useColorScheme, Text } from 'react-native';
 import { BubbleWrapper, SenderText } from '../MessageItem';
 import { matrix } from '@rn-matrix/core';
 import Moment from 'moment';
 import LinearGradient from 'react-native-linear-gradient';
 import { DateFormate, TimeFormate } from '@rn-matrix/ui/src/Helper/constantString';
-// const debug = require('debug')('rnm:scene:chat:message:components:ImageMessage')
-
-// const PlaceholderImage = require('../../../../assets/images/placeholder.png');
 
 export default function ImageMessage({
   message,
@@ -44,21 +40,12 @@ export default function ImageMessage({
     ...(isMe ? {borderTopRightRadius: 5} : {borderTopLeftRadius: 5 }),
   };
 
-
   const imageStyles = {
     width: content?.thumb?.width || '50%',
     height: content?.thumb?.height,
     backgroundColor: messageType == 'm.sticker' ? 'transparent' : '#ccc',
     borderRadius: 8,
-    // ...(isMe
-    //   ? {
-    //       ...(prevSame ? { borderTopRightRadius: sharpBorderRadius } : {}),
-    //       ...(nextSame ? { borderBottomRightRadius: sharpBorderRadius } : {}),
-    //     }
-    //   : {
-    //       ...(prevSame ? { borderTopLeftRadius: sharpBorderRadius } : {}),
-    //       ...(nextSame ? { borderBottomLeftRadius: sharpBorderRadius } : {}),
-    //     }),
+
   };
 
   const _onLongPress = () => onLongPress(message);
@@ -93,16 +80,12 @@ export default function ImageMessage({
                 uri: content.thumb.url,
               }}
               style={imageStyles}
-              // defaultSource={PlaceholderImage}
             />
             <Text style={{color: 'white', fontSize: 11, fontWeight: '700', position:'absolute', right:20, bottom:15 ,paddingVertical:5}}>{Moment(dateTime).format(TimeFormate)}</Text>
-         
           </LinearGradient>
         </TouchableOpacity>
       </BubbleWrapper>
-
       {!prevSame && <SenderText isMe={isMe} color={textColor}>{Moment(dateTime).format(DateFormate).toLocaleUpperCase()}</SenderText>}
-   
     </>
   );
 }

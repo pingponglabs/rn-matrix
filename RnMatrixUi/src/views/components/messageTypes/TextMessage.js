@@ -1,20 +1,14 @@
 import { useObservableState } from 'observable-hooks';
 import React from 'react';
-import { EventStatus } from 'matrix-js-sdk';
 import { Text, TouchableHighlight, View,useColorScheme } from 'react-native';
 import { SenderText, BubbleWrapper } from '../MessageItem';
 import { isIos } from '../../../utilities/misc';
 import { isEmoji } from '../../../utilities/emojis';
 import Html from '../Html';
-import { colors } from '../../../constants';
-import Icon from '../Icon';
 import { matrix } from '@rn-matrix/core';
-import Color from 'color';
 import LinearGradient from 'react-native-linear-gradient';
 import Moment from 'moment';
 import { DateFormate, TimeFormate } from '@rn-matrix/ui/src/Helper/constantString';
-
-const debug = require('debug')('rnm:views:components:messageTypes:TextMessage');
 
 export default function TextMessage({
   message,
@@ -46,16 +40,6 @@ export default function TextMessage({
   const _onLongPress = () => onLongPress(message);
   const _onPress = () => onPress(message);
   const _onSwipe = () => onSwipe(message);
-
-  // const getDefaultBackgroundColor = (me, pressed) => {
-  //   return me
-  //     ? pressed
-  //       ? colors.blue500
-  //       : colors.blue400
-  //     : pressed
-  //       ? colors.gray400
-  //       : colors.gray300;
-  // };
 
   console.log('timeobj..',message.timestamp);
   const getDefaultGradientBackgroundColor = (me, pressed) => {
@@ -90,19 +74,8 @@ export default function TextMessage({
                 onLongPress={onLongPress ? _onLongPress : null}
                 delayLongPress={200}
                 style={[
-                  // bubbleStyles(isMe, prevSame, nextSame),
-                  // { backgroundColor: getDefaultBackgroundColor(isMe, false) }
                   (!isMe && theme == 'dark' ? { borderColor: '#00FFA3', backgroundColor: '#000'} : {}),
                   (!isMe && theme == 'dark' ? {borderRadius: 16,borderWidth: 4} : {}),
-                    // (isMe
-                    //   ? {
-                    //       ...(prevSame ? { borderTopRightRadius: 5 } : {}),
-                    //       ...(nextSame ? { borderBottomRightRadius: 5 } : {}),
-                    //     }
-                    //   : {
-                    //       ...(prevSame ? { borderTopLeftRadius: 5 } : {}),
-                    //       ...(nextSame ? { borderBottomLeftRadius: 5 } : {}),
-                    //     }),
                     (isMe ? {borderTopRightRadius: 5} : {borderTopLeftRadius: 5 }),
                   reactions ? { alignSelf: isMe ? 'flex-end' : 'flex-start' } : {},
                   isMe ? myBubbleStyle() : otherBubbleStyle(),
@@ -134,12 +107,10 @@ export default function TextMessage({
                   </View>
                 </LinearGradient>
               </TouchableHighlight>
-
             </View>
           </View>
         )}
       </BubbleWrapper>
-
       {!prevSame && <SenderText isMe={isMe} color={textColor}>{Moment(dateTime).format(DateFormate).toLocaleUpperCase()}</SenderText>}
     </>
   );

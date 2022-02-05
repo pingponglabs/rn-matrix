@@ -24,11 +24,9 @@ export default function ChatHeader({
     return (
 
         <View style={{ ...styles.rowWrapper, backgroundColor: backgroundHeaderColor }}>
-
             <TouchableOpacity style={styles.phoneBtnStyle} onPress={onBackPress}>
                 <Icon name='backWhite' size={30} color={textColor} />
             </TouchableOpacity>
-
             {avatar ? (
                 <Image
                     source={room.getAvatarUrl(avatarSize) ? { uri: room.getAvatarUrl(avatarSize) } : {}}
@@ -39,11 +37,8 @@ export default function ChatHeader({
             )}
 
             <View style={{ flex: 1, marginHorizontal: wp(4), justifyContent: 'space-between', flexDirection: 'row' }}>
-
-
                 {
                     groupHeader ?
-
                         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', flexDirection: 'row' }}>
                             <Text style={{ ...styles.title, color: textColor }} numberOfLines={1}>
                                 {name}
@@ -60,7 +55,7 @@ export default function ChatHeader({
                                 }}
                                 ListFooterComponent={() => {
                                     return (
-                                        <TouchableOpacity style={{ height: wp(6), width: wp(6), borderRadius: wp(3), backgroundColor: 'gray', justifyContent: 'center', alignItems: 'center', marginLeft: -10 }}>
+                                        <TouchableOpacity style={{ height: wp(6), width: wp(6), borderRadius: wp(3), backgroundColor: 'gray', justifyContent: 'center', alignItems: 'center', marginLeft: -10 }} onPress={() => {}}>
                                             <Icon
                                                 name="add"
                                                 size={18}
@@ -85,7 +80,6 @@ export default function ChatHeader({
                             </Text>
                         </View>
                 }
-
                 <View style={{ justifyContent: 'center', alignItems: 'center', flexDirection: 'row' }}>
                     <TouchableOpacity style={styles.phoneBtnStyle}>
                         <Icon name='phone' size={22} color={textColor} />
@@ -96,7 +90,6 @@ export default function ChatHeader({
                 </View>
             </View>
         </View>
-
     );
 }
 

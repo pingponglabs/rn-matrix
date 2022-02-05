@@ -15,23 +15,12 @@ export default function RoomInviteItem({
   selectedUsers,
   backgroundColor
 }) {
-  // const name = useObservableState(room.name$);
-  // const avatar = useObservableState(room.avatar$);
-
-  const joinRoom = () => {
-    matrix.joinRoom(room.id);
-  };
-
-  const rejectInvite = () => {
-    matrix.leaveRoom(room.id);
-  };
 
   return (
-  
-    <View style={{ ...styles.rowWrapper, backgroundColor: backgroundColor }}>
+      <View style={{ ...styles.rowWrapper, backgroundColor: backgroundColor }}>
       {room.avatar ? (
         <Image
-          source={room.avatar ? {uri: matrix.getHttpUrl(room.avatar)} : null}
+          source={{uri: matrix.getHttpUrl(room.avatar)}}
           style={styles.avatar}
         />
       ) : (
@@ -43,13 +32,10 @@ export default function RoomInviteItem({
           <Text style={{ ...styles.title, color: textColor }} numberOfLines={1}>
             {room.name}
           </Text>
-
           <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', width: wp(50), paddingVertical: hp(0.5) }}>
-
             <Text style={styles.snippet} numberOfLines={2} ellipsizeMode="tail">
               Online
             </Text>
-
             <Image source={require('../../assets/icons/whatsapp.png')} style={{ height: hp(3), width: wp(14), marginHorizontal: wp(5) }} resizeMode='cover'></Image>
           </View>
         </View>

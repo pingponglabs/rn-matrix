@@ -167,9 +167,7 @@ export default function FileMessage({
           </View>
         </View>
       </BubbleWrapper>
-
       {!prevSame && <SenderText isMe={isMe} color={textColor}>{Moment(dateTime).format(DateFormate).toLocaleUpperCase()}</SenderText>}
-   
     </>
   );
 }

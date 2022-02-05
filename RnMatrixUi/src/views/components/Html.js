@@ -1,23 +1,17 @@
-// import { useTheme } from '@ui-kitten/components'
 import React, { useEffect, useState } from 'react';
 import { Linking, Text, View} from 'react-native';
 import HtmlRenderer from 'react-native-render-html';
 import { htmlEmojis } from '../../utilities/emojis';
 import { htmlLinks } from '../../utilities/misc';
 
-// const debug = require('debug')('rnm:scene:chat:message:components:Html')
-
-
 const parseHtml = (html) => {
   return htmlEmojis(html?.includes('href') ? html : htmlLinks(html));
 };
 
 export default function Html({ html, isMe = false, accentColor,color,fontWeight }) {
-  // const styles = getHtmlStyles(theme)
   const styles = getHtmlStyles({ isMe, accentColor,color,fontWeight});
   const [parsedHtml, setParsedHtml] = useState(parseHtml(html));
   
-
   //* *******************************************************************************
   // Methods
   //* *******************************************************************************

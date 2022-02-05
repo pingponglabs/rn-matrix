@@ -25,12 +25,8 @@ export default function VideoMessage({
   const content = useObservableState(message.content$);
   const senderName = useObservableState(message.sender.name$);
   const flatListRef = useRef();
-  // const receipts = message.receipts$
-  //   ? useObservableState(message.receipts$)
-  //   : [];
   const status = useObservableState(message.status$);
   const isMe = myUser.id === message.sender.id;
-
   if (!content) return null;
   const _onLongPress = () => onLongPress(message);
   const _onPress = () => onPress(message);
@@ -61,7 +57,6 @@ export default function VideoMessage({
     ...(isMe ? {borderTopRightRadius: 5} : {borderTopLeftRadius: 5 }),
   };
 
-  console.log('video UI content....', JSON.stringify(content))
   var dateTime = new Date(parseInt(message?.timestamp, 10));
 
   return (
@@ -87,7 +82,6 @@ export default function VideoMessage({
             pictureInPicture
           />
            <Text style={{color: 'white', fontSize: 11, fontWeight: '700', position:'absolute', right:20, bottom:15 ,paddingVertical:5}}>{Moment(dateTime).format(TimeFormate)}</Text>
-         
             {/* <Thumbnail url='https://www.youtube.com/watch?v=6yvs1No7t1c' blurRadius={1} style={imageStyles}/> */}
           </LinearGradient>
         {/* <View style={{ borderRadius: 20, overflow: 'hidden', marginTop: 20 }}>
@@ -111,9 +105,7 @@ export default function VideoMessage({
           />
         </View> */}
       </BubbleWrapper>
-
       {!prevSame && <SenderText isMe={isMe} color={textColor}>{Moment(dateTime).format(DateFormate).toLocaleUpperCase()}</SenderText>}
-   
     </>
   );
 }

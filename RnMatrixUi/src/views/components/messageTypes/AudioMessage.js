@@ -62,22 +62,8 @@ export default function AudioMessage({
   const _onPress = () => onPress(message);
   const _onSwipe = () => onSwipe(message);
 
-  const getDefaultBackgroundColor = (me, pressed) => {
-    return me
-      ? pressed
-        ? colors.blue500
-        : colors.blue400
-      : pressed
-        ? colors.gray400
-        : colors.gray300;
-  };
-
   const action = async () => {
-    console.log('content?.url....', content)
-    console.log('isPlaying...', isPlaying)
-
     if (isPlaying) {
-      // console.log('isPlaying...',isPlaying)
       await audioRecorderPlayer.stopPlayer();
       audioRecorderPlayer.removePlayBackListener();
       setIsPlaying(false)
@@ -91,9 +77,6 @@ export default function AudioMessage({
         background: true,
       };
       let res = RNFS.downloadFile(downloadOptions);
-      console.log('downloaded', res);
-      console.log('localSong', localSong);
-
       audioRecorderPlayer.setSubscriptionDuration(0.09);
       await audioRecorderPlayer.stopPlayer();
 
@@ -132,9 +115,6 @@ export default function AudioMessage({
       : otherBubbleStyle().gradientColor
   };
 
-  console.log('audioncontent from UI....', content)
-  //   const leftPosition = currentPositionSec ? currentPositionSec / currentDurationSec * 99 : 0;
-  console.log('messageId', audioPlayid);
   var dateTime = new Date(parseInt(message?.timestamp, 10));
 
   return (
@@ -145,7 +125,6 @@ export default function AudioMessage({
         onSwipe={onSwipe ? _onSwipe : null}
         message={message}
         showReactions={showReactions}>
-
         <View style={viewStyle(nextSame)}>
           <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
             <TouchableHighlight
@@ -164,7 +143,6 @@ export default function AudioMessage({
               ]}
               {...props}>
               <LinearGradient colors={getDefaultGradientBackgroundColor(isMe, true)} style={{ ...bubbleStyles(isMe, prevSame, nextSame), padding: 10 }}>
-
                 <View
                   style={{
                     flexDirection: 'row',
@@ -172,12 +150,6 @@ export default function AudioMessage({
                     alignItems: 'flex-end',
                     flexWrap: 'wrap',
                   }}>
-
-                  {/* <ContentAudio contentObj={content} isOwn={isMe} 
-                   startAudioPlay={() =>  alert('start')}
-                    stopAudioPlay={() => alert('stop')}
-               /> */}
-
                   <View style={[styles.audioPreview, isMe && styles.audioPreviewMy]}>
                     <TouchableOpacity style={styles.touchArea} onPress={() => { onplayPress(messageId); action() }}>
                       <Image source={isPlaying && audioPlayid == messageId ? require('../../../assets/icons/icon-player-pause.png') : require('../../../assets/icons/icon-player-play.png')} style={styles.icon32} />
@@ -193,7 +165,6 @@ export default function AudioMessage({
                       </View>
                     </View>
                   </View>
-
                   {/* {isMe && (
                   <View style={{ marginLeft: 12, marginRight: -6 }}>
                     <Icon

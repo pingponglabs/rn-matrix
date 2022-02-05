@@ -337,22 +337,20 @@ export default function Composer({
     return (
       <View style={[{ height: hp(35), marginTop: hp(0.5), padding: hp(2), justifyContent: 'center', alignItems: 'center' }, composerStyle]}>
 
-        <FlatList
-          key={4}
+        <FlatList        
           showsVerticalScrollIndicator={false}
           data={JSONData.MsgOptions}
           numColumns={4}
           renderItem={({ item, index }) => {
             return (
               <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                <TouchableOpacity style={{...styles.msgoptionItemView, borderColor: textColor ,borderWidth: selectedMsgOption == index ? 4 : 0}} onPress={() => setSelectedMsgOption(index)}>
+                <TouchableOpacity style={{...styles.msgoptionItemView, borderColor: textColor ,borderWidth: selectedMsgOption === index ? 4 : 0}} onPress={() => setSelectedMsgOption(index)}>
                   <Icon
                     name={item.image}
                     size={30}
-                  // color={selectedMsgOption == index ? '#44F556' : 'transparent'}
                   />
                 </TouchableOpacity>
-                <Text style={{ ...styles.msgoptionName, color: selectedMsgOption == index ? '#44F556' : textColor }}>{item.name}</Text>
+                <Text style={{ ...styles.msgoptionName, color: selectedMsgOption === index ? '#44F556' : textColor }}>{item.name}</Text>
               </View>
             )
           }}
