@@ -48,14 +48,10 @@ export default function Composer({
   const [recordTime, setRecordTime] = useState('00:00:00');
   const [showRecordView, setShowRecordView] = useState(false);
   const [visibleMoreMsg, setVisibleMoreMsg] = useState(false);
-  const [selectedMsgOption, setSelectedMsgOption] = useState();
+  const [selectedMsgOption, setSelectedMsgOption] = useState(null);
 
   const textInputRef = useRef(null);
   const roomName = useObservableState(room.name$);
-
-  const toggleActionButtons = () => {
-    setActionButtonsShowing(!actionButtonsShowing);
-  };
 
   const handleSend = () => {
     if (enableReplies && isReplying && selectedMessage && !isEditing) {
@@ -201,8 +197,6 @@ export default function Composer({
 
     setShowRecordView(false)
     setRecordTime('00:00:00')
-    // this.audioRecorderPlayer = null;
-    console.log('result///', result);
 
     if (obj == 'send') {
       const statResult = await stat(result);
@@ -216,7 +210,6 @@ export default function Composer({
       }
 
       console.log('file size: ' + JSON.stringify(obj));
-      // room.sendMessage(obj, 'm.audio');
       room.sendMessage(obj, 'm.audio');
     }
 
@@ -242,7 +235,6 @@ export default function Composer({
 
 
   function renderSend() {
-    // if (!value) {
     return (
       <View style={[styles.containerAddActions]}>
         <View style={{ flexDirection: 'row' }}>
@@ -302,7 +294,6 @@ export default function Composer({
         </TouchableOpacity>
       </View>
     );
-    // }
   }
 
   function renderEmojis() {
@@ -320,7 +311,6 @@ export default function Composer({
   }
 
   function renderAddFiles() {
-
     return (
       <TouchableOpacity style={[styles.containerAddFiles]} onPress={onMorepress}>
         <Icon
@@ -336,7 +326,6 @@ export default function Composer({
 
     return (
       <View style={[{ height: hp(35), marginTop: hp(0.5), padding: hp(2), justifyContent: 'center', alignItems: 'center' }, composerStyle]}>
-
         <FlatList        
           showsVerticalScrollIndicator={false}
           data={JSONData.MsgOptions}
@@ -356,13 +345,11 @@ export default function Composer({
           }}
           keyExtractor={(item, index) => index.toString()}
         />
-
       </View>
     );
   }
 
   function renderInput() {
-
     return (
       <View style={[styles.containerTextInput]}>
         <TextInput
