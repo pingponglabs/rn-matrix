@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableHighlight, TouchableOpacity, Image, Modal, TouchableWithoutFeedback, Platform, } from 'react-native';
+import { View, TextInput, Text, StyleSheet, TouchableHighlight, TouchableOpacity, Image, Modal, TouchableWithoutFeedback, Platform, FlatList, } from 'react-native';
 import { useObservableState } from 'observable-hooks';
 import { colors } from '../constants';
 import Icon from './components/Icon';
@@ -14,8 +14,15 @@ import AudioRecorderPlayer, {
   AudioSet,
   AudioSourceAndroidType,
 } from 'react-native-audio-recorder-player';
+import Svg, {
+  LinearGradient,
+  Defs,
+  Stop,
+  TSpan
+} from 'react-native-svg';
 // import getUid from 'get-uid';
 import { hp, wp } from '@rn-matrix/ui/src/Helper/responsiveScreen';
+import { JSONData } from '@rn-matrix/ui/src/Helper/constantString';
 var RNFS = require('react-native-fs');
 
 const audioRecorderPlayer = new AudioRecorderPlayer();
@@ -31,6 +38,7 @@ export default function Composer({
   onCancelReply = () => { },
   composerStyle = {},
   onMorepress = () => { },
+  onMoreMsgOptionpress = () => { },
   accentColor = 'crimson',
   textColor,
 }) {
@@ -38,14 +46,12 @@ export default function Composer({
   const [actionButtonsShowing, setActionButtonsShowing] = useState(false);
   const [showEmojis, setShowEmojis] = useState(false);
   const [recordTime, setRecordTime] = useState('00:00:00');
-  const [showRecordView, setShowRecordView] = useState(false)
+  const [showRecordView, setShowRecordView] = useState(false);
+  const [visibleMoreMsg, setVisibleMoreMsg] = useState(false);
+  const [selectedMsgOption, setSelectedMsgOption] = useState(null);
 
   const textInputRef = useRef(null);
   const roomName = useObservableState(room.name$);
-
-  const toggleActionButtons = () => {
-    setActionButtonsShowing(!actionButtonsShowing);
-  };
 
   const handleSend = () => {
     if (enableReplies && isReplying && selectedMessage && !isEditing) {
@@ -170,12 +176,10 @@ export default function Composer({
     const uri = await audioRecorderPlayer.startRecorder(path, audioSet);
 
     audioRecorderPlayer.addRecordBackListener((e) => {
-
       console.log(e)
       setRecordTime(audioRecorderPlayer.mmssss(
         Math.floor(e.currentPosition),
       ))
-
       return;
     });
     console.log(`uri: ${uri}`);
@@ -193,8 +197,6 @@ export default function Composer({
 
     setShowRecordView(false)
     setRecordTime('00:00:00')
-    // this.audioRecorderPlayer = null;
-    console.log('result///', result);
 
     if (obj == 'send') {
       const statResult = await stat(result);
@@ -208,7 +210,6 @@ export default function Composer({
       }
 
       console.log('file size: ' + JSON.stringify(obj));
-      // room.sendMessage(obj, 'm.audio');
       room.sendMessage(obj, 'm.audio');
     }
 
@@ -234,7 +235,6 @@ export default function Composer({
 
 
   function renderSend() {
-    // if (!value) {
     return (
       <View style={[styles.containerAddActions]}>
         <View style={{ flexDirection: 'row' }}>
@@ -278,6 +278,13 @@ export default function Composer({
             />
           </TouchableOpacity>
         </View>
+        <TouchableOpacity style={[styles.containerAddAudio]} onPress={() => setVisibleMoreMsg(!visibleMoreMsg)}>
+          <Icon
+            name={'VerticalDots'}
+            size={22}
+            color='transparent'
+          />
+        </TouchableOpacity>
         <TouchableOpacity style={[styles.containerSend]} onPress={isEditing ? confirmEdit : handleSend}>
           <Icon
             name={'send'}
@@ -287,12 +294,9 @@ export default function Composer({
         </TouchableOpacity>
       </View>
     );
-    // }
-
   }
 
   function renderEmojis() {
-
     return (
       <Modal animationType="fade" transparent visible={showEmojis} onRequestClose={() => setShowEmojis(false)}>
         <TouchableWithoutFeedback style={[styles.containerTouchEmojis,]} onPress={() => setShowEmojis(false)}>
@@ -307,7 +311,6 @@ export default function Composer({
   }
 
   function renderAddFiles() {
-
     return (
       <TouchableOpacity style={[styles.containerAddFiles]} onPress={onMorepress}>
         <Icon
@@ -319,8 +322,34 @@ export default function Composer({
     );
   }
 
-  function renderInput() {
+  function MoreMsgOption() {
 
+    return (
+      <View style={[{ height: hp(35), marginTop: hp(0.5), padding: hp(2), justifyContent: 'center', alignItems: 'center' }, composerStyle]}>
+        <FlatList        
+          showsVerticalScrollIndicator={false}
+          data={JSONData.MsgOptions}
+          numColumns={4}
+          renderItem={({ item, index }) => {
+            return (
+              <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                <TouchableOpacity style={{...styles.msgoptionItemView, borderColor: textColor ,borderWidth: selectedMsgOption === index ? 4 : 0}} onPress={() => setSelectedMsgOption(index)}>
+                  <Icon
+                    name={item.image}
+                    size={30}
+                  />
+                </TouchableOpacity>
+                <Text style={{ ...styles.msgoptionName, color: selectedMsgOption === index ? '#44F556' : textColor }}>{item.name}</Text>
+              </View>
+            )
+          }}
+          keyExtractor={(item, index) => index.toString()}
+        />
+      </View>
+    );
+  }
+
+  function renderInput() {
     return (
       <View style={[styles.containerTextInput]}>
         <TextInput
@@ -329,7 +358,7 @@ export default function Composer({
           ref={textInputRef}
           style={[styles.textInput, { color: textColor }]}
           multiline
-          placeholder={'Type a message...'}//{`Message ${roomName}...`}
+          placeholder={'Type a message...'} //{`Message ${roomName}...`}
           placeholderTextColor={'#696969'}
           value={value}
           onChangeText={setValue}
@@ -347,42 +376,47 @@ export default function Composer({
   }
 
   return (
-    <View style={[styles.wrapper, composerStyle]}>
-      {selectedMessage &&
-        ((isEditing && !isReplying) || (!isEditing && isReplying && enableReplies)) && (
-          <View style={[styles.activeMessageBar, { borderLeftColor: accentColor }]}>
-            <View>
-              <Text style={{ color: accentColor, fontWeight: 'bold' }}>
-                {isEditing ? 'Editing' : `Replying to ${selectedMessage.sender.name$.getValue()}`}
-              </Text>
-              <Text numberOfLines={1} style={{ color: 'gray' }}>
-                {selectedMessage.content$?.getValue()?.text}
-              </Text>
-            </View>
-            <TouchableHighlight
-              onPress={cancel}
-              underlayColor="#ddd"
-              style={{ padding: 6, borderRadius: 50 }}>
+    <View>
+      <View style={[styles.wrapper, composerStyle]}>
+        {selectedMessage &&
+          ((isEditing && !isReplying) || (!isEditing && isReplying && enableReplies)) && (
+            <View style={[styles.activeMessageBar, { borderLeftColor: accentColor }]}>
               <View>
-                <Icon name="close" color="gray" />
+                <Text style={{ color: accentColor, fontWeight: 'bold' }}>
+                  {isEditing ? 'Editing' : `Replying to ${selectedMessage.sender.name$.getValue()}`}
+                </Text>
+                <Text numberOfLines={1} style={{ color: 'gray' }}>
+                  {selectedMessage.content$?.getValue()?.text}
+                </Text>
               </View>
-            </TouchableHighlight>
+              <TouchableOpacity
+                onPress={cancel}
+                underlayColor="#ddd"
+                style={{ padding: 6, borderRadius: 50 }}>
+                <View>
+                  <Icon name="close" color="gray" />
+                </View>
+              </TouchableOpacity>
+            </View>
+          )}
+        {
+          showRecordView && renderRecordAudio()
+        }
+
+        <View style={styles.container}>
+          {renderInput()}
+          <View style={{ flexDirection: 'row', paddingVertical: 5 }}>
+            {renderAddFiles()}
+            {renderSend()}
+            {renderEmojis()}
           </View>
-        )}
-      {
-        showRecordView && renderRecordAudio()
-      }
-
-      <View style={styles.container}>
-        {renderInput()}
-        <View style={{ flexDirection: 'row', paddingVertical: 5 }}>
-          {renderAddFiles()}
-          {renderSend()}
-          {renderEmojis()}
         </View>
-
       </View>
+
+      {visibleMoreMsg && MoreMsgOption()}
+
     </View>
+
   );
 }
 
@@ -393,6 +427,7 @@ const styles = StyleSheet.create({
     marginHorizontal: wp(2),
     marginBottom: hp(1.5)
   },
+
   activeMessageBar: {
     margin: 6,
     padding: 6,
@@ -405,11 +440,12 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
   },
+
   containerAddActions: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   containerAddFiles: { alignItems: 'center', justifyContent: 'center', width: wp(15), height: hp(5) },
-  containerAddSmiles: { alignItems: 'center', justifyContent: 'center', width: wp(12), height: hp(5) },
-  containerAddAudio: { alignItems: 'center', justifyContent: 'center', width: wp(12), height: hp(5) },
-  containerAddImage: { alignItems: 'center', justifyContent: 'center', width: wp(12), height: hp(5) },
+  containerAddSmiles: { alignItems: 'center', justifyContent: 'center', width: wp(11), height: hp(5) },
+  containerAddAudio: { alignItems: 'center', justifyContent: 'center', width: wp(11), height: hp(5) },
+  containerAddImage: { alignItems: 'center', justifyContent: 'center', width: wp(11), height: hp(5) },
   containerSend: { alignItems: 'center', justifyContent: 'center', width: wp(12), height: hp(5) },
   containerTextInput: { flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', padding: hp(1) },
   textInput: { flex: 1, marginHorizontal: wp(4), maxHeight: 150, fontWeight: '400', fontSize: 14 },
@@ -423,5 +459,7 @@ const styles = StyleSheet.create({
   voiceTimerContainer: { flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start' },
   recordLabel: { width: 16, height: 16, borderRadius: 8, backgroundColor: colors.red },
   voiceTimeText: { paddingLeft: 5, color: colors.black, fontSize: 12 },
+  msgoptionItemView: { backgroundColor: '#353535', height: wp(18), width: wp(18), borderRadius: wp(9), margin: wp(2), justifyContent: 'center', alignItems: 'center'},
+  msgoptionName: { fontWeight: '500', fontSize: 10, paddingVertical: hp(0.5), width: wp(17), height: hp(5), textAlign: 'center' }
 
 });

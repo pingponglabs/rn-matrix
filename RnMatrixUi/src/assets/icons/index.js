@@ -23,6 +23,12 @@ import phone from './PhoneIcon.svg';
 import backWhite from './icon-Back-white.svg';
 import Invite from './icon-invite.svg';
 import Invited from './icon-invited.svg';
+import VerticalDots from './icon-verticalDots.svg';
+import sendLater from './icon-sendLater.svg';
+import whoSee from './icon-whoSee.svg';
+import respondMsg from './icon-respondMsg.svg';
+import msgAnony from './icon-msgAnony.svg';
+import makePoll from './icon-makePoll.svg';
 
 export {
     Add,
@@ -49,5 +55,11 @@ export {
     backWhite,
     sendBlack,
     Invite,
-    Invited
+    Invited,
+    VerticalDots,
+    sendLater,
+    whoSee,
+    respondMsg,
+    msgAnony,
+    makePoll
 };

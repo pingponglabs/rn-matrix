@@ -15,6 +15,7 @@ import FileMessage from './messageTypes/FileMessage';
 import Reactions from './Reactions';
 import { BehaviorSubject } from 'rxjs';
 import AudioMessage from '@rn-matrix/ui/src/views/components/messageTypes/AudioMessage';
+import moment from 'moment';
 
 // const debug = require('debug')('rnm:scenes:chat:message:MessageItem')
 
@@ -53,9 +54,7 @@ export default function MessageItem({
   }
 
   const message = matrix.getMessageById(messageId, roomId);
-  console.log('message....',message);
 
-  
   if (!message.type$) return null;
 
   const prevMessage =

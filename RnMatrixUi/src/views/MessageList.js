@@ -86,10 +86,8 @@ export default function MessageList({
   };
 
   const onplayAudioPress = (id) => {
-    // alert(id)
       setaudioPlayid(id)
   }
-
 
   const renderMessageItem = ({ item: messageId, index }) => {
     return (
@@ -110,34 +108,15 @@ export default function MessageList({
         textColor={textColor}
         onplayPress={(id) => onplayAudioPress(id)}
         audioPlayid={audioPlayid}
-        fontWeight={fontWeight}
-        
+        fontWeight={fontWeight}        
       />
     );
   };
-
-  // const sendText = async (text, isQuote) => {
-  //   console.log('user id....', matrix.getClient().getUserId());
-  //   room.sendMessage(text, 'm.text')
-  // }
-  // const sendImage = async (res) => {
-  //   // console.log('uri...', uri);
-  //     room.sendMessage(res, 'm.image')
-  // }
-  // const sendFile = async (msgtype, filename, uri, mimetype, base64, size, duration) => {
-  //   // console.log('uri...', uri);   
-  //     const eventObj = Event.getEventObjFile(matrix.getClient().getUserId(), msgtype, filename, uri, mimetype, base64, size, duration);
-  //     const event = new Event(null, eventObj);
-  //     console.log('rn matrix view UI event obj...', event);
-  //     room.sendMessage(event.matrixContentObj, msgtype)
-  // }
 
   useEffect(() => {
     // mark as read
     room.sendReadReceipt();
 
-    // We put loading and typing indicator into the Timeline to have better
-    // visual effects when we swipe to top or bottom
     if (messageList) {
       const tempTimeline = [...messageList];
       if (isLoading) tempTimeline.push('loading');
@@ -146,10 +125,6 @@ export default function MessageList({
     }
   }, [isLoading, messageList, room, typing]);
 
-  // const props = {
-  //   sendMessage: { text: (text, isquote) => sendText(text, isquote), file: (msgtype, filename, uri, mimetype, base64, size, duration) => sendFile(msgtype, filename, uri, mimetype, base64, size, duration), image: (res) => sendImage(res) },
-  // };
-
   return (
     <Wrapper offset={keyboardOffset}>
       <ChatHeader 
@@ -157,6 +132,7 @@ export default function MessageList({
        textColor={textColor}
        onBackPress={onBackPress}
        backgroundHeaderColor={backgroundHeaderColor}
+       groupHeader={false}
       />
       <FlatList
         keyboardDismissMode="on-drag"
@@ -186,7 +162,6 @@ export default function MessageList({
           onMorepress={onMorepress}
           textColor={textColor}
         />
-        // <InputToolbar showRecordAudio={true} {...props} resizeX={50} resizeY={50} />
       )}
     </Wrapper>
   );
@@ -200,11 +175,9 @@ const Wrapper = ({ offset, children }) => {
     backgroundColor: theme == 'dark' ? colors.darkbackground : colors.lightbackground
   };
   return Platform.OS === 'ios' ? (
-    // <SafeAreaView style={style}>
       <KeyboardAvoidingView style={style} behavior="padding" keyboardVerticalOffset={offset}>
         {children}
       </KeyboardAvoidingView>
-    // </SafeAreaView>
   ) : (
     <View style={style}>{children}</View>
   );

@@ -382,6 +382,7 @@ class ChatService {
         id: matrixRoom.roomId,
         name: matrixRoom.name,
       };
+      
     } catch (e) {
       console.warn('Error creating encrypted chat: ', e);
       return { error: true };
