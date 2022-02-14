@@ -1,9 +1,9 @@
-import {isEqual} from 'lodash';
-import {EventStatus} from 'matrix-js-sdk';
-import {BehaviorSubject} from 'rxjs';
+import { isEqual } from 'lodash';
+import { EventStatus } from 'matrix-js-sdk';
+import { BehaviorSubject } from 'rxjs';
 
 const THUMBNAIL_MAX_SIZE = 250;
-
+import React from 'react';
 import matrix from '../services/matrix';
 import users from '../services/user';
 import messages from '../services/message';
@@ -21,6 +21,7 @@ export const MessageStatus = {
 };
 
 export default class Message {
+
   constructor(eventId, roomId, event, pending = false) {
     this.id = this.key = eventId;
     this.roomId = roomId;
@@ -30,42 +31,42 @@ export default class Message {
         if (roomId) {
           const matrixRoom = matrix.getClient().getRoom(roomId);
           const roomEvents = matrixRoom.getLiveTimeline().getEvents();
-          const roomEvent = roomEvents.find(
-            (event) => event.getId() === eventId,
-          );
+
+          console.log('rn matrix msg classes roomEvents...',roomEvents);
+
+          const roomEvent = roomEvents.find((event) => event.getId() === eventId);
+
           if (roomEvent) {
             this._matrixEvent = roomEvent;
           } else if (matrixRoom.hasPendingEvent(eventId)) {
             const pendingEvents = matrixRoom.getPendingEvents();
-            this._matrixEvent = pendingEvents.find(
-              (event) => event.getId() === eventId,
-            );
+            this._matrixEvent = pendingEvents.find((event) => event.getId() === eventId);
           }
+
         }
+
         if (!this._matrixEvent) {
           console.warn(`No event in room ${roomId} with id ${eventId}`);
           return;
           // throw Error(`No event in room ${roomId} with id ${eventId}`);
         }
-      } else this._matrixEvent = event;
 
+      } else this._matrixEvent = event;
       this.sender = users.getUserById(this._matrixEvent.getSender());
       this.timestamp = this._matrixEvent.getTs();
       this.type$ = new BehaviorSubject(Message.getType(this._matrixEvent));
-      this.status$ = new BehaviorSubject(
-        this._matrixEvent.getAssociatedStatus(),
-      );
+      this.status$ = new BehaviorSubject(this._matrixEvent.getAssociatedStatus());
       this.redacted$ = new BehaviorSubject(this._matrixEvent.isRedacted());
       this.content$ = new BehaviorSubject(this._getContent());
       this.reactions$ = new BehaviorSubject(this._getReactions());
       this.receipts$ = new BehaviorSubject(this._getReceipts());
+      
     } else {
-      if (!event)
-        throw Error(`All local messages should have an event (${this.id})`);
+
+      if (!event) throw Error(`All local messages should have an event (${this.id})`);
 
       this.pending = true;
       this._localEvent = event;
-
       this.sender = users.getMyUser();
       this.timestamp = event.timestamp;
       this.type$ = new BehaviorSubject(event.type);
@@ -74,6 +75,7 @@ export default class Message {
       this.content$ = new BehaviorSubject(this._getContent());
       this.reactions$ = new BehaviorSubject(null);
     }
+    
   }
 
   //* *******************************************************************************
@@ -91,7 +93,7 @@ export default class Message {
       await matrix.getClient().sendEvent(this.roomId, 'm.reaction', reaction);
       this.update();
     } catch (e) {
-      console.warn('Error sending reaction: ', {message: this, key}, e);
+      console.warn('Error sending reaction: ', { message: this, key }, e);
     }
   }
 
@@ -102,7 +104,7 @@ export default class Message {
       await matrix.getClient().redactEvent(this.roomId, eventId);
       this.update();
     } catch (e) {
-      console.warn('Error removing reaction: ', {message: this, key}, e);
+      console.warn('Error removing reaction: ', { message: this, key }, e);
     }
   }
 
@@ -128,8 +130,7 @@ export default class Message {
       }
 
       const newRedacted = this._matrixEvent.isRedacted();
-      if (this.redacted$.getValue() !== newRedacted)
-        this.redacted$.next(newRedacted);
+      if (this.redacted$.getValue() !== newRedacted) this.redacted$.next(newRedacted);
 
       const newStatus = this._matrixEvent.getAssociatedStatus();
       if (this.status$.getValue() !== newStatus) {
@@ -196,9 +197,10 @@ export default class Message {
           content.html = content.raw.body;
         }
         break;
+
       // ImageMessage
       case 'm.image': {
-        content.text = i18n.t('messages:content.imageSent', {sender});
+        content.text = i18n.t('messages:content.imageSent', { sender });
 
         if (this.pending) {
           // TODO: create thumb to free memory?
@@ -217,15 +219,11 @@ export default class Message {
             url: matrix.getImageUrl(content.raw.url),
           };
           content.thumb = {
-            url: matrix.getImageUrl(
-              content.raw.url,
-              THUMBNAIL_MAX_SIZE,
-              THUMBNAIL_MAX_SIZE,
-            ),
+            url: matrix.getImageUrl(content.raw.url, THUMBNAIL_MAX_SIZE, THUMBNAIL_MAX_SIZE),
           };
         }
         // TODO: different sizes in constants or something
-        const {height, width} = content.full;
+        const { height, width } = content.full;
         if (width > height) {
           content.thumb.height = (height * THUMBNAIL_MAX_SIZE) / width;
           content.thumb.width = THUMBNAIL_MAX_SIZE;
@@ -235,42 +233,66 @@ export default class Message {
         }
         break;
       }
+
       // EventMessages
       // Unsupported for now
-      case 'm.audio':
-        content.text = i18n.t('messages:content.audioNotSupport');
+      case 'm.audio':{
+
+        // content.text = content.raw.body; //i18n.t('messages:content.audioNotSupport');
+        content.text = `${sender} has sent a file`;
+     
+         console.log('contentobj......', content);
+        content.name = content.raw.body;
+       content.url= matrix.getHttpUrl(content.raw.url)
+     
         break;
+      }
       // Video Message
       case 'm.video':
+
+        console.log('video content......', content);
         // todo: localize
         content.text = `${sender} has sent a video`;
-        if (this.pending) {
-          //
-        } else {
-          content.full = {
-            height: content.raw.info.h,
-            width: content.raw.info.w,
-          };
-          content.thumb = {
-            url: matrix.getHttpUrl(
-              content.raw.info.thumbnail_url,
-              THUMBNAIL_MAX_SIZE,
-              THUMBNAIL_MAX_SIZE,
-            ),
-          };
-          content.type = content.raw.info.mimetype;
+        // if (this.pending) {
+          // content.full = {
+          //   width: content?.raw?.width || 250,
+          //   height: content?.raw?.height || 250,
+          //   url: content.raw.uri,
+          // };
+          // content.thumb = {
+          //   url: content.full.url,
+          // };
+        // } else {
+          // content.full = {
+          //   height: content.raw.info.h,
+          //   width: content.raw.info.w,
+          // };
+          // content.thumb = {
+          //   url: matrix.getHttpUrl(
+          //     content.raw.info.thumbnail_url,
+          //     THUMBNAIL_MAX_SIZE,
+          //     THUMBNAIL_MAX_SIZE
+          //   ),
+          // };
+          content.name = content.raw.body;
+          // content.type = content.raw.info.mimetype;
           content.url = matrix.getHttpUrl(content.raw.url);
-        }
-        const {height, width} = content.full;
-        if (width > height) {
-          content.thumb.height = (height * THUMBNAIL_MAX_SIZE) / width;
-          content.thumb.width = THUMBNAIL_MAX_SIZE;
-        } else {
-          content.thumb.height = THUMBNAIL_MAX_SIZE;
-          content.thumb.width = (width * THUMBNAIL_MAX_SIZE) / height;
-        }
+          
+        // }
+        // const { height, width } = content.full;
+        // if (width > height) {
+        //   content.thumb.height = (height * THUMBNAIL_MAX_SIZE) / width;
+        //   content.thumb.width = THUMBNAIL_MAX_SIZE;
+        // } else {
+        //   content.thumb.height = THUMBNAIL_MAX_SIZE;
+        //   content.thumb.width = (width * THUMBNAIL_MAX_SIZE) / height;
+        // }
+
+         console.log('video content......', content);
         break;
+        
       case 'm.file':
+        console.log('file content......', content);
         content.text = `${sender} has sent a file`;
         content.url = matrix.getHttpUrl(content.raw.url);
         content.name = content.raw.body;
@@ -279,10 +301,49 @@ export default class Message {
         content.text = i18n.t('messages:content.locationSharingNotSupport');
         break;
       case 'm.sticker':
-        content.text = i18n.t('messages:content.stickersNotSupport');
+        // content.text = i18n.t('messages:content.stickersNotSupport');
+        content.text = `${sender} has sent a sticker`;
+
+        if (this.pending) {
+          // TODO: create thumb to free memory?
+          content.full = {
+            width: content.raw.width,
+            height: content.raw.height,
+            url: content.raw.uri,
+          };
+          content.thumb = {
+            url: content.full.url,
+          };
+        } else {
+          content.full = {
+            height: content.raw.info.h,
+            width: content.raw.info.w,
+            url: matrix.getImageUrl(content.raw.url),
+          };
+          content.thumb = {
+            url: matrix.getImageUrl(content.raw.url, THUMBNAIL_MAX_SIZE, THUMBNAIL_MAX_SIZE),
+          };
+        }
+        // TODO: different sizes in constants or something
+        const { height, width } = content.full;
+        if (width > height) {
+          content.thumb.height = (height * THUMBNAIL_MAX_SIZE) / width;
+          content.thumb.width = THUMBNAIL_MAX_SIZE;
+        } else {
+          content.thumb.height = THUMBNAIL_MAX_SIZE;
+          content.thumb.width = (width * THUMBNAIL_MAX_SIZE) / height;
+        }
         break;
       // Supported
       case 'm.room.encrypted':
+      //   matrix.getClient().decryptEvent(this.getMatrixEvent()).then((event) => {
+      //     console.log('event....',event.clearEvent.content)
+      //     content.text = event.clearEvent.content;
+      //     content.html = event.clearEvent.content;
+      // }).error(error => {
+      //     console.log('event error....',error);
+      // });
+      // break;
       case 'm.bad.encrypted':
         content.text = i18n.t('messages:content.badEncryption');
         break;
@@ -300,14 +361,10 @@ export default class Message {
               });
               break;
             case 'join':
-              content.text = i18n.t('messages:content.memberJoined', {
-                sender: sender,
-              });
+              content.text = i18n.t('messages:content.memberJoined', { sender: sender });
               break;
             case 'leave':
-              content.text = i18n.t('messages:content.memberLeft', {
-                sender: sender,
-              });
+              content.text = i18n.t('messages:content.memberLeft', { sender: sender });
               break;
             default:
               content.text = i18n.t('messages:content.membershipNotSupport', {
@@ -317,13 +374,9 @@ export default class Message {
           }
         } else if (prevContent.avatar_url !== content.raw.avatar_url) {
           if (!content.raw.avatar_url) {
-            content.text = i18n.t('messages:content.memberAvatarRemoved', {
-              sender: sender,
-            });
+            content.text = i18n.t('messages:content.memberAvatarRemoved', { sender: sender });
           } else {
-            content.text = i18n.t('messages:content.memberAvatarChanged', {
-              sender: sender,
-            });
+            content.text = i18n.t('messages:content.memberAvatarChanged', { sender: sender });
           }
         } else if (prevContent.displayname !== content.raw.displayname) {
           const prevSender = prevContent.displayname || this.sender.id;
@@ -336,12 +389,10 @@ export default class Message {
         break;
       }
       case 'm.room.third_party_invite':
-        content.text = i18n.t('messages:content.thirdPartyInvite', {
-          sender: sender,
-        });
+        content.text = i18n.t('messages:content.thirdPartyInvite', { sender: sender });
         break;
       case 'm.room.create':
-        content.text = i18n.t('messages:content.chatCreated', {sender: sender});
+        content.text = i18n.t('messages:content.chatCreated', { sender: sender });
         break;
       case 'm.room.name':
         content.text = i18n.t('messages:content.chatNameChanged', {
@@ -350,28 +401,20 @@ export default class Message {
         });
         break;
       case 'm.room.avatar':
-        content.text = i18n.t('messages:content.chatAvatarChanged', {
-          sender: sender,
-        });
+        content.text = i18n.t('messages:content.chatAvatarChanged', { sender: sender });
         break;
       case 'm.room.topic':
-        content.text = i18n.t('messages:content.chatDescriptionChanged', {
-          sender: sender,
-        });
+        content.text = i18n.t('messages:content.chatDescriptionChanged', { sender: sender });
         break;
       case 'm.room.encryption':
       case 'm.room.guest_access':
       case 'm.room.history_visibility':
       case 'm.room.join_rules':
       case 'm.room.power_levels':
-        content.text = i18n.t('messages:content.chatSettingsChanged', {
-          sender: sender,
-        });
+        content.text = i18n.t('messages:content.chatSettingsChanged', { sender: sender });
         break;
       default:
-        content.text = i18n.t('messages:content.typeNotSupport', {
-          type: this.type$.getValue(),
-        });
+        content.text = i18n.t('messages:content.typeNotSupport', { type: this.type$.getValue() });
         break;
     }
     return content;
@@ -448,7 +491,9 @@ export default class Message {
       Message.isImageMessage(message.type$?.getValue()) ||
       Message.isVideoMessage(message.type$?.getValue()) ||
       Message.isFileMessage(message.type$?.getValue()) ||
-      Message.isNoticeMessage(message.type$?.getValue())
+      Message.isNoticeMessage(message.type$?.getValue()) ||
+      Message.isAudioMessage(message.type$?.getValue()) ||
+      Message.isStickerMessage(message.type$?.getValue()) 
     ) {
       return true;
     }
@@ -465,7 +510,9 @@ export default class Message {
       Message.isImageMessage(type) ||
       Message.isVideoMessage(type) ||
       Message.isFileMessage(type) ||
-      Message.isNoticeMessage(type)
+      Message.isNoticeMessage(type) ||
+      Message.isAudioMessage(type) ||
+      Message.isStickerMessage(type)
     ) {
       return true;
     }
@@ -492,11 +539,12 @@ export default class Message {
       case 'm.room.power_levels':
       case 'm.room.message':
       case 'm.room.third_party_invite':
-        return true;
+     
+      return true;
       // Below are other messages unsupported for now but still displayed as events
-      case 'm.audio':
+    //  case 'm.audio':
       case 'm.location':
-      case 'm.sticker':
+      // case 'm.sticker':
         return true;
       default:
         return false;
@@ -518,16 +566,18 @@ export default class Message {
     return false;
   }
 
+  static isAudioMessage(type) {
+    if (type === 'm.audio') return true;
+    return false;
+  }
+
   static isMessageUpdate(matrixEvent) {
     if (matrixEvent.isRedaction()) return true;
     if (matrixEvent.getType() === 'm.reaction') return true;
 
     if (matrixEvent.getType() === 'm.room.message') {
       const content = matrixEvent.getContent();
-      if (
-        content['m.relates_to'] &&
-        content['m.relates_to'].rel_type === 'm.replace'
-      ) {
+      if (content['m.relates_to'] && content['m.relates_to'].rel_type === 'm.replace') {
         return true;
       }
     }
@@ -536,6 +586,11 @@ export default class Message {
 
   static isNoticeMessage(type) {
     if (type === 'm.notice') return true;
+    return false;
+  }
+
+  static isStickerMessage(type) {
+    if (type === 'm.sticker') return true;
     return false;
   }
 

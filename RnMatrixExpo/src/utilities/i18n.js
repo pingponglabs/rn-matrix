@@ -1,6 +1,6 @@
 import i18n from 'i18next';
-import {initReactI18next} from 'react-i18next';
-import * as Localization from 'expo-localization';
+import { initReactI18next } from 'react-i18next';
+import * as RNLocalize from 'react-native-localize';
 
 import en from '../../locales/en.json';
 import zhHans from '../../locales/zh-Hans.json';
@@ -10,8 +10,8 @@ const resources = {
   'zh-Hans': zhHans,
 };
 
-const fallback = {languageTag: 'en', isRTL: false};
-const locale = Localization.locale || fallback;
+const fallback = { languageTag: 'en', isRTL: false };
+const locale = RNLocalize.findBestAvailableLanguage(Object.keys(resources)) || fallback;
 
 const languageDetector = {
   init: Function.prototype,
